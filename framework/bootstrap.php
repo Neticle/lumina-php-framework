@@ -55,3 +55,6 @@ require(L_SYSTEM . '/core/Lumina.php');
 \system\core\Lumina::setPackagePath('application', L_APPLICATION);
 \system\core\Lumina::setPackagePath('public', L_PUBLIC);
 
+// Register the Lumina auto loader implementation
+spl_autoload_register(array('system\\core\\Lumina', 'loadClass'), true, true);
+
