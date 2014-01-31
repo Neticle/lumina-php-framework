@@ -67,7 +67,8 @@ abstract class Context extends Extension
 	}
 	
 	/**
-	 * Returns the route resolving to this context.
+	 * Returns the route resolving to this context, relative to the
+	 * base extension -- which is also a Context.
 	 *
 	 * @return string
 	 *	The context route.
