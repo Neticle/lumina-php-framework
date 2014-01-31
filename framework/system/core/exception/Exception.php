@@ -22,7 +22,7 @@
 //
 // =============================================================================
 
-namespace system\core;
+namespace system\core\exception;
 
 use \Exception as PHPException;
 
