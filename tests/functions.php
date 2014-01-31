@@ -22,30 +22,33 @@
 //
 // =============================================================================
 
-use \system\core\Lumina;
+define('L_TEST_START', microtime(true));
 
-include '../functions.php';
-include '../../framework/system/core/Lumina.php';
-
-Lumina::setPackagePath('application', '/var/www');
-
-$tests = array(
-
-	'application\\modules\\user' => '/var/www/modules/user',
-	'application\\controllers' => '/var/www/controllers',
-	'application' => '/var/www'
-
-);
-
-lumina_test_start();
-
-foreach ($tests as $input => $expected)
+function lumina_test_start()
 {
-	$result = Lumina::getNamespacePath($input);
-	
-	lumina_test_identical($input, $expected, $result);
-		
+	echo '<table border="1"><thead><tr><th>Status</th><th>Input</th><th>Output</th>', 
+		'<th>Expected</th></tr></thead><tbody>';
 }
 
-lumina_test_end();
+function lumina_test_end()
+{
+	echo '<tr><td colspan="4">' , (microtime(true) - L_TEST_START), 
+		'</td></tr></tbody></table>';
+}
+
+function lumina_test_report($success, $input, $output, $expected)
+{
+	echo '<tr><td>', ($success ? 'OK' : 'ERROR'), '</td><td>', $input, 
+		'</td><td>', $output, '</td><td>', $expected, '</td></tr>';
+}
+
+function lumina_test_equal($input, $expected, $output)
+{
+	lumina_test_report($expected == $output, $input, $output, $expected);
+}
+
+function lumina_test_identical($input, $expected, $output)
+{
+	lumina_test_report($expected === $output, $input, $output, $expected);
+}
 

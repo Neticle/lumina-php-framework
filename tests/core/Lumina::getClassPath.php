@@ -24,6 +24,7 @@
 
 use \system\core\Lumina;
 
+include '../functions.php';
 include '../../framework/system/core/Lumina.php';
 
 Lumina::setPackagePath('application', '/var/www');
@@ -35,14 +36,15 @@ $tests = array(
 
 );
 
+lumina_test_start();
+
 foreach ($tests as $input => $expected)
 {
 	$result = Lumina::getClassPath($input);
-	$success = $result === $expected;
 	
-	echo ($success ? 'OK' : 'ERROR'), ': "', 
-		$input, '" ==> "', $expected, '"' . 
-		' ==> "', $result, '"', PHP_EOL;
+	lumina_test_identical($input, $expected, $result);
 		
 }
+
+lumina_test_end();
 
