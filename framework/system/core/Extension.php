@@ -44,6 +44,13 @@ abstract class Extension extends Element
 	 * @type Extension
 	 */
 	private $parent;
+	
+	/**
+	 * The extension initialization state.
+	 *
+	 * @type bool
+	 */
+	private $isInitialized = false;
 
 	/**
 	 * Constructor.
@@ -115,20 +122,20 @@ abstract class Extension extends Element
 	 */
 	protected final function construct(array $configuration = null)
 	{
-		if ($complete = $this->onConstruction())
+		if ($this->onConstruction())
 		{
 			if (isset($configuration))
 			{
 				$this->configure($configuration);
 			}
 		
-			$complete = $this->onAfterConstruction();
+			if ($this->onAfterConstruction())
+			{
+				return;
+			}
 		}
 		
-		if (!$complete)
-		{
-			throw new RuntimeException('Extension construction was interrupted.');
-		}
+		throw new RuntimeException('Extension construction was interrupted.');
 	}
 	
 	/**
@@ -137,12 +144,43 @@ abstract class Extension extends Element
 	 * @throws RuntimeException
 	 *	Thrown if one of the construction events is canceled.
 	 */
-	protected final function initialize()
+	public final function initialize()
 	{
-		if (!$this->onInitialize() || !$this->onAfterInitialize())
+		if ($this->isInitialize)
 		{
-			throw new RuntimeException('Extension initialization was interrupted.');
+			throw new RuntimeException('This extension has already been initialized.');
 		}
+		
+		if ($this->onInitialize())
+		{
+			foreach ($this->components as $name => $component)
+			{
+				if (isset($component['preload']))
+				{
+					unset($component['preload']);
+					$this->loadComponentFromArray($name, $component);
+				}
+			}
+		
+			if ($this->onAfterInitialize())
+			{
+				$this->isInitialized = true;
+				return;
+			}			
+		}
+		
+		throw new RuntimeException('Extension initialization was interrupted.');
+	}
+	
+	/**
+	 * Checks the extension initialization state.
+	 *
+	 * @return bool
+	 *	Returns TRUE if the extension is initialized, FALSE otherwise.
+	 */
+	public final function isInitialized()
+	{
+		return $this->isInitialized;
 	}
 	
 	/**
@@ -199,6 +237,109 @@ abstract class Extension extends Element
 	protected function onAfterInitialize()
 	{
 		return $this->raiseArray('afterInitialize');
+	}
+	
+	/**
+	 * Returns a component instance.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when: the component does not exist; the component configuration
+	 *	settings are invalid; the component fails to construct;
+	 *
+	 * @param string $name
+	 *	The name of the component to return.
+	 *
+	 * @param bool $initialize
+	 *	When set to TRUE the component will be initialized -- unless it already
+	 *	was -- before being returned.
+	 *
+	 * @param bool $recursive
+	 *	When set to TRUE the component will be returned from the parent
+	 *	extensions if it's not explicitly defined for this extension.
+	 *
+	 * @return Component
+	 *	Returns the component instance.
+	 */
+	public function getComponent($name, $initialize = true, $recursive = true)
+	{
+		// Get a cached instance
+		if (isset($this->componentInstances[$name]))
+		{
+			$instance = $this->componentInstances[$name];
+		}
+		
+		// Load an available component
+		else if (isset($this->components[$name]))
+		{
+			$component = $this->components[$name];
+			$instance = $this->loadComponentFromArray($name, $component);
+		}
+		
+		// Check the parent extensions
+		else if ($recursive && isset($this->parent))
+		{
+			$instance = $this->parent->getComponent($name, true);
+			$this->componentInstances[$name] = $instance;
+		}
+		else
+		{
+			throw new RuntimeException('Component "' . $name . '" is not defined.');
+		}
+		
+		// Initialize it
+		if ($initialize && !$instance->isInitialized)
+		{
+			$instance->initialize();
+		}
+		
+		return $instance;
+	}
+	
+	/**
+	 * Loads a component based on the specified array.
+	 *
+	 * @param string $name
+	 *	The name of the component to load.
+	 *
+	 * @param array $component
+	 *	The component construction data.
+	 *
+	 * @return Component
+	 *	The component instance.
+	 */
+	public function loadComponentFromArray($name, array $component)
+	{
+		// Get the component class
+		if (isset($component['class']))
+		{
+			$class = $component['class'];
+			unset($component['class']);
+		}
+		else
+		{
+			throw new RuntimeException('Component "' . $name . '" is not defined.');
+		}
+		
+		$instance = $this->loadComponent($name, $class, $component);		
+		return $instance;
+	}
+	
+	/**
+	 * Loads a component.
+	 *
+	 * @param string $name
+	 *	The component name.
+	 *
+	 * @param string $class
+	 *	The component class.
+	 *
+	 * @param array $configuration
+	 *	The component express configuration array.
+	 */
+	public function loadComponent($name, $class, array $configuration = null)
+	{
+		return $this->componentInstances[$name] = 
+			new $class($name, $this, $configuration);
 	}
 
 }
