@@ -33,7 +33,7 @@ use \system\core\Extension;
  * @package system.core
  * @since 0.2.0
  */
-class Component extends Extension
+abstract class Component extends Extension
 {
 	/**
 	 * Constructor.
