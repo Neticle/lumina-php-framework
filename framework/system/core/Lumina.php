@@ -24,6 +24,7 @@
 
 namespace system\core;
 
+use \system\core\EventBus;
 use \system\core\exception\RuntimeException;
 
 /**
@@ -41,6 +42,13 @@ class Lumina
 	 * @type array
 	 */
 	private static $packagePaths = array();
+	
+	/**
+	 * The global event bus instance.
+	 *
+	 * @type EventBus
+	 */
+	private static $eventBus;
 	
 	/**
 	 * Defines the path for a new package.
@@ -337,7 +345,24 @@ class Lumina
 		return class_exists($class, false) || self::loadClass($class, false);
 	}
 	
-	
+	/**
+	 * Returns the global event bus instance.
+	 *
+	 * All events raised by objects extending Element can be captured by
+	 * registering a handler through this event bus.
+	 *
+	 * @return EventBus
+	 *	The global event bus instance.
+	 */
+	public static function getEventBus()
+	{
+		if (!isset(self::$eventBus))
+		{
+			self::$eventBus = new EventBus();
+		}
+		
+		return self::$eventBus;
+	}
 
 }
 
