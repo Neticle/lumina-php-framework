@@ -35,7 +35,6 @@ use \system\core\exception\RuntimeException;
  */
 class Lumina 
 {
-
 	/**
 	 * The package paths, indexed by name.
 	 *
@@ -337,6 +336,8 @@ class Lumina
 	{
 		return class_exists($class, false) || self::loadClass($class, false);
 	}
+	
+	
 
 }
 
