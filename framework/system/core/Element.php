@@ -42,7 +42,7 @@ abstract class Element extends Express
 	 * @param array $configuration
 	 *	The construction express configuration array.
 	 */
-	public function __construct(array $configuration = null)
+	protected function __construct(array $configuration = null)
 	{
 		parent::__construct($configuration);
 	}

@@ -66,7 +66,7 @@ abstract class Extension extends Element
 	 * @param Extension $parent
 	 *	The parent extension instance, if any.
 	 */
-	public function __construct(Extension $parent = null)
+	protected function __construct(Extension $parent = null)
 	{
 		parent::__construct(null);
 		$this->parent = $parent;

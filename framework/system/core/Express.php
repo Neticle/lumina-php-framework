@@ -44,7 +44,7 @@ abstract class Express
 	 * @param array $configuration
 	 *	The construction express configuration array.
 	 */
-	public function __construct(array $configuration = null)
+	protected function __construct(array $configuration = null)
 	{
 		if (isset($configuration))
 		{
