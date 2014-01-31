@@ -24,6 +24,8 @@
 
 namespace system\core;
 
+use \system\core\exception\RuntimeException;
+
 /**
  * Lumina.
  *
@@ -270,6 +272,38 @@ class Lumina
 		}
 		
 		throw new RuntimeException('Invalid namespace specified.');	
+	}
+	
+	/**
+	 * The Lumina class autoloader implementation.
+	 *
+	 * This method expects the specified class to not be loaded and, if it is
+	 * PHP will throw a generic 'already defined' error, as expected.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when the specified class file does not exist or is not defined
+	 *	in it.
+	 *
+	 * @param string $class
+	 *	The name of the class to load.
+	 */
+	public static function loadClass($class)
+	{
+		$path = self::getClassPath($class);
+		
+		if (file_exists($path))
+		{
+			require_once($path);
+			
+			if (class_exists($class, false))
+			{
+				return true;
+			}
+			
+			throw new RuntimeException('Class "' . $class . '" is not defined in "' . $path . '"');
+		}
+		
+		throw new RuntimeException('Class "' . $class . '" not found.');		
 	}
 
 }
