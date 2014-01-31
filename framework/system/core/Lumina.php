@@ -281,13 +281,20 @@ class Lumina
 	 * PHP will throw a generic 'already defined' error, as expected.
 	 *
 	 * @throws RuntimeException
-	 *	Thrown when the specified class file does not exist or is not defined
-	 *	in it.
+	 *	Thrown when: the class file exists but the class is not defined in it;
+	 *	the class does not exist and {$throw} is set to TRUE.
+	 *
+	 * @param bool $throw
+	 *	When set to TRUE an exception will be thrown if the class file 
+	 *	does not exist.
 	 *
 	 * @param string $class
 	 *	The name of the class to load.
+	 *
+	 * @return bool
+	 *	Returns TRUE on success, FALSE otherwise.
 	 */
-	public static function loadClass($class)
+	public static function loadClass($class, $throw = true)
 	{
 		$path = self::getClassPath($class);
 		
@@ -303,7 +310,32 @@ class Lumina
 			throw new RuntimeException('Class "' . $class . '" is not defined in "' . $path . '"');
 		}
 		
-		throw new RuntimeException('Class "' . $class . '" not found.');		
+		if ($throw)
+		{
+			throw new RuntimeException('Class "' . $class . '" not found.');
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Checks for the existance of a class.
+	 *
+	 * If the class is not yet defined it will be loaded automatically through
+	 * the Lumina "loadClass" method.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when the class file exists but the class is not defined in it.
+	 *
+	 * @param string $class
+	 *	The class to check for existance.
+	 *
+	 * @return bool
+	 *	Returns TRUE if the class exists, FALSE otherwise.
+	 */
+	public static function classExists($class)
+	{
+		return class_exists($class, false) || self::loadClass($class, false);
 	}
 
 }

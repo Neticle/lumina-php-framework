@@ -44,7 +44,7 @@ lumina_test_start();
 foreach ($tests as $class => $exists)
 {
 	lumina_test_identical(
-		$class, Lumina::loadClass($class, false) ? 'true' : 'false', 
+		$class, Lumina::classExists($class, false) ? 'true' : 'false', 
 		$exists ? 'true' : 'false'
 	); 
 }
