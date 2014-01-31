@@ -22,38 +22,32 @@
 //
 // =============================================================================
 
+/*
+
+Estimated number of calls per request:
+1 ~ 5
+
+Results:
+	
+	1		2.0980834960938E-5
+	50		0.00012493133544922
+	1000	0.0021021366119385
+
+*/
+
+
 use \system\core\Lumina;
 
-include '../functions.php';
-include '../../framework/system/core/Lumina.php';
+include '../../../framework/system/core/Lumina.php';
 
 Lumina::setPackagePath('application', '/var/www');
 
-$tests = array(
+$start = microtime(true);
 
-	'@/some/awesome/path' => '/some/awesome/path',
-	'@/' => '/',
-	'@/some' => '/some',
-	'@/~some/awesome/path' => '/~some/awesome/path',
-	'@~some/awesome/path' => '/my/base/path/some/awesome/path',
-	
-	'~' => '/my/base/path',
-	'~file' => '/my/base/path/file',
-	'~some.awesome.file' => '/my/base/path/some/awesome/file',
-	
-	'application' => '/var/www',
-	'application.file' => '/var/www/file',
-	'application.dir1.dir2.dir3' => '/var/www/dir1/dir2/dir3'
-
-);
-
-lumina_test_start();
-
-foreach ($tests as $input => $expected)
+for ($i = 0; $i < 1000; ++$i)
 {
-	$output = Lumina::getAliasPath($input, null, '/my/base/path');
-	lumina_test_identical($input, $expected, $output);		
+	Lumina::getNamespacePath('application\\modules\\user\\controllers');
 }
 
-lumina_test_end();
+echo microtime(true) - $start;
 

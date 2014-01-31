@@ -24,16 +24,15 @@
 
 use \system\core\Lumina;
 
-include '../functions.php';
-include '../../framework/system/core/Lumina.php';
+include '../../functions.php';
+include '../../../framework/system/core/Lumina.php';
 
 Lumina::setPackagePath('application', '/var/www');
 
 $tests = array(
 
-	'application\\modules\\user' => '/var/www/modules/user',
-	'application\\controllers' => '/var/www/controllers',
-	'application' => '/var/www'
+	'application\\controllers\\UserController' => '/var/www/controllers/UserController.php',
+	'application\\Application' => '/var/www/Application.php'
 
 );
 
@@ -41,7 +40,7 @@ lumina_test_start();
 
 foreach ($tests as $input => $expected)
 {
-	$result = Lumina::getNamespacePath($input);
+	$result = Lumina::getClassPath($input);
 	
 	lumina_test_identical($input, $expected, $result);
 		

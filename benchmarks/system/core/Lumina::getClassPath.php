@@ -22,29 +22,34 @@
 //
 // =============================================================================
 
+/*
+
+Estimated number of calls per request:
+50 ~ 1000
+
+Results:
+	
+	2		2.3841857910156E-5
+	50		0.00014996528625488
+	200		0.00046992301940918
+	1000	0.0022730827331543
+	75.000	0.17361402511597
+
+*/
+
+
 use \system\core\Lumina;
 
-include '../functions.php';
-include '../../framework/system/core/Lumina.php';
+include '../../../framework/system/core/Lumina.php';
 
 Lumina::setPackagePath('application', '/var/www');
 
-$tests = array(
+$start = microtime(true);
 
-	'application\\controllers\\UserController' => '/var/www/controllers/UserController.php',
-	'application\\Application' => '/var/www/Application.php'
-
-);
-
-lumina_test_start();
-
-foreach ($tests as $input => $expected)
+for ($i = 0; $i < 75000; ++$i)
 {
-	$result = Lumina::getClassPath($input);
-	
-	lumina_test_identical($input, $expected, $result);
-		
+	Lumina::getClassPath('application\\modules\\user\\controllers\\UserController');
 }
 
-lumina_test_end();
+echo microtime(true) - $start;
 

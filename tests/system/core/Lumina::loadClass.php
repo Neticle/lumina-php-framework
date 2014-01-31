@@ -22,37 +22,32 @@
 //
 // =============================================================================
 
-/*
-
-Estimated number of calls per request:
-2 ~ 50
-
-Results:
-	
-	2		3.0994415283203E-5
-	50		0.00023603439331055
-	200		0.0008690357208252
-	1000	0.0042212009429932
-	5000	0.021378993988037
-	10000	0.044900178909302
-	50000	0.21401619911194
-	75.000	0.31712102890015
-
-*/
-
-
 use \system\core\Lumina;
 
-include '../../framework/system/core/Lumina.php';
+include '../../functions.php';
+include '../../../framework/system/core/Lumina.php';
 
 Lumina::setPackagePath('application', '/var/www');
+Lumina::setPackagePath('system', realpath('../../../framework/system'));
 
-$start = microtime(true);
+$tests = array(
 
-for ($i = 0; $i < 50000; ++$i)
+	'system\\core\\exception\\Exception' => true,
+	'system\\core\\exception\\RuntimeException' => true,
+	'system\\core\\exception\\IDoNotExist' => false
+
+);
+
+lumina_test_start();
+
+
+foreach ($tests as $class => $exists)
 {
-	Lumina::getAliasPath('this.is.a.relative.alias.right.here', 'layout.php', '/some/long/base/path');
+	lumina_test_identical(
+		$class, Lumina::loadClass($class, false) ? 'true' : 'false', 
+		$exists ? 'true' : 'false'
+	); 
 }
 
-echo microtime(true) - $start;
+lumina_test_end();
 

@@ -24,11 +24,11 @@
 
 use \system\core\Lumina;
 
-include '../functions.php';
-include '../../framework/system/core/Lumina.php';
+include '../../functions.php';
+include '../../../framework/system/core/Lumina.php';
 
 Lumina::setPackagePath('application', '/var/www');
-Lumina::setPackagePath('system', realpath('../../framework/system'));
+Lumina::setPackagePath('system', realpath('../../../framework/system'));
 
 $tests = array(
 
@@ -44,7 +44,7 @@ lumina_test_start();
 foreach ($tests as $class => $exists)
 {
 	lumina_test_identical(
-		$class, Lumina::loadClass($class, false) ? 'true' : 'false', 
+		$class, Lumina::classExists($class, false) ? 'true' : 'false', 
 		$exists ? 'true' : 'false'
 	); 
 }
