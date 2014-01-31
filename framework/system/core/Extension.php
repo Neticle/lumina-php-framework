@@ -46,6 +46,14 @@ abstract class Extension extends Element
 	private $parent;
 	
 	/**
+	 * The extension components construction and configuration data, indexed
+	 * by name.
+	 *
+	 * @type array
+	 */
+	private $components = array();
+	
+	/**
 	 * The extension initialization state.
 	 *
 	 * @type bool
@@ -145,12 +153,7 @@ abstract class Extension extends Element
 	 *	Thrown if one of the construction events is canceled.
 	 */
 	public final function initialize()
-	{
-		if ($this->isInitialize)
-		{
-			throw new RuntimeException('This extension has already been initialized.');
-		}
-		
+	{		
 		if ($this->onInitialize())
 		{
 			foreach ($this->components as $name => $component)
@@ -166,7 +169,7 @@ abstract class Extension extends Element
 			{
 				$this->isInitialized = true;
 				return;
-			}			
+			}
 		}
 		
 		throw new RuntimeException('Extension initialization was interrupted.');
@@ -237,6 +240,23 @@ abstract class Extension extends Element
 	protected function onAfterInitialize()
 	{
 		return $this->raiseArray('afterInitialize');
+	}
+	
+	/**
+	 * Defines the extension components configuration.
+	 *
+	 * @param array $components
+	 *	The components express construction and configuration array.
+	 *
+	 * @param bool $merge
+	 *	A flag indicating wether or not the given settings should be merged
+	 *	with the previously defined ones instead of discarding them.
+	 */
+	public final function setComponents(array $components, $merge = true)
+	{
+		$this->components = $merge ?
+			array_replace_recursive($this->components, $components) :
+			$components;
 	}
 	
 	/**
@@ -339,7 +359,7 @@ abstract class Extension extends Element
 	public function loadComponent($name, $class, array $configuration = null)
 	{
 		return $this->componentInstances[$name] = 
-			new $class($name, $this, $configuration);
+			new $class($this, $configuration);
 	}
 
 }
