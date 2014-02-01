@@ -260,6 +260,37 @@ abstract class Extension extends Element
 	}
 	
 	/**
+	 * Checks wether or not a component is defined.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when an application is yet to be loaded.
+	 *
+	 * @param string $component
+	 *	The name of the component to check.
+	 *
+	 * @param bool $recursive
+	 *	A flag indicating wether or not this component should be checked
+	 *	recursively through the parent extensions.
+	 *
+	 * @return bool
+	 *	Returns TRUE if the component is defined, FALSE otherwise.
+	 */
+	public final function hasComponent($name, $recursive = true)
+	{
+		if (isset($this->components[$name]))
+		{
+			return true;
+		}
+		
+		if ($recursive && isset($this->parent))
+		{
+			return $this->parent->hasComponent($name, true);
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * Returns a component instance.
 	 *
 	 * @throws RuntimeException
