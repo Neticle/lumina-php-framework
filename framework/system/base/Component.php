@@ -22,7 +22,7 @@
 //
 // =============================================================================
 
-namespace system\core;
+namespace system\base;
 
 use \system\core\Extension;
 

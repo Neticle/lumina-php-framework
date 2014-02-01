@@ -22,11 +22,11 @@
 //
 // =============================================================================
 
-namespace system\core;
+namespace system\base;
+
+use \system\core\Context;
 
 use \ReflectionClass as PHPReflectionClass;
-
-use \system\core\Extension;
 
 /**
  * A Context is a special kind of extension that can be used with other

@@ -31,7 +31,7 @@ Should output:
 */
 
 use \system\core\Lumina;
-use \system\core\Component;
+use \system\base\Component;
 use \system\core\Extension;
 
 define('L_APPLICATION_ROOT', dirname(__FILE__));

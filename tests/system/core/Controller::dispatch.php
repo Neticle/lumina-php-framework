@@ -38,7 +38,7 @@ Should output:
 */
 
 use \system\core\Lumina;
-use \system\core\Controller;
+use \system\base\Controller;
 
 define('L_APPLICATION_ROOT', dirname(__FILE__));
 require '../../../framework/bootstrap.php';
