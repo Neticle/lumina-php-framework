@@ -25,6 +25,7 @@
 namespace system\base;
 
 use \system\core\Context;
+use \system\core\Lumina;
 
 /**
  * Defines the base behaviour and events for all Lumina modules.
@@ -145,7 +146,7 @@ class Module extends Context
 	 */
 	public final function loadModule($name, $namespace, $class, array $configuration)
 	{
-		$this->moduleInstances[$name] = new $class($name, $namspace, $this, $configuration);
+		return $this->moduleInstances[$name] = new $class($name, $namespace, $this, $configuration);
 	}
 	
 	/**
@@ -192,7 +193,13 @@ class Module extends Context
 	 */
 	public final function loadController($name, $class, array $configuration = null)
 	{
-		$this->moduleInstances[$name] = new $class($name, $this, $configuration);
+		return $this->moduleInstances[$name] =
+			new $class($name, $this, $configuration);
+	}
+	
+	public final function hasModule($name)
+	{
+		return isset($this->modules[$name]);
 	}
 	
 	/**
@@ -236,6 +243,36 @@ class Module extends Context
 	}
 	
 	/**
+	 * Defines the child modules construction and configuration data.
+	 *
+	 * @param array $modules
+	 *	The child modules construction and configuration data.
+	 */
+	public final function setModules(array $modules, $merge = true)
+	{
+		$collection = array();
+		
+		foreach ($modules as $name => $configuration)
+		{
+			if (is_string($configuration))
+			{
+				if (!isset($collection[$configuration]))
+				{
+					$collection[$configuration] = array();
+				}
+				
+				continue;
+			}
+			
+			$collection[$name] = $configuration;
+		}
+		
+		$this->modules = $merge ?
+			array_replace_recursive($this->modules, $collection) : $collection;
+		
+	}
+	
+	/**
 	 * Returns a flag indicating wether or not the specified controller
 	 * is defined or it's default class exists.
 	 *
@@ -252,8 +289,7 @@ class Module extends Context
 			return true;
 		}
 		
-		$class = $this->getDefaultControllerClass($name);
-		return Lumina::classExists($class);
+		return Lumina::classExists($this->getDefaultControllerClass($name));
 	}
 	
 	/**
@@ -295,6 +331,46 @@ class Module extends Context
 		}
 		
 		return $instance;
+	}
+	
+	/**
+	 * Dispatches the request recursively through the child module
+	 * and controllers.
+	 *
+	 * @param string $route
+	 *	The route to dispatch to, resolving to 
+	 */
+	public final function dispatch($route, array $parameters = null)
+	{
+		$tokens = preg_split('/(\s*\/\s*)/', $route, -1, PREG_SPLIT_NO_EMPTY);
+		$length = count($tokens);
+		$module = $this;
+		
+		do
+		{
+			$token = (--$length < 0) ?
+				$this->defaultController : array_shift($tokens);
+			
+			if ($length < 2 && $module->hasController($token))
+			{
+				$action = $length > 0 ? 
+					$tokens[0] : null;
+				
+				return $module->getController($token, true)
+					->dispatch($action, $parameters);
+			}
+			
+			else if ($module->hasModule($token))
+			{
+				$module = $module->getModule($token, true);
+				continue;
+			}
+			
+			break;
+			
+		} while (true);
+			
+		return false;		
 	}
 	
 	/**
