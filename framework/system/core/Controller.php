@@ -209,12 +209,8 @@ abstract class Controller extends Context
 	 *	The default action method name.
 	 */
 	protected function getDefaultActionMethod($action)
-	{
-		$action = str_replace(' ', '', 
-			ucwords(str_replace(array('_', '-'), ' ', $action))
-		);
-		
-		return 'action' . $action;
+	{		
+		return 'action' . ucfirst($action);
 	}
 	
 	/**
@@ -239,6 +235,11 @@ abstract class Controller extends Context
 		{
 			$this->initialize();
 		}
+		
+		// Normalize the action name.
+		$action = str_replace(' ', '', 
+			lcfirst(ucwords(str_replace(array('_', '-'), ' ', $action)))
+		);
 		
 		if ($this->onBeforeDispatch($action, $parameters))
 		{
