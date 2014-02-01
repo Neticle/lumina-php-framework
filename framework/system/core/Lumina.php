@@ -51,6 +51,13 @@ class Lumina
 	private static $eventBus;
 	
 	/**
+	 * The application instance.
+	 *
+	 * @type Application
+	 */
+	private static $application;
+	
+	/**
 	 * Defines the path for a new package.
 	 *
 	 * @throws RuntimeException
@@ -373,6 +380,45 @@ class Lumina
 	public static function classExists($class)
 	{
 		return class_exists($class, false) || self::loadClass($class, false);
+	}
+	
+	/**
+	 * Loads an application instance.
+	 *
+	 * @param string|array $configuration
+	 *	An alias relative to the application path resolving to a configuration
+	 *	script file, or an associative array with the settings.
+	 *
+	 * @param string $class
+	 *	The application class.
+	 *
+	 * @return Application
+	 *	Returns the application instance.
+	 */
+	public static function load($configuration = null, $class = 'system\\base\\Application')
+	{
+		if (isset($configuration) && is_string($configuration))
+		{
+			$configuration = require
+			(
+				self::getAliasPath($configuration, 'php', L_APPLICATION)
+			);
+		}
+		
+		self::$application = new $class('application', 'application', null, $configuration);
+		self::$application->initialize();
+		return self::$application;		
+	}
+	
+	/**
+	 * Returns the application instance.
+	 *
+	 * @return Application
+	 *	The application instance.
+	 */
+	public static function getApplication()
+	{
+		return self::$application;
 	}
 	
 	/**
