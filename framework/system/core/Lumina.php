@@ -282,6 +282,36 @@ class Lumina
 	}
 	
 	/**
+	 * Returns the namespace of a class.
+	 *
+	 * @param string $class
+	 *	The class to get the namespace from.
+	 *
+	 * @return string
+	 *	The class namespace, or NULL.
+	 */
+	public static function getClassNamespace($class)
+	{
+		return ($index = strrpos($class, '\\')) === false ?
+			null : substr($class, 0, $index);
+	}
+	
+	/**
+	 * Returns the name of a class, which does not include the namespace.
+	 *
+	 * @param string $class
+	 *	The class to get the name from.
+	 *
+	 * @return string
+	 *	The class name.
+	 */
+	public static function getClassName($class)
+	{
+		return ($index = strrpos($class, '\\')) === false ?
+			$class : substr($class, ++$index);
+	}
+	
+	/**
 	 * The Lumina class autoloader implementation.
 	 *
 	 * This method expects the specified class to not be loaded and, if it is
