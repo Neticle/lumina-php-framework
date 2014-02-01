@@ -340,8 +340,7 @@ abstract class Extension extends Element
 			throw new RuntimeException('Component "' . $name . '" is not defined.');
 		}
 		
-		$instance = $this->loadComponent($name, $class, $component);		
-		return $instance;
+		return $this->loadComponent($name, $class, $component);
 	}
 	
 	/**
