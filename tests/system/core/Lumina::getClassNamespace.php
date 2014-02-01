@@ -22,40 +22,30 @@
 //
 // =============================================================================
 
-/*
-
-Should output:
-
-	ctx1/ctx2/ctx3/ctx4/ctx5
-	
-*/
-
 use \system\core\Lumina;
-use \system\core\Context;
 
-define('L_APPLICATION_ROOT', dirname(__FILE__));
-require '../../../framework/bootstrap.php';
-require '../../functions.php';
+include '../../functions.php';
+include '../../../framework/system/core/Lumina.php';
+
+Lumina::setPackagePath('application', '/var/www');
+Lumina::setPackagePath('system', realpath('../../../framework/system'));
+
+$tests = array(
+
+	'system\\core\\exception\\Exception' => 'system\\core\\exception',
+	'system\\core\\RuntimeException' => 'system\\core',
+	'system\\IDoNotExist' => 'system',
+	'IDoNotExist' => null
+
+);
 
 lumina_test_start();
 
-class MyContext extends Context
+
+foreach ($tests as $class => $namespace)
 {
-	public function __construct($name, Context $parent = null, array $config = null)
-	{
-		parent::__construct($name, $parent);
-		$this->construct($config);
-	}
+	lumina_test_identical($class, $namespace, Lumina::getClassNamespace($class)); 
 }
 
-$ctx = new MyContext('ctx0', null);
-
-for ($i = 1; $i < 11; ++$i)
-{
-	$child = new MyContext('ctx' . $i, $ctx);
-	$ctx = $child;
-}
-
-lumina_test_identical('ctx0~ctx10', 'ctx1/ctx2/ctx3/ctx4/ctx5/ctx6/ctx7/ctx8/ctx9/ctx10', $ctx->getRoute());
 lumina_test_end();
 

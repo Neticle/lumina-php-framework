@@ -31,7 +31,7 @@ Should output:
 */
 
 use \system\core\Lumina;
-use \system\core\Context;
+use \system\base\Module;
 
 define('L_APPLICATION_ROOT', dirname(__FILE__));
 require '../../../framework/bootstrap.php';
@@ -39,20 +39,17 @@ require '../../functions.php';
 
 lumina_test_start();
 
-class MyContext extends Context
+class MyModule extends Module
 {
-	public function __construct($name, Context $parent = null, array $config = null)
-	{
-		parent::__construct($name, $parent);
-		$this->construct($config);
-	}
 }
 
-$ctx = new MyContext('ctx0', null);
+$namespace = 'application';
+$ctx = new MyModule('ctx0', $namespace, null);
 
 for ($i = 1; $i < 11; ++$i)
 {
-	$child = new MyContext('ctx' . $i, $ctx);
+	$namespace .= '\\modules\\ctx' . $i;
+	$child = new MyModule('ctx' . $i, $namespace, $ctx);
 	$ctx = $child;
 }
 
