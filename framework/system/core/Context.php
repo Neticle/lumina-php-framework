@@ -35,6 +35,9 @@ use \system\core\exception\RuntimeException;
  * An example of where a Context extension is useful is when creating URLs
  * that are relative to a specific module or controller.
  *
+ * Context's also have renderable assets linked to them. This includes, between
+ * others, the application layouts and views.
+ *
  * @author Lumina Framework <lumina@incubator.neticle.com>
  * @package system.core
  * @since 0.2.0
