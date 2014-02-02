@@ -25,6 +25,7 @@
 namespace system\core;
 
 use \system\core\Extension;
+use \system\core\exception\RuntimeException;
 
 /**
  * A Context is a special kind of extension that can be used with other
@@ -90,6 +91,134 @@ abstract class Context extends Extension
 		}
 		
 		return $route;
+	}
+	
+	/**
+	 * This method is invoked right before a view is rendered.
+	 *
+	 * This method encapsulates the "render" event, which can not be canceled.
+	 *
+	 * @param View $view
+	 *	The View instance.
+	 *
+	 * @return bool
+	 *	Returns TRUE.
+	 */
+	protected function onRender($view)
+	{
+		$this->raiseArray('render', array($view));
+		return true;
+	}
+	
+	/**
+	 * This method is invoked right before a layout is rendered.
+	 *
+	 * This method encapsulates the "display" event, which can not be canceled.
+	 *
+	 * @param View $view
+	 *	The View instance.
+	 *
+	 * @return bool
+	 *	Returns TRUE.
+	 */
+	protected function onDisplay($layout)
+	{
+		$this->raiseArray('display', array($layout));
+		return true;
+	}
+	
+	/**
+	 * Returns the context layouts path.
+	 *
+	 * @param bool $recursive
+	 *	When set to TRUE the layout path will be retrieved recursively.
+	 *
+	 * @return string
+	 *	The context layouts path.
+	 */
+	public abstract function getLayoutsPath();
+	
+	/**
+	 * Returns the absolute path to the layout script.
+	 *
+	 * @return string
+	 *	The absolute path to the layout script.
+	 */
+	public abstract function getLayoutPath();
+	
+	/**
+	 * Returns the context views path.
+	 *
+	 * @return string
+	 *	The context views path.
+	 */
+	public abstract function getViewsPath();
+	
+	/**
+	 * Renders a child view within the layout.
+	 *
+	 * @param string $view
+	 *	The name of the partial view to render.
+	 *
+	 * @param array $variables
+	 *	An associative array holding the variables to be extracted
+	 *	in the view context.
+	 *
+	 * @param bool $capture
+	 *	When set to TRUE the contents will be captured and returned
+	 *	instead of sent to the output buffer.
+	 *
+	 * @return string
+	 *	The captured contents, if applicable.
+	 */
+	public final function display($view, array $variables = null, $capture = false)
+	{
+		$layout = $this->getLayoutPath();
+		
+		if (isset($layout))
+		{
+			$layout = new View($this, $layout);
+			$this->onDisplay($layout);
+			
+			$layout->setVariables(array(
+				'viewContents' => $this->render($view, $variables, true)
+			));
+			
+			return $layout->run($capture);
+		}
+		
+		throw new RuntimeException('Application layout is not defined.');
+	}
+	
+	/**
+	 * Renders a child view.
+	 *
+	 * @param string $view
+	 *	The name of the partial view to render.
+	 *
+	 * @param array $variables
+	 *	An associative array holding the variables to be extracted
+	 *	in the view context.
+	 *
+	 * @param bool $capture
+	 *	When set to TRUE the contents will be captured and returned
+	 *	instead of sent to the output buffer.
+	 *
+	 * @return string
+	 *	The captured contents, if applicable.
+	 */
+	public final function render($view, array $variables = null, $capture = false)
+	{
+		$view = Lumina::getAliasPath($view, 'view.php', $this->getViewsPath());
+		$view = new View($this, $view);
+		$this->onRender($view);
+		
+		if (isset($variables))
+		{
+			$view->setVariables($variables, false);
+		}
+		
+		return $view->run($capture);
 	}
 }
 

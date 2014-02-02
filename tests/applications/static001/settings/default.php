@@ -22,19 +22,19 @@
 //
 // =============================================================================
 
-/*
+return array(
+	'layout' => '~default',
+	'modules' => array(
+		'mod01' => array(
+			'modules' => array(
+				'mod02' => array(
+					'modules' => array(
+						'mod03' => array()
+					)
+				)
+			)
+		)
+	)
+);
 
-Should output:
-	Message is: success!
-
-*/
-
-define('L_APPLICATION_ROOT', dirname(__FILE__));
-define('L_APPLICATION', realpath('../../applications/static001'));
-require('../../../framework/bootstrap.php');
-
-$application = \system\core\Lumina::load('~settings.default');
-
-$application->dispatch('mod01/mod02/mod03/message/display', array('message' => 'success!'));
-echo '<br />', microtime(true) - L_START;
 

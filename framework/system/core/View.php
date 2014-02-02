@@ -52,13 +52,6 @@ class View extends Extension
 	private $base;
 	
 	/**
-	 * The parent controller instance.
-	 *
-	 * @type Controller
-	 */
-	private $controller;
-	
-	/**
 	 * The variables to be extracted in the script context.
 	 *
 	 * @type array
@@ -103,10 +96,32 @@ class View extends Extension
 	}
 	
 	/**
+	 * Returns a context view.
+	 *
+	 * @param Context $context
+	 *	The context to get the view for.
+	 *
+	 * @param string $view
+	 *	An alias resolving to the intended view, relative to the
+	 *	context views path.
+	 *
+	 * @return View
+	 *	Returns the view instance.
+	 */
+	public static function getContextView(Context $context, $view, $type = 'view')
+	{
+		$file = Lumina::getAliasPath($view, $type . '.php', $context->getViewsPath());
+		return new View($context, $file);
+	}
+	
+	/**
 	 * Constructor.
 	 *
-	 * @param Controller $controller
-	 *	The controller this view belongs to.
+	 * For security reasons you should NEVER use this constructor directly and
+	 * instead use the static "getContextView" function.
+	 *
+	 * @param Context $parent
+	 *	The extension this view belongs to.
 	 *
 	 * @param string $view
 	 *	The view to be rendered.
@@ -117,12 +132,11 @@ class View extends Extension
 	 * @param string $type
 	 *	The type of view to be rendered.
 	 */
-	public function __construct(Controller $controller, $view, $base, $type = 'view')
+	public function __construct(Context $parent, $file)
 	{
-		parent::__construct($controller);
-		$this->filePath = Lumina::getAliasPath($view, $type . '.php', $base);
-		$this->basePath = dirname($this->filePath);
-		$this->controller = $controller;
+		parent::__construct($parent);
+		$this->filePath = $file;
+		$this->basePath = dirname($file);
 	}
 	
 	/**

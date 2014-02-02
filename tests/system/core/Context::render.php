@@ -30,11 +30,10 @@ Should output:
 */
 
 define('L_APPLICATION_ROOT', dirname(__FILE__));
-define('L_APPLICATION', realpath('../../applications/static001'));
+define('L_APPLICATION', realpath('../../applications/static002'));
 require('../../../framework/bootstrap.php');
 
-$application = \system\core\Lumina::load('~settings.default');
+$application = \system\core\Lumina::load(null, 'application\\StaticApplication002');
 
 $application->dispatch('mod01/mod02/mod03/message/display', array('message' => 'success!'));
 echo '<br />', microtime(true) - L_START;
-

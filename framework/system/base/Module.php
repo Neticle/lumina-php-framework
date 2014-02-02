@@ -26,6 +26,7 @@ namespace system\base;
 
 use \system\core\Context;
 use \system\core\Lumina;
+use \system\core\exception\RuntimeException;
 
 /**
  * Defines the base behaviour and events for all Lumina modules.
@@ -75,6 +76,13 @@ class Module extends Context
 	 * @type string
 	 */
 	private $layoutsPath;
+	
+	/**
+	 * The absolute path to the module layout.
+	 *
+	 * @type string
+	 */
+	private $layoutPath;
 	
 	/**
 	 * The absolute path to the module views folder.
@@ -176,6 +184,44 @@ class Module extends Context
 		}
 		
 		return $this->viewsPath;
+	}
+	
+	/**
+	 * Defines the layout to be used by this module.
+	 *
+	 * @param string $layout
+	 *	An alias resolving to the layout script, relative to the module
+	 *	layouts path.
+	 */
+	public final function setLayout($layout)
+	{
+		$this->layoutPath = Lumina::getAliasPath($layout, 'layout.php', $this->getLayoutsPath());
+	}
+	
+	/**
+	 * Returns the absolute path to the layout script.
+	 *
+	 * @return string
+	 *	The absolute path to the layout script.
+	 */
+	public final function getLayoutPath()
+	{
+		if (!isset($this->layoutPath))
+		{
+			$module = $this;
+			
+			while (!$module->isBaseExtension())
+			{
+				$module = $module->getParent();
+				
+				if (isset($module->layoutPath))
+				{
+					return $module->layoutPath;
+				}
+			}
+		}
+		
+		return $this->layoutPath;
 	}
 	
 	/**
@@ -447,8 +493,16 @@ class Module extends Context
 				$action = $length > 0 ? 
 					$tokens[0] : null;
 				
-				return $module->getController($token, true)
-					->dispatch($action, $parameters);
+				$controller = $module->getController($token, true);
+				
+				if ($this->onDispatch($controller, $action, $parameters))
+				{
+					if ($controller->dispatch($action, $parameters))
+					{
+						$this->onAfterDispatch($controller, $action, $parameters);
+						return true;
+					}
+				}
 			}
 			
 			else if ($module->hasModule($token))
@@ -460,7 +514,8 @@ class Module extends Context
 			break;
 			
 		} while (true);
-			
+		
+		$this->onDispatchFailure($route, $parameters);
 		return false;		
 	}
 	
@@ -505,6 +560,95 @@ class Module extends Context
 	protected function getDefaultModuleNamespace($name)
 	{
 		return $this->namespace . '\\modules\\' . $name;
+	}
+	
+	/**
+	 * This method is invoked right before the module dispatch procedure
+	 * takes place.
+	 *
+	 * This method encapsulates the "beforeDispatch" event.
+	 *
+	 * @param string $route
+	 *	The route to dispatch to.
+	 *
+	 * @param array $parameters
+	 *	An associative array defining the values to be bound to the action
+	 *	parameters, indexed by name.
+	 *
+	 * @return bool
+	 *	Returns TRUE to continue with the event, FALSE to cancel it.
+	 */
+	protected function onBeforeDispatch($route, array $parameters = null)
+	{
+		return $this->raiseArray('beforeDispatch', array($route, $parameters));
+	}
+	
+	/**
+	 * This method is invoked right after the module dispatch procedure
+	 * fails, for whatever reason.
+	 *
+	 * This method encapsulates the "dispatchFailure" event.
+	 *
+	 * @param string $route
+	 *	The route to dispatch to.
+	 *
+	 * @param array $parameters
+	 *	An associative array defining the values to be bound to the action
+	 *	parameters, indexed by name.
+	 *
+	 * @return bool
+	 *	Returns TRUE.
+	 */
+	protected function onDispatchFailure($route, array $parameters = null)
+	{
+		$this->raiseArray('dispatchFailure', array($route, $parameters));
+		return true;
+	}
+	
+	/**
+	 * This method is invoked right before the request is dispatched to
+	 * a child controller instance, which may or may not belong to this
+	 * module.
+	 *
+	 * @param Controller $controller
+	 *	The instance of the controller to dispatch to.
+	 *
+	 * @param string $action
+	 *	The name of the action to dispatch to.
+	 *
+	 * @param array $parameters
+	 *	An associative array defining the values to be bound to the action
+	 *	parameters, indexed by name.
+	 *
+	 * @return bool
+	 *	Returns TRUE to continue with the event, FALSE to cancel it.
+	 */
+	protected function onDispatch(Controller $controller, $action, array $parameters = null)
+	{
+		return $this->raiseArray('dispatch', array($controller, $action, $parameters));
+	}
+	
+	/**
+	 * This method is invoked right after the request is dispatched to
+	 * a child controller instance, which may or may not belong to this
+	 * module.
+	 *
+	 * @param Controller $controller
+	 *	The instance of the controller to dispatch to.
+	 *
+	 * @param string $action
+	 *	The name of the action to dispatch to.
+	 *
+	 * @param array $parameters
+	 *	An associative array defining the values to be bound to the action
+	 *	parameters, indexed by name.
+	 *
+	 * @return bool
+	 *	Returns TRUE.
+	 */
+	protected function onAfterDispatch(Controller $controller, $action, array $parameters = null)
+	{
+		return $this->raiseArray('afterDispatch', array($controller, $action, $parameters));
 	}
 }
 

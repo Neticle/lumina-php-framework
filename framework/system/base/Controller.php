@@ -207,23 +207,6 @@ abstract class Controller extends Context
 		$this->raiseArray('afterDispatch', array($action, $parameters, $arguments));
 		return true;
 	}
-	
-	/**
-	 * This method is invoked right before a view is rendered by the controller.
-	 *
-	 * This method encapsulates the "render" event, which can not be canceled.
-	 *
-	 * @param View $view
-	 *	The View instance.
-	 *
-	 * @return bool
-	 *	Returns TRUE.
-	 */
-	protected function onRender($view)
-	{
-		$this->raiseArray('render', array($view));
-		return true;
-	}
 
 	/**
 	 * Returns the name of the default method for an action.
@@ -240,46 +223,26 @@ abstract class Controller extends Context
 	}
 	
 	/**
-	 * Defines the controller views path.
-	 *
-	 * @param string $viewsPath
-	 *	An alias resolving to the intended views path, relative to the
-	 *	parent module instance.
-	 */
-	protected final function setViewsPath($viewsPath)
-	{
-		$base = $this->getParent()->getPath();
-		$this->viewsPath = Lumina::getAliasPath($viewsPath, null, $base);
-	}
-	
-	/**
-	 * Returns the controller views path.
+	 * Returns the parent module path.
 	 *
 	 * @return string
-	 *	The controller views path.
+	 *	The parent module path.
 	 */
-	public final function getViewsPath()
+	public function getModulePath()
 	{
-		if (!isset($this->viewsPath))
-		{
-			$this->viewsPath = $this->getParent()->getViewsPath() .
-				DIRECTORY_SEPARATOR . $this->getName();
-		}
-		
-		return $this->viewsPath;
+		return $this->getParent()->getPath();
 	}
 	
 	/**
-	 * Defines the controller layouts path.
+	 * Defines the path to the controller layouts folder.
 	 *
 	 * @param string $layoutsPath
-	 *	An alias resolving to the intended layouts path, relative to the
-	 *	parent module instance.
+	 *	An alias resolving to the controller folder, relative
+	 *	to the module path.
 	 */
 	protected final function setLayoutsPath($layoutsPath)
 	{
-		$base = $this->getParent()->getPath();
-		$this->layoutsPath = Lumina::getAliasPath($layoutsPath, null, $base);
+		$this->layoutsPath = Lumina::getAliasPath($layoutsPath, null, $this->getModulePath());
 	}
 	
 	/**
@@ -292,10 +255,70 @@ abstract class Controller extends Context
 	{
 		if (!isset($this->layoutsPath))
 		{
-			$this->layoutsPath = $this->getParent()->getLayoutsPath();
+			return $this->getParent()->getLayoutsPath();
 		}
 		
 		return $this->layoutsPath;
+	}
+	
+	/**
+	 * Defines the path to the module views folder.
+	 *
+	 * @param string $viewsPath
+	 *	An alias resolving to the views folder, relative to the module path.
+	 */
+	protected final function setViewsPath($viewsPath)
+	{
+		$this->viewsPath = Lumina::getAliasPath($viewsPath, null, $this->getModulePath());
+	}
+	
+	/**
+	 * Returns the module views path.
+	 *
+	 * If the path was not previously defined it will be set with the
+	 * result of concatenating the module views path with the name of
+	 * this controller.
+	 *
+	 * @return string
+	 *	The module views path.
+	 */
+	public final function getViewsPath()
+	{
+		if (!isset($this->viewsPath))
+		{
+			$this->viewsPath = $this->getParent()->getViewsPath()
+				. DIRECTORY_SEPARATOR . $this->getName();
+		}
+		
+		return $this->viewsPath;
+	}
+	
+	/**
+	 * Defines the layout to be used by this module.
+	 *
+	 * @param string $layout
+	 *	An alias resolving to the layout script, relative to the module
+	 *	layouts path.
+	 */
+	public final function setLayout($layout)
+	{
+		$this->layout = Lumina::getAliasPath($layout, 'layout.php', $this->getLayoutsPath());
+	}
+	
+	/**
+	 * Returns the absolute path to the layout script.
+	 *
+	 * @return string
+	 *	The absolute path to the layout script.
+	 */
+	public final function getLayoutPath()
+	{
+		if (!isset($this->layoutPath))
+		{
+			return $this->getParent()->getLayoutPath(true);
+		}
+		
+		return $this->layoutPath;
 	}
 	
 	/**
@@ -388,36 +411,6 @@ abstract class Controller extends Context
 		
 		$this->onDispatchFailure($action, $parameters);
 		return false;
-	}
-	
-	/**
-	 * Renders a child view.
-	 *
-	 * @param string $view
-	 *	The name of the partial view to render.
-	 *
-	 * @param array $variables
-	 *	An associative array holding the variables to be extracted
-	 *	in the view context.
-	 *
-	 * @param bool $capture
-	 *	When set to TRUE the contents will be captured and returned
-	 *	instead of sent to the output buffer.
-	 *
-	 * @return string
-	 *	The captured contents, if applicable.
-	 */
-	public final function render($view, array $variables = null, $capture = false)
-	{
-		$view = new View($this, $view, $this->getViewsPath(), 'view');
-		$this->onRender($view);
-		
-		if (isset($variables))
-		{
-			$view->setVariables($variables, false);
-		}
-		
-		return $view->run($capture);
 	}
 }
 

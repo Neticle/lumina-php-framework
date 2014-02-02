@@ -22,19 +22,28 @@
 //
 // =============================================================================
 
-/*
-
-Should output:
-	Message is: success!
-
-*/
+use \system\core\Lumina;
 
 define('L_APPLICATION_ROOT', dirname(__FILE__));
 define('L_APPLICATION', realpath('../../applications/static001'));
 require('../../../framework/bootstrap.php');
+require('../../functions.php');
 
-$application = \system\core\Lumina::load('~settings.default');
+$app = Lumina::load('~settings.default');
+$controller = $app->getModule('mod01')
+	->getModule('mod02')
+		->getModule('mod03')
+			->getController('message');
 
-$application->dispatch('mod01/mod02/mod03/message/display', array('message' => 'success!'));
-echo '<br />', microtime(true) - L_START;
+echo $controller->getLayoutsPath(), '<br />';
+echo $controller->getParent()->getParent()->getLayoutsPath(), '<br />';
+echo $app->getLayoutsPath(), '<br />';
+
+echo $controller->getViewsPath(), '<br />';
+echo $controller->getParent()->getParent()->getViewsPath(), '<br />';
+echo $app->getViewsPath(), '<br />';
+
+echo $controller->getLayoutPath(), '<br />';
+$app->getModule('mod01')->getModule('mod02')->setLayout('~mod02layout');
+echo $controller->getLayoutPath();
 

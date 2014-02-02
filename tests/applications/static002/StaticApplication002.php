@@ -22,19 +22,36 @@
 //
 // =============================================================================
 
-/*
+namespace application;
 
-Should output:
-	Message is: success!
+use \system\base\Application;
 
-*/
+class StaticApplication002 extends Application
+{
 
-define('L_APPLICATION_ROOT', dirname(__FILE__));
-define('L_APPLICATION', realpath('../../applications/static001'));
-require('../../../framework/bootstrap.php');
+	protected function onConstruction()
+	{
+		if (parent::onConstruction())
+		{
+			$this->setLayout('~default');
+			return true;
+		}
+	}
 
-$application = \system\core\Lumina::load('~settings.default');
+	protected function onDispatchFailure($route, array $parameters = null)
+	{
+		if (parent::onDispatchFailure($route, $parameters))
+		{
+			$this->display('~errors.dispatchFailure', array(
+				'route' => $route,
+				'parameters' => $parameters
+			));
+			
+			return true;
+		}
+		
+		return false;
+	}
 
-$application->dispatch('mod01/mod02/mod03/message/display', array('message' => 'success!'));
-echo '<br />', microtime(true) - L_START;
+}
 
