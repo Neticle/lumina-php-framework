@@ -24,7 +24,9 @@
 
 namespace system\base;
 
+use \system\base\Module;
 use \system\core\Context;
+use \system\core\View;
 
 use \ReflectionClass as PHPReflectionClass;
 
@@ -43,6 +45,13 @@ use \ReflectionClass as PHPReflectionClass;
 abstract class Controller extends Context
 {
 	/**
+	 * The controller views path.
+	 *
+	 * @type string
+	 */
+	private $viewsPath;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string $name
@@ -51,7 +60,7 @@ abstract class Controller extends Context
 	 * @param Extension $parent
 	 *	The parent extension instance, if any.
 	 */
-	public final function __construct($name, Context $parent = null, array $configuration = null)
+	public final function __construct($name, Module $parent = null, array $configuration = null)
 	{
 		parent::__construct($name, $parent);
 		$this->construct($configuration);
@@ -92,12 +101,12 @@ abstract class Controller extends Context
 	 *	parameters, indexed by name.
 	 *
 	 * @return bool
-	 *	This event is not cancelable and the value returned by this function
-	 *	will not take any effect.
+	 *	Returns TRUE.
 	 */
 	protected function onDispatchFailure($action, array $parameters = null)
 	{
-		return $this->raiseArray('dispatchFailure', array($action, $parameters));
+		$this->raiseArray('dispatchFailure', array($action, $parameters));
+		return true;
 	}
 	
 	/**
@@ -115,12 +124,12 @@ abstract class Controller extends Context
 	 *	parameters, indexed by name.
 	 *
 	 * @return bool
-	 *	This event is not cancelable and the value returned by this function
-	 *	will not take any effect.
+	 *	Returns TRUE.
 	 */
 	protected function onDispatchActionNotFound($action, array $parameters = null)
 	{
-		return $this->raiseArray('dispatchActionNotFound', array($action, $parameters));
+		$this->raiseArray('dispatchActionNotFound', array($action, $parameters));
+		return true;
 	}
 	
 	/**
@@ -138,12 +147,12 @@ abstract class Controller extends Context
 	 *	parameters, indexed by name.
 	 *
 	 * @return bool
-	 *	This event is not cancelable and the value returned by this function
-	 *	will not take any effect.
+	 *	Returns TRUE.
 	 */
 	protected function onDispatchActionNotVisible($action, array $parameters = null)
 	{
-		return $this->raiseArray('dispatchActionNotVisible', array($action, $parameters));
+		$this->raiseArray('dispatchActionNotVisible', array($action, $parameters));
+		return true;
 	}
 	
 	/**
@@ -191,12 +200,29 @@ abstract class Controller extends Context
 	 *	A numeric array of arguments to use when invoking the action method.
 	 *
 	 * @return bool
-	 *	This event is not cancelable and the value returned by this function
-	 *	will not take any effect.
+	 *	Returns TRUE.
 	 */
 	protected function onAfterDispatch($action, array $parameters = null, array $arguments = null)
 	{
-		return $this->raiseArray('afterDispatch', array($action, $parameters, $arguments));
+		$this->raiseArray('afterDispatch', array($action, $parameters, $arguments));
+		return true;
+	}
+	
+	/**
+	 * This method is invoked right before a view is rendered by the controller.
+	 *
+	 * This method encapsulates the "render" event, which can not be canceled.
+	 *
+	 * @param View $view
+	 *	The View instance.
+	 *
+	 * @return bool
+	 *	Returns TRUE.
+	 */
+	protected function onRender($view)
+	{
+		$this->raiseArray('render', array($view));
+		return true;
 	}
 
 	/**
@@ -211,6 +237,36 @@ abstract class Controller extends Context
 	protected function getDefaultActionMethod($action)
 	{		
 		return 'action' . ucfirst($action);
+	}
+	
+	/**
+	 * Defines the controller views path.
+	 *
+	 * @param string $viewsPath
+	 *	An alias resolving to the intended views path, relative to the
+	 *	parent module instance.
+	 */
+	public final function setViewsPath($viewsPath)
+	{
+		$base = $this->getParent()->getPath();
+		$this->viewsPath = Lumina::getAliasPath($viewsPath, null, $base);
+	}
+	
+	/**
+	 * Returns the controller views path.
+	 *
+	 * @return string
+	 *	The controller views path.
+	 */
+	public final function getViewsPath()
+	{
+		if (!isset($this->viewsPath))
+		{
+			$this->viewsPath = $this->getParent()->getPath() 
+				. '/views/' . $this->getName();
+		}
+		
+		return $this->viewsPath;
 	}
 	
 	/**
@@ -303,6 +359,36 @@ abstract class Controller extends Context
 		
 		$this->onDispatchFailure($action, $parameters);
 		return false;
+	}
+	
+	/**
+	 * Renders a child view.
+	 *
+	 * @param string $view
+	 *	The name of the partial view to render.
+	 *
+	 * @param array $variables
+	 *	An associative array holding the variables to be extracted
+	 *	in the view context.
+	 *
+	 * @param bool $capture
+	 *	When set to TRUE the contents will be captured and returned
+	 *	instead of sent to the output buffer.
+	 *
+	 * @return string
+	 *	The captured contents, if applicable.
+	 */
+	public final function render($view, array $variables = null, $capture = false)
+	{
+		$view = new View($this, $view, $this->getViewsPath(), 'view');
+		$this->onRender($view);
+		
+		if (isset($variables))
+		{
+			$view->setVariables($variables, false);
+		}
+		
+		return $view->run($capture);
 	}
 }
 

@@ -30,7 +30,9 @@ class MessageController extends Controller
 {
 	public function actionDisplay($message = 'default message')
 	{
-		echo 'Message is: ', $message;
+		$this->render('~display', array(
+			'message' => $message
+		));
 	}
 }
 

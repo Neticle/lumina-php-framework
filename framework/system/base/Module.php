@@ -37,6 +37,11 @@ use \system\core\Lumina;
 class Module extends Context
 {
 	/**
+	 * The module path.
+	 */
+	private $path;
+	
+	/**
 	 * The module namespace.
 	 *
 	 * @type array
@@ -84,7 +89,19 @@ class Module extends Context
 		parent::__construct($name, $parent);
 		
 		$this->namespace = $namespace;
+		$this->path = Lumina::getNamespacePath($namespace);
 		$this->construct($configuration);
+	}
+	
+	/**
+	 * Returns the module path.
+	 *
+	 * @return string
+	 *	The module path.
+	 */
+	public final function getPath()
+	{
+		return $this->path;
 	}
 	
 	/**
