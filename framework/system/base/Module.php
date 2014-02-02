@@ -68,6 +68,20 @@ class Module extends Context
 	 * @type array
 	 */
 	private $moduleInstances = array();
+	
+	/**
+	 * The absolute path to the module layouts folder.
+	 *
+	 * @type string
+	 */
+	private $layoutsPath;
+	
+	/**
+	 * The absolute path to the module views folder.
+	 *
+	 * @type string
+	 */
+	private $viewsPath;
 
 	/**
 	 * Constructor.
@@ -102,6 +116,66 @@ class Module extends Context
 	public final function getPath()
 	{
 		return $this->path;
+	}
+	
+	/**
+	 * Defines the path to the module layouts folder.
+	 *
+	 * @param string $layoutsPath
+	 *	An alias resolving to the layouts folder, relative to the module path.
+	 */
+	protected final function setLayoutsPath($layoutsPath)
+	{
+		$this->layoutsPath = Lumina::getAliasPath($layoutsPath, null, $this->path);
+	}
+	
+	/**
+	 * Returns the module layouts path.
+	 *
+	 * If the path was not previously defined it will be set with the
+	 * result of concatenating the module path with '/layouts'.
+	 *
+	 * @return string
+	 *	The module layouts path.
+	 */
+	public final function getLayoutsPath()
+	{
+		if (!isset($this->layoutsPath))
+		{
+			$this->layoutsPath = $this->path . '/layouts';
+		}
+		
+		return $this->layoutsPath;
+	}
+	
+	/**
+	 * Defines the path to the module views folder.
+	 *
+	 * @param string $viewsPath
+	 *	An alias resolving to the views folder, relative to the module path.
+	 */
+	protected final function setViewsPath($viewsPath)
+	{
+		$this->viewsPath = Lumina::getAliasPath($viewsPath, null, $this->path);
+	}
+	
+	/**
+	 * Returns the module views path.
+	 *
+	 * If the path was not previously defined it will be set with the
+	 * result of concatenating the module path with '/views'.
+	 *
+	 * @return string
+	 *	The module views path.
+	 */
+	public final function getViewsPath()
+	{
+		if (!isset($this->viewsPath))
+		{
+			$this->viewsPath = $this->path . '/views';
+		}
+		
+		return $this->viewsPath;
 	}
 	
 	/**

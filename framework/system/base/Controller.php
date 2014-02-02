@@ -246,7 +246,7 @@ abstract class Controller extends Context
 	 *	An alias resolving to the intended views path, relative to the
 	 *	parent module instance.
 	 */
-	public final function setViewsPath($viewsPath)
+	protected final function setViewsPath($viewsPath)
 	{
 		$base = $this->getParent()->getPath();
 		$this->viewsPath = Lumina::getAliasPath($viewsPath, null, $base);
@@ -262,11 +262,40 @@ abstract class Controller extends Context
 	{
 		if (!isset($this->viewsPath))
 		{
-			$this->viewsPath = $this->getParent()->getPath() 
-				. '/views/' . $this->getName();
+			$this->viewsPath = $this->getParent()->getViewsPath() .
+				DIRECTORY_SEPARATOR . $this->getName();
 		}
 		
 		return $this->viewsPath;
+	}
+	
+	/**
+	 * Defines the controller layouts path.
+	 *
+	 * @param string $layoutsPath
+	 *	An alias resolving to the intended layouts path, relative to the
+	 *	parent module instance.
+	 */
+	protected final function setLayoutsPath($layoutsPath)
+	{
+		$base = $this->getParent()->getPath();
+		$this->layoutsPath = Lumina::getAliasPath($layoutsPath, null, $base);
+	}
+	
+	/**
+	 * Returns the controller layouts path.
+	 *
+	 * @return string
+	 *	The controller layouts path.
+	 */
+	public final function getLayoutsPath()
+	{
+		if (!isset($this->layoutsPath))
+		{
+			$this->layoutsPath = $this->getParent()->getLayoutsPath();
+		}
+		
+		return $this->layoutsPath;
 	}
 	
 	/**
