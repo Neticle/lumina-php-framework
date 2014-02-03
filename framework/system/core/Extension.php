@@ -52,13 +52,6 @@ abstract class Extension extends Element
 	 * @type array
 	 */
 	private $components = array();
-	
-	/**
-	 * The extension initialization state.
-	 *
-	 * @type bool
-	 */
-	private $isInitialized = false;
 
 	/**
 	 * Constructor.
@@ -66,9 +59,9 @@ abstract class Extension extends Element
 	 * @param Extension $parent
 	 *	The parent extension instance, if any.
 	 */
-	protected function __construct(Extension $parent = null)
+	protected function __construct(Extension $parent = null, array $configuration = null)
 	{
-		parent::__construct(null);
+		parent::__construct($configuration);
 		$this->parent = $parent;
 	}
 	
@@ -113,133 +106,6 @@ abstract class Extension extends Element
 	public final function isBaseExtension()
 	{
 		return !$this->parent;
-	}
-	
-	/**
-	 * Starts the extension construction procedure.
-	 *
-	 * This method should be called from the actual class constructor and
-	 * must only be called twice. Failing to do this will result in
-	 * undefined behaviour.
-	 *
-	 * You should never have to call this method unless you are extending
-	 * the Extension class directly.
-	 *
-	 * @throws RuntimeException
-	 *	Thrown if one of the construction events is canceled.
-	 */
-	protected final function construct(array $configuration = null)
-	{
-		if ($this->onConstruction())
-		{
-			if (isset($configuration))
-			{
-				$this->configure($configuration);
-			}
-		
-			if ($this->onAfterConstruction())
-			{
-				return;
-			}
-		}
-		
-		throw new RuntimeException('Extension construction was interrupted.');
-	}
-	
-	/**
-	 * Starts the extension initialization procedure.
-	 *
-	 * @throws RuntimeException
-	 *	Thrown if one of the construction events is canceled.
-	 */
-	public final function initialize()
-	{		
-		if ($this->onInitialize())
-		{
-			foreach ($this->components as $name => $component)
-			{
-				if (isset($component['preload']))
-				{
-					unset($component['preload']);
-					$this->loadComponentFromArray($name, $component);
-				}
-			}
-		
-			if ($this->onAfterInitialize())
-			{
-				$this->isInitialized = true;
-				return;
-			}
-		}
-		
-		throw new RuntimeException('Extension initialization was interrupted.');
-	}
-	
-	/**
-	 * Checks the extension initialization state.
-	 *
-	 * @return bool
-	 *	Returns TRUE if the extension is initialized, FALSE otherwise.
-	 */
-	public final function isInitialized()
-	{
-		return $this->isInitialized;
-	}
-	
-	/**
-	 * This method is invoked during the extension construction procedure,
-	 * before the configuration takes place.
-	 *
-	 * This method encapsulates the "construction" event.
-	 *
-	 * @return bool
-	 *	Returns TRUE to continue with the event, FALSE to cancel it.
-	 */
-	protected function onConstruction()
-	{
-		return $this->raiseArray('construction');
-	}
-	
-	/**
-	 * This method is invoked during the extension construction procedure,
-	 * after the configuration takes place.
-	 *
-	 * This method encapsulates the "afterConstruction" event.
-	 *
-	 * @return bool
-	 *	Returns TRUE to continue with the event, FALSE to cancel it.
-	 */
-	protected function onAfterConstruction()
-	{
-		return $this->raiseArray('afterConstruction');
-	}
-	
-	/**
-	 * This method is invoked during the extension initialization procedure,
-	 * before the child extensions get loaded -- when applicable.
-	 *
-	 * This method encapsulates the "initialize" event.
-	 *
-	 * @return bool
-	 *	Returns TRUE to continue with the event, FALSE to cancel it.
-	 */
-	protected function onInitialize()
-	{
-		return $this->raiseArray('initialize');
-	}
-	
-	/**
-	 * This method is invoked after the extension initialization procedure and
-	 * by the time that happens this instance should be ready to use.
-	 *
-	 * This method encapsulates the "initialize" event.
-	 *
-	 * @return bool
-	 *	Returns TRUE to continue with the event, FALSE to cancel it.
-	 */
-	protected function onAfterInitialize()
-	{
-		return $this->raiseArray('afterInitialize');
 	}
 	
 	/**

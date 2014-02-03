@@ -24,7 +24,7 @@
 
 namespace system\core;
 
-use \system\core\Extension;
+use \system\core\LazyExtension;
 use \system\core\exception\RuntimeException;
 
 /**
@@ -42,7 +42,7 @@ use \system\core\exception\RuntimeException;
  * @package system.core
  * @since 0.2.0
  */
-abstract class Context extends Extension
+abstract class Context extends LazyExtension
 {
 	/**
 	 * Constructor.

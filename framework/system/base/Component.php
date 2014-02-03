@@ -24,7 +24,7 @@
 
 namespace system\base;
 
-use \system\core\Extension;
+use \system\core\LazyExtension;
 
 /**
  * Defines the base behaviour and events for all Lumina components.
@@ -33,7 +33,7 @@ use \system\core\Extension;
  * @package system.core
  * @since 0.2.0
  */
-abstract class Component extends Extension
+abstract class Component extends LazyExtension
 {
 	/**
 	 * Constructor.
