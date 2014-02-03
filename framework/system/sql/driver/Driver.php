@@ -46,7 +46,6 @@ abstract class Driver extends Extension
 	public final function __construct(Connection $connection, array $configuration = null)
 	{
 		parent::__construct($connection);
-		$this->construct($configuration);
 	}
 
 	/**
