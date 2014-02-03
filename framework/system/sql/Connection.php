@@ -36,6 +36,16 @@ use \system\base\Component;
 class Connection extends Component
 {
 	/**
+	 * An associative array defining the classes of all core connection
+	 * drivers, indexed by name.
+	 *
+	 * @type array
+	 */
+	private static $coreDrivers = array(
+		'mysql' => 'system\\sql\\driver\\mysql\\MysqlDriver'
+	);
+	
+	/**
 	 * The username to use for authentication.
 	 *
 	 * @type string
@@ -55,6 +65,13 @@ class Connection extends Component
 	 * @type string
 	 */
 	private $dsn;
+	
+	/**
+	 * The connection driver instance.
+	 *
+	 * @type Driver
+	 */
+	private $driver;
 	
 	/**
 	 * This method is invoked during the extension initialization procedure,
@@ -148,10 +165,20 @@ class Connection extends Component
 	 *
 	 * @throws \PDOException
 	 *	Thrown when the connection fails to stablish.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when a driver is not defined.
 	 */
 	public function open()
 	{
-		$this->pdo = new \PDO($this->dsn, $this->user, $this->password);
+		if (!isset($this->driver))
+		{
+			throw new RuntimeException('A connection driver is not defined.');
+		}
+	
+		$dsn = $this->driver->getName() . ':' . $this->dsn;
+		
+		$this->pdo = new \PDO($dsn, $this->user, $this->password);
 		$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		$this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 		$this->pdo->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, false);
@@ -185,6 +212,41 @@ class Connection extends Component
 	public function getPDO()
 	{
 		return $this->pdo;
+	}
+	
+	/**
+	 * Defines the driver to use for this connection.
+	 *
+	 * @param Driver|string $driver
+	 *	The instance, name or class of the driver to use.
+	 */
+	public function setDriver($driver)
+	{
+		if (isset($this->pdo))
+		{
+			throw new RuntimeException('The driver must not change during an active connection.');
+		}
+		
+		if (is_string($driver))
+		{
+			$class = isset(self::$coreDrivers[$driver]) ? 
+				self::$coreDrivers[$driver] : $driver;
+		
+			$driver = new $class($this);
+		}
+		
+		$this->driver = $driver;
+	}
+	
+	/**
+	 * Returns the currently active driver instance.
+	 *
+	 * @return Driver
+	 *	The active driver instance.
+	 */
+	public function getDriver()
+	{
+		return $this->driver;
 	}
 	
 	/**
@@ -294,6 +356,21 @@ class Connection extends Component
 	public function run($command)
 	{
 		return $this->exec($command);
+	}
+	
+	/**
+	 * Quotes the given field or table name.
+	 *
+	 * @param string $name
+	 *	The name to quote, which may be prefixed with a table and/or
+	 *	database name.
+	 *
+	 * @return string
+	 *	The quoted name.
+	 */
+	public function quote($name)
+	{
+		return $this->driver->quote($name);
 	}
 }
 
