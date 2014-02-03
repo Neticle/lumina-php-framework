@@ -99,6 +99,13 @@ class Criteria extends Express
 	private $limit;
 	
 	/**
+	 * The parameters to be bound to the statement.
+	 *
+	 * @type array
+	 */
+	private $parameters;
+	
+	/**
 	 * Constructor.
 	 *
 	 * @param array $configuration
@@ -392,6 +399,48 @@ class Criteria extends Express
 	}
 	
 	/**
+	 * Defines the parameters to be bound.
+	 *
+	 * @param array $parameters
+	 *	An associative array holding the values for the input parameters,
+	 *	indexed by name.
+	 *
+	 * @param bool $merge
+	 *	When set to TRUE the given parameters will be merged with previously
+	 *	defined ones.
+	 */
+	public function setParameters(array $paramaters, $merge = true)
+	{
+		$this->parameters = $merge ?
+			array_replace((array) $this->parameters, $parameters) : $parameters;
+	}
+	
+	/**
+	 * Defines the value of a parameter to be bound.
+	 *
+	 * @param string $name
+	 *	The name of the parameter to define the value for.
+	 *
+	 * @param mixed $value
+	 *	The value to bind to the parameter.
+	 */
+	public function setParameter($name, $value)
+	{
+		$this->paramaters[$name] = $value;
+	}
+	
+	/**
+	 * Returns the parameters to be bound indexed by name.
+	 *
+	 * @return array
+	 *	The criteria parameters, or NULL.
+	 */
+	public function getParameters()
+	{
+		return $this->parameters;
+	}
+	
+	/**
 	 * Returns a representation of this instance as an associative array.
 	 *
 	 * This method is intended to be used mainly by the statement factory
@@ -412,7 +461,8 @@ class Criteria extends Express
 			'group' => $this->group,
 			'sort' => $this->sort,
 			'offset' => $this->offset,
-			'limit' => $this->limit
+			'limit' => $this->limit,
+			'parameters' => $this->parameters
 		);
 	}	
 }

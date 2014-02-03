@@ -94,6 +94,17 @@ class Statement extends Element
 	}
 	
 	/**
+	 * Returns the underlying SQL statement.
+	 *
+	 * @return string
+	 *	The underlying SQL statement.
+	 */
+	public function getSQLStatement()
+	{
+		return $this->sqlStatement;
+	}
+	
+	/**
 	 * Binds a value to a parameter.
 	 *
 	 * @throws \PDOException

@@ -24,6 +24,7 @@
 
 namespace system\sql\driver;
 
+use \system\sql\Statement;
 use \system\sql\driver\Driver;
 
 /**
@@ -98,6 +99,21 @@ abstract class StatementFactory
 		}
 		
 		return $statement;
+	}
+	
+	/**
+	 * Quotes the given field or table name.
+	 *
+	 * @param string $name
+	 *	The name to quote, which may be prefixed with a table and/or
+	 *	database name.
+	 *
+	 * @return string
+	 *	The quoted name.
+	 */
+	protected function quote($name)
+	{
+		return $this->driver->quote($name);
 	}
 	
 	/**

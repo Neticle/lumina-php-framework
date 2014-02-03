@@ -62,7 +62,7 @@ class MysqlDriver extends Driver
 	{
 		if (!isset($this->statementFactory))
 		{
-			$this->statementFactory = new StatementFactory($this);
+			$this->statementFactory = new MysqlStatementFactory($this);
 		}
 		
 		return $this->statementFactory;
@@ -78,7 +78,7 @@ class MysqlDriver extends Driver
 	{
 		if (!isset($this->schema))
 		{
-			$this->schema = new Schema($this);
+			$this->schema = new MysqlSchema($this);
 		}
 		
 		return $this->schema;
