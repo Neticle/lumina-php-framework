@@ -22,49 +22,22 @@
 //
 // =============================================================================
 
-namespace system\base;
+use \system\core\Lumina;
 
-use \system\base\Module;
+require('../../functions.php');
+lumina_test_start();
 
-/**
- * Application.
- *
- * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
- * @since 0.2.0
- */
-class Application extends Module
-{
-	/**
-	 * This method is invoked during the application construction procedure,
-	 * before the configuration takes place.
-	 *
-	 * This method encapsulates the "construction" event.
-	 *
-	 * @return bool
-	 *	Returns TRUE to continue with the event, FALSE to cancel it.
-	 */
-	protected function onConstruction()
-	{
-		if (parent::onConstruction())
-		{
-			// Register the core components
-			$this->setComponents(array(
-				
-				'database' => array(
-					'class' => 'system\\sql\\Connection'
-				),
-				
-				'cache' => array(
-					'class' => 'system\\cache\\DefaultCache'
-				)
-				
-			));
-			
-			return true;
-		}
-		
-		return false;
-	}
-}
+define('L_APPLICATION_ROOT', dirname(__FILE__));
+define('L_APPLICATION', realpath('../../applications/static001'));
+require('../../../framework/bootstrap.php');
+
+$app = Lumina::load('~settings.default');
+$context = $app->getModule('mod01')->getModule('mod02')->getModule('mod03')->getController('message');
+$cache = $context->getComponent('cache');
+
+lumina_test_identical('has', $context->hasComponent('cache') ? 'true':'false', 'true');
+lumina_test_identical('class', 'system\\cache\\DefaultCache', $cache->getClass());
+lumina_test_end();
+
+
 
