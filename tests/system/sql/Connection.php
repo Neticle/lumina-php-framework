@@ -42,7 +42,7 @@ require '../../functions.php';
 $app = Lumina::load(array(
 	'components' => array(
 		'database' => array(
-			'dsn' => 'mysql:host=127.0.0.1;dbname=sakila',
+			'dsn' => 'host=127.0.0.1;dbname=sakila',
 			'user' => 'root',
 			'password' => 'password'
 		)
@@ -54,4 +54,10 @@ var_dump($db->scalar('SELECT COUNT(id) FROM test_table'));
 var_dump($db->query('SELECT * FROM test_table WHERE id < :max_id', array(':max_id' => 5))->fetchAll(Reader::FETCH_ASSOC));
 var_dump($db->query('SELECT * FROM test_table WHERE id < :max_id', array(':max_id' => 5))->fetchColumn());
 var_dump($db->query('SELECT * FROM test_table WHERE id < :max_id', array(':max_id' => 5))->fetchColumn(1));
+
+var_dump($db->quote('test_table'));
+var_dump($db->quote('test_table.id'));
+var_dump($db->quote('sakila.test_table.id'));
+
+
 

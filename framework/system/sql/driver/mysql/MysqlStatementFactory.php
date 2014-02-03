@@ -22,50 +22,20 @@
 //
 // =============================================================================
 
-namespace system\base;
+namespace system\sql\driver\mysql;
 
-use \system\base\Module;
+use \system\sql\driver\StatementFactory;
 
 /**
- * Application.
+ * An abstract database driver to provide access to the driver-specific
+ * database schema and statement factory instances.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
+ * @package system.sql.driver
  * @since 0.2.0
  */
-class Application extends Module
+class MysqlStatementFactory extends StatementFactory
 {
-	/**
-	 * This method is invoked during the application construction procedure,
-	 * before the configuration takes place.
-	 *
-	 * This method encapsulates the "construction" event.
-	 *
-	 * @return bool
-	 *	Returns TRUE to continue with the event, FALSE to cancel it.
-	 */
-	protected function onConstruction()
-	{
-		if (parent::onConstruction())
-		{
-			// Register the core components
-			$this->setComponents(array(
-				
-				'database' => array(
-					'class' => 'system\\sql\\Connection',
-					'driver' => 'mysql'
-				),
-				
-				'cache' => array(
-					'class' => 'system\\cache\\DefaultCache'
-				)
-				
-			));
-			
-			return true;
-		}
-		
-		return false;
-	}
+	
 }
 
