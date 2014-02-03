@@ -44,6 +44,7 @@ lumina_test_start();
 $app = Lumina::load(array(
 	'components' => array(
 		'database' => array(
+			'driver' => 'pgsql',
 			'dsn' => 'host=127.0.0.1;dbname=sakila',
 			'user' => 'root',
 			'password' => 'password'
