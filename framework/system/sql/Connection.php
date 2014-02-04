@@ -41,7 +41,7 @@ class Connection extends Component
 	 *
 	 * @type array
 	 */
-	private static $coreDrivers = array(
+	private static $driverClasses = array(
 		'mysql' => 'system\\sql\\driver\\mysql\\MysqlDriver',
 		'pgsql' => 'system\\sql\\driver\\pgsql\\PgsqlDriver'
 	);
@@ -230,8 +230,8 @@ class Connection extends Component
 		
 		if (is_string($driver))
 		{
-			$class = isset(self::$coreDrivers[$driver]) ? 
-				self::$coreDrivers[$driver] : $driver;
+			$class = isset(self::$driverClasses[$driver]) ? 
+				self::$driverClasses[$driver] : $driver;
 		
 			$driver = new $class($this);
 		}
