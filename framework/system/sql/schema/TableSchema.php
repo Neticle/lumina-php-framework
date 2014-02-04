@@ -25,6 +25,7 @@
 namespace system\sql\schema;
 
 use \system\sql\schema\Schema;
+use \system\core\exception\RuntimeException;
 
 /**
  * The table schema object.
@@ -80,6 +81,28 @@ class TableSchema extends Schema
 		
 		$this->columns = $merge ?
 			array_replace($this->columns, $collection) : $collection;
+	}
+	
+	/**
+	 * Returns a table schema.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown if the table schema is not defined.
+	 *
+	 * @param string $table
+	 *	The name of the table to get the schema for.
+	 *
+	 * @return TableSchema
+	 *	The table schema.
+	 */
+	public function getColumn($column)
+	{
+		if (isset($this->columns[$column]))
+		{
+			return $this->columns[$column];
+		}
+		
+		throw new RuntimeException('Column "' . $column . '" is not defined.');
 	}
 	
 	/**

@@ -25,6 +25,7 @@
 namespace system\sql\driver;
 
 use \system\core\Extension;
+use \system\sql\Connection;
 
 /**
  * Provides access to the database schema.
@@ -36,25 +37,33 @@ use \system\core\Extension;
 abstract class Schema extends Extension
 {
 	/**
+	 * The connection instance to use.
+	 *
+	 * @type Connection
+	 */
+	private $connection;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param Connection $connection
-	 *	The parent connection instance.
+	 * @param Driver $driver
+	 *	The parent driver instance.
 	 */
-	public function __construct(Connection $connection)
+	public function __construct(Driver $driver)
 	{
-		parent::__construct($connection);
+		parent::__construct($driver);
+		$this->connection = $driver->getConnection();
 	}
 	
 	/**
-	 * Returns the parent connection instance.
+	 * Returns the connection instance to use.
 	 *
 	 * @return Connection
-	 *	The parent connection instance.
+	 *	The connection instance to use.
 	 */
 	public function getConnection()
 	{
-		return $this->getParent();
+		return $this->connection;
 	}
 	
 	/**
@@ -70,7 +79,7 @@ abstract class Schema extends Extension
 	public function getDatabaseSchema($refresh = false)
 	{
 		$cache = $this->getComponent('cache');
-		$connection = $this->getParent();
+		$connection = $this->getConnection();
 		$dsn = $connection->getDsn();
 		$key = 'sql.schema:' . $dsn;
 		
@@ -99,7 +108,7 @@ abstract class Schema extends Extension
 	public function getTableSchema($table, $refresh = false)
 	{
 		$cache = $this->getComponent('cache');
-		$connection = $this->getParent();
+		$connection = $this->getConnection();
 		$dsn = $connection->getDsn();
 		$key = 'sql.schema.table:' . $table . ';' . $dsn;
 		
@@ -131,7 +140,7 @@ abstract class Schema extends Extension
 	public function getColumnSchema($table, $column, $refresh = false)
 	{
 		$cache = $this->getComponent('cache');
-		$connection = $this->getParent();
+		$connection = $this->getConnection();
 		$dsn = $connection->getDsn();
 		$key = 'sql.schema.table:' . $table . ';' . $column . ';' . $dsn;
 		

@@ -25,6 +25,7 @@
 namespace system\sql\schema;
 
 use \system\sql\schema\Schema;
+use \system\core\exception\RuntimeException;
 
 /**
  * The database schema object.
@@ -97,6 +98,28 @@ class DatabaseSchema extends Schema
 		}
 		
 		$this->tables[$table->getName()] = $table;
+	}
+	
+	/**
+	 * Returns a table schema.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown if the table schema is not defined.
+	 *
+	 * @param string $table
+	 *	The name of the table to get the schema for.
+	 *
+	 * @return TableSchema
+	 *	The table schema.
+	 */
+	public function getTable($table)
+	{
+		if (isset($this->tables[$table]))
+		{
+			return $this->tables[$table];
+		}
+		
+		throw new RuntimeException('Table "' . $table . '" is not defined.');
 	}
 	
 	/**
