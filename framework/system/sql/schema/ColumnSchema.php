@@ -183,7 +183,7 @@ class ColumnSchema extends Schema
 	 */
 	public function getOptions()
 	{
-	
+		return $this->options;
 	}
 }
 
