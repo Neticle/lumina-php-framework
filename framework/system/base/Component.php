@@ -24,6 +24,7 @@
 
 namespace system\base;
 
+use \system\core\Extension;
 use \system\core\LazyExtension;
 
 /**
