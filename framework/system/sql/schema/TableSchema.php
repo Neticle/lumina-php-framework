@@ -42,6 +42,13 @@ class TableSchema extends Schema
 	 * @type array
 	 */
 	private $columns = array();
+	
+	/**
+	 * The names of the columns composing the table primary key.
+	 *
+	 * @type string[]
+	 */
+	private $primaryKey;
 
 	/**
 	 * Constructor.
@@ -145,6 +152,28 @@ class TableSchema extends Schema
 	public function getColumns()
 	{
 		return $this->columns;
+	}
+	
+	/**
+	 * Defines the table primary key.
+	 *
+	 * @param string[] $primaryKey
+	 *	The names of the columns composing the table primary key.
+	 */
+	public function setPrimaryKey(array $primaryKey)
+	{
+		$this->primaryKey = $primaryKey;
+	}
+	
+	/**
+	 * Returns the table primary key.
+	 *
+	 * @return string[]
+	 *	The names of the columns composing the table primary key.
+	 */
+	public function getPrimaryKey()
+	{
+		return $this->primaryKey;
 	}
 }
 

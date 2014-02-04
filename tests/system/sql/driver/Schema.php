@@ -60,6 +60,13 @@ CREATE TABLE test_table_2 (
 | column6 | varchar(255) | YES  |     | NULL              |                             |
 +---------+--------------+------+-----+-------------------+-----------------------------+
 
+CREATE TABLE test_table_3 (
+	id1 INT NOT NULL,
+	id2 INT NOT NULL,
+	id3 INT NOT NULL,
+	PRIMARY KEY(id1, id2, id3)
+);
+
 */
 
 use \system\core\Lumina;
@@ -91,5 +98,6 @@ lumina_test_identical('db.test_table_2.has', 'true', $schema->hasTable('test_tab
 lumina_test_identical('db.test_table_2.id.type', 'int', $schema->getTable('test_table_2')->getColumn('id')->getType());
 lumina_test_identical('db.test_table_2.id.required', 'true', $schema->getTable('test_table_2')->getColumn('id')->isRequired() ? 'true' : 'false');
 lumina_test_identical('db.test_table_2.column1.required', 'false', $schema->getTable('test_table_2')->getColumn('column1')->isRequired() ? 'true' : 'false');
-
+lumina_test_identical('db.test_table_2.pk', 'id', implode(', ', $schema->getTable('test_table_2')->getPrimaryKey()));
+lumina_test_identical('db.test_table_3.pk', 'id1, id2, id3', implode(', ', $schema->getTable('test_table_3')->getPrimaryKey()));
 lumina_test_end();

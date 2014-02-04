@@ -108,6 +108,7 @@ class MysqlSchema extends Schema
 			->fetch(Reader::FETCH_ASSOC, true);
 		
 		$table = $this->createTableSchema($schema);
+		$primaryKey = array();
 		
 		// Fetch the columns schema
 		$statement = 'SELECT * FROM information_schema.COLUMNS ' .
@@ -118,6 +119,17 @@ class MysqlSchema extends Schema
 		while ($schema = $reader->fetch(Reader::FETCH_ASSOC))
 		{
 			$table->addColumn($this->createColumnSchema($schema));
+			
+			if ($schema['COLUMN_KEY'] === 'PRI')
+			{
+				$primaryKey[] = $schema['COLUMN_NAME'];
+			}
+			
+		}
+		
+		if (isset($primaryKey[0]))
+		{
+			$table->setPrimaryKey($primaryKey);
 		}
 		
 		return $table;			
