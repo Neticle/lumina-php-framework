@@ -204,7 +204,7 @@ abstract class Extension extends Element
 		}
 		
 		// Initialize it
-		if ($initialize && !$instance->isInitialized)
+		if ($initialize && !$instance->isInitialized())
 		{
 			$instance->initialize();
 		}
