@@ -2,7 +2,7 @@
 
 // =============================================================================
 //
-// Copyright 2013 Neticle, Igor Azevedo
+// Copyright 2013 Neticle
 // http://lumina.neticle.com
 //
 // This file is part of "Lumina/PHP Framework", hereafter referred to as 
