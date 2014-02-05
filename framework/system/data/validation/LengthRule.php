@@ -28,62 +28,79 @@ use \system\data\Model;
 use \system\data\validation\Rule;
 
 /**
- * Validates a string by making sure it has an expected email format. Multiple
- * pre-defined formats are available, starting with the most basic one.
+ * Validates a string by making sure it matches a required minimum and/or
+ * maximum length.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
  * @package system.data.validation
  * @since 0.2.0
  */
-class EmailRule extends Rule {
-
-	/**
-	 * Regular expressions describing email patterns, indexed by name.
-	 *
-	 * @type array
-	 */
-	private static $patterns = array(
-		'basic' => '/^[a-z](\\.|\\-|\\w+)*[a-z0-9]\\@[a-z0-9]*((\\.|\\-|\\_)[a-z0-9]{3,})*\\.[a-z]{2,6}$/i'
-	);
-	
+class LengthRule extends Rule 
+{	
 	/**
 	 * The error message to be reported to the model when the attribute fails
 	 * validation.
 	 *
 	 * @type int
 	 */
-	protected $message = 'The value of "{attribute}" is not an acceptable email address.';
+	protected $message = 'The value of "{attribute}" does not meet the required ([{minimum}..{maximum}]) length.';
 
 	/**
-	 * The name of the pre-defined pattern to match the email against, or a 
-	 * regex to be used during validation.
+	 * The minimum length for a value to be considered valid.
 	 *
-	 * @type string
+	 * @type int
 	 */
-	private $pattern = 'basic';
+	private $minimum = 0;
 	
 	/**
-	 * Defines the name of the pre-defined pattern to match the email against,
-	 * or a regex to be used during validation.
+	 * The maximum length for a value to be considered valid.
 	 *
-	 * @param string $pattern
-	 *	The pattern to be used for email validation.
+	 * @type int
 	 */
-	public function setPattern($pattern) 
+	private $maximum = 255;
+	
+	/**
+	 * Defines the minimum length for a value to be considered valid.
+	 *
+	 * @param int $minimum
+	 *	The minimum length requirement.
+	 */
+	public function setMinimum($minimum) 
 	{
-		$this->pattern = $pattern;
+		$this->minimum = $minimum;
 	}
 	
 	/**
-	 * Returns the pattern name or regular expression to be used when validating
-	 * email addresses.
+	 * Returns the minimum length for a value to be considered valid.
 	 *
-	 * @return string
-	 *	The email address validation pattern.
+	 * @return int
+	 *	The minimum length requirement.
 	 */
-	public function getPattern() 
+	public function getMinimum() 
 	{
-		return $this->pattern;
+		return $this->minimum;
+	}
+	
+	/**
+	 * Defines the maximum length for a value to be considered valid.
+	 *
+	 * @param int $maximum
+	 *	The maximum length requirement.
+	 */
+	public function setMaximum($maximum)
+	{
+		$this->maximum = $maximum;
+	}
+	
+	/**
+	 * Returns the maximum length for a value to be considered valid.
+	 *
+	 * @return int
+	 *	The maximum length requirement.
+	 */
+	public function getMaximum() 
+	{
+		return $this->maximum;
 	}
 
 	/**
@@ -99,22 +116,20 @@ class EmailRule extends Rule {
 	 *	Returns TRUE on success, FALSE otherwise.
 	 */
 	public function validateAttributeValue(Model $model, $attribute, $value) 
-	{	
-		// Get the email pattern alias or regex to be used
-		$pattern = $this->pattern;
-	
-		if(isset(self::$patterns[$pattern]))
+	{		
+		$length = strlen($value);
+		
+		if($length < $this->minimum || $length > $this->maximum) 
 		{
-			$pattern = self::$patterns[$pattern];
-		}
-				
-		if(preg_match($pattern, $value)) 
-		{
-			return true;
+			$this->report($model, $attribute, array(
+				'minimum' => $this->minimum,
+				'maximum' => $this->maximum
+			));
+			
+			return false;
 		}
 		
-		$this->report($model, $attribute);
-		return false;
+		return true;
 	}
 
 }

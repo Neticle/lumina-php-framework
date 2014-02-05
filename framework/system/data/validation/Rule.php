@@ -25,6 +25,7 @@
 namespace system\data\validation;
 
 use \system\core\Express;
+use \system\data\Model;
 
 /**
  * A Rule is used to validate values previously bound to a model instance in
@@ -95,7 +96,7 @@ abstract class Rule extends Express
 	 *
 	 * @type bool
 	 */
-	protected $safe = false;
+	protected $safe = true;
 	
 	/**
 	 * Returns a rule instance based on a rule construction array.
@@ -123,7 +124,7 @@ abstract class Rule extends Express
 			$class = self::$ruleClasses[$class];
 		}
 		
-		return new $class($class, $attributes, $rule);
+		return new $class($attributes, array_slice($rule, 2));
 	}
 	
 	/**
@@ -171,6 +172,17 @@ abstract class Rule extends Express
 	}
 	
 	/**
+	 * Returns the names of the attributes the rules applies to.
+	 *
+	 * @return string[]
+	 *	The attribute names.
+	 */
+	public final function getAttributes()
+	{
+		return $this->attributes;
+	}
+	
+	/**
 	 * Defines the message to be reported back to the model when one of the 
 	 * attributes fails validation due to it being empty when a value 
 	 * is required.
@@ -179,7 +191,7 @@ abstract class Rule extends Express
 	 *	The message to be reported back to the model if a validation
 	 *	error is encountered.
 	 */
-	public function setMessage($message)
+	public final function setMessage($message)
 	{
 		$this->message = $message;
 	}
@@ -193,9 +205,22 @@ abstract class Rule extends Express
 	 *	The message to be reported back to the model if a validation
 	 *	error is encountered.
 	 */
-	public function getMessage()
+	public final function getMessage()
 	{
 		return $this->message;
+	}
+	
+	/**
+	 * Defines wether or not the attributes affected by this rule are safe
+	 * for massive assignment.
+	 *
+	 * @param bool $safe
+	 *	When set to TRUE the attributes will be considered safe for
+	 *	massive assignment.
+	 */
+	public final function setSafe($safe)
+	{
+		$this->safe = $safe;
 	}
 	
 	/**
@@ -205,9 +230,21 @@ abstract class Rule extends Express
 	 * @return bool
 	 *	Returns TRUE if the attributes are safe, FALSE otherwise.
 	 */
-	public function isSafe()
+	public final function isSafe()
 	{
 		return $this->safe;
+	}
+	
+	/**
+	 * Defines wether or not attributes affected by this rule are required
+	 * in order to successfully validate.
+	 *
+	 * @param bool $required
+	 *	When set to TRUE the attribute will be required.
+	 */
+	public final function setRequired($required)
+	{
+		$this->required = $required;
 	}
 	
 	/**
@@ -215,9 +252,9 @@ abstract class Rule extends Express
 	 * in order to successfully validate.
 	 *
 	 * @return bool
-	 *	Returns TRUE if the attributes are safe, FALSE otherwise.
+	 *	Returns TRUE when the attributes are required, FALSE otherwise.
 	 */
-	public function isRequired()
+	public final function isRequired()
 	{
 		return $this->required;
 	}
@@ -237,15 +274,8 @@ abstract class Rule extends Express
 	 * @return bool
 	 *	Returns TRUE if the attribute value is valid, FALSE otherwise.
 	 */
-	protected function validateAttributeValue(Model $model, $attribute, $value)
+	public function validateAttributeValue(Model $model, $attribute, $value)
 	{
-		if (empty($value) && $this->required)
-		{
-			$success = false;
-			$this->report($model, $attribute);
-			return false;
-		}
-		
 		return true;
 	}
 	
@@ -264,7 +294,7 @@ abstract class Rule extends Express
 	 * @return bool
 	 *	Returns TRUE on success, FALSE on failure.
 	 */
-	public final function validate(Model $model, array $attributes = null)
+	public function validate(Model $model, array $attributes = null)
 	{
 		$context = $model->getContext();
 		
@@ -282,9 +312,20 @@ abstract class Rule extends Express
 				// The attribute value
 				$value = isset($values[$attribute]) ?
 					$values[$attribute] : null;
+				
+				// Make sure the attribute
+				if (empty($value))
+				{
+					if ($this->required)
+					{
+						$success = false;
+						$this->report($model, $attribute);
+						return false;
+					}
+				}
 			
 				// Validate the attribute individually
-				if (!$this->validateAttributeValue($model, $attribute, $value))
+				else if (!$this->validateAttributeValue($model, $attribute, $value))
 				{
 					$success = false;
 				}
@@ -324,8 +365,8 @@ abstract class Rule extends Express
 			}
 		}
 		
-		$message = str_replace($search, $replace, $message);	
-		$model->addError($attribute, $message);
+		$message = str_replace($search, $replace, $this->message);	
+		$model->addAttributeError($attribute, $message);
 	}
 	
 }
