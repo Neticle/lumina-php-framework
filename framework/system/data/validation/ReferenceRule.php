@@ -115,7 +115,7 @@ class ReferenceRule extends Rule {
 	 * @return bool
 	 *	Returns TRUE on success, FALSE otherwise.
 	 */
-	protected function validateAttributeValue($model, $attribute, $value)
+	protected function validateAttributeValue(Model $model, $attribute, $value)
 	{
 		if (!$this->column || !$this->table)
 		{
