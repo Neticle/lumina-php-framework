@@ -343,6 +343,106 @@ class Connection extends Component
 	}
 	
 	/**
+	 * Builds and executes a query statement against the specified table.
+	 *
+	 * @param string $table
+	 *	The name of the table (unquoted) to select the data from.
+	 *
+	 * @param array|Criteria $criteria
+	 *	An instance of a criteria object or an associative array defining its
+	 *	express configuration.
+	 *
+	 * @param bool $scalar
+	 *	When set to TRUE the scalar result will be returned instead of
+	 *	the result set reader handle.
+	 *
+	 * @return Reader|mixed
+	 *	The result set reader handle, or the scalar result.
+	 */
+	public function select($table, $criteria = null, $scalar = false) {
+	
+		$statement = $this->driver->getStatementFactory()
+			->createSelectStatement($table, $criteria);
+		
+		if ($scalar)
+		{
+			return $statement->scalar();
+		}
+		
+		return $statement->query();	
+	}
+	
+	/**
+	 * Builds and executes an UPDATE statement against the specified table.
+	 *
+	 * @param string $table
+	 *	The name of the table (unquoted) to update the data from.
+	 *
+	 * @param array $fields
+	 *	An associative array defining the value for each field, indexed by
+	 *	field name (unquoted).
+	 *
+	 * @param array|Criteria $criteria
+	 *	An instance of a criteria object or an associative array defining its
+	 *	express configuration.
+	 *
+	 * @return int
+	 *	Returns the number of rows affected.
+	 */
+	public function update($table, array $fields, $criteria = null) {
+	
+		$statement = $this->driver->getStatementFactory()
+			->createUpdateStatement($table, $fields, $criteria);
+			
+		return $statement->execute();
+	
+	}
+	
+	/**
+	 * Builds and executes an INSERT statement against the specified table.
+	 *
+	 * @param string $table
+	 *	The name of the table (unquoted) to insert the data into.
+	 *
+	 * @param array $fields
+	 *	An associative array defining the value for each field, indexed by
+	 *	field name (unquoted).
+	 *
+	 * @return int
+	 *	Returns the number of rows affected.
+	 */
+	public function insert($table, array $fields) {
+	
+		$statement = $this->driver->getStatementFactory()
+			->createInsertStatement($table, $fields);
+			
+		return $statement->execute();
+	
+	}
+	
+	/**
+	 * Builds and executes a DELETE statement against the specified table.
+	 *
+	 * @param string $table
+	 *	The name of the table (unquoted) to delete the data from.
+	 *
+	 * @param array|Criteria $criteria
+	 *	An instance of a criteria object or an associative array defining its
+	 *	express configuration.
+	 *
+	 * @return int
+	 *	Returns the number of rows affected.
+	 */
+	public function delete($table, $criteria = null) {
+	
+		$statement = $this->driver->getStatementFactory()
+			->createDeleteStatement($table, $criteria);
+			
+		return $statement->execute();
+		
+	}
+	
+	/**
 	 * Executes a command without any preparation.
 	 *
 	 * @throws \PDOException
