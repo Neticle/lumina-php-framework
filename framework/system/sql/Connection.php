@@ -359,8 +359,8 @@ class Connection extends Component
 	 * @return Reader|mixed
 	 *	The result set reader handle, or the scalar result.
 	 */
-	public function select($table, $criteria = null, $scalar = false) {
-	
+	public function select($table, $criteria = null, $scalar = false)
+	{
 		$statement = $this->driver->getStatementFactory()
 			->createSelectStatement($table, $criteria);
 		
@@ -389,13 +389,12 @@ class Connection extends Component
 	 * @return int
 	 *	Returns the number of rows affected.
 	 */
-	public function update($table, array $fields, $criteria = null) {
-	
+	public function update($table, array $fields, $criteria = null)
+	{
 		$statement = $this->driver->getStatementFactory()
 			->createUpdateStatement($table, $fields, $criteria);
 			
 		return $statement->execute();
-	
 	}
 	
 	/**
@@ -411,13 +410,12 @@ class Connection extends Component
 	 * @return int
 	 *	Returns the number of rows affected.
 	 */
-	public function insert($table, array $fields) {
-	
+	public function insert($table, array $fields)
+	{
 		$statement = $this->driver->getStatementFactory()
 			->createInsertStatement($table, $fields);
 			
 		return $statement->execute();
-	
 	}
 	
 	/**
@@ -433,13 +431,12 @@ class Connection extends Component
 	 * @return int
 	 *	Returns the number of rows affected.
 	 */
-	public function delete($table, $criteria = null) {
-	
+	public function delete($table, $criteria = null)
+	{
 		$statement = $this->driver->getStatementFactory()
 			->createDeleteStatement($table, $criteria);
 			
 		return $statement->execute();
-		
 	}
 	
 	/**
