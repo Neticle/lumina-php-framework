@@ -51,6 +51,12 @@ class RangeRule extends NumericRule {
 	 */
 	private $maximum = 0;
 	
+	/**
+	 * The message to be reported back to the model when one of the attributes
+	 * fails validation due to it being empty when a value is required.
+	 *
+	 * @type string
+	 */
 	protected $message = 'Value of "{attribute}" is not a valid number in the required range.';
 	
 	/**
