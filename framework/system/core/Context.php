@@ -24,6 +24,7 @@
 
 namespace system\core;
 
+use \system\core\ContextView;
 use \system\core\LazyExtension;
 use \system\core\exception\RuntimeException;
 
@@ -180,7 +181,7 @@ abstract class Context extends LazyExtension
 		
 		if (isset($layout))
 		{
-			$layout = new View($this, $layout);
+			$layout = ContextView::getContextFileView($this, $layout);
 			$this->onDisplay($layout);
 			
 			$layout->setVariables(array(
@@ -212,8 +213,8 @@ abstract class Context extends LazyExtension
 	 */
 	public final function render($view, array $variables = null, $capture = false)
 	{
-		$view = Lumina::getAliasPath($view, 'view.php', $this->getViewsPath());
-		$view = new View($this, $view);
+		$view = Lumina::getAliasPath($view, 'php', $this->getViewsPath());
+		$view = ContextView::getContextFileView($this, $view);
 		$this->onRender($view);
 		
 		if (isset($variables))

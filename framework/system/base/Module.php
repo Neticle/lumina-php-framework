@@ -195,7 +195,7 @@ class Module extends Context
 	 */
 	public final function setLayout($layout)
 	{
-		$this->layoutPath = Lumina::getAliasPath($layout, 'layout.php', $this->getLayoutsPath());
+		$this->layoutPath = Lumina::getAliasPath($layout, 'php', $this->getLayoutsPath());
 	}
 	
 	/**

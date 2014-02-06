@@ -24,12 +24,12 @@
 
 namespace system\core;
 
-use \system\base\Controller;
 use \system\core\Extension;
+use \system\core\Lumina;
 
 /**
- * Views are usually created by a controller in order to generate dynamic
- * output based on a set of data provided by it.
+ * A view can be used to dinamically generate content based on a set of
+ * variables that are made available to it.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
  * @package system.core
@@ -59,6 +59,39 @@ class View extends Extension
 	private $variables = array();
 	
 	/**
+	 * Returns the instance of a view linked with the given extension.
+	 *
+	 * @param Extension $extension
+	 *	The extension to link the view to.
+	 *
+	 * @param string $view
+	 *	An absolute alias resolving to the view script file.
+	 *
+	 * @return View
+	 *	Returns the view instance.
+	 */
+	public static function getExtensionView(Extension $extension, $view)
+	{
+		$file = Lumina::getAliasPath($view, 'php');
+		return new View($extension, $file);
+	}
+	
+	/**
+	 * Returns the instance of a view linked to the application.
+	 *
+	 * @param string $view
+	 *	An absolute alias resolving to the view script file.
+	 *
+	 * @return View
+	 *	Returns the view instance.
+	 */
+	public static function getApplicationView($alias)
+	{
+		$file = Lumina::getAliasPath($view, 'php');
+		return new View(Lumina::getApplication(), $file);
+	}
+	
+	/**
 	 * Renders a script file.
 	 *
 	 * Please note the 'self' variable is not defined by default, meaning that
@@ -78,7 +111,7 @@ class View extends Extension
 	 *	When set to TRUE the rendered contents will be captured instead
 	 *	of sent to the currently active output buffer.
 	 */
-	public static function renderFile($__FILE__, array $__VARIABLES__ = null, $__CAPTURE__ = true)
+	protected static function renderFile($__FILE__, array $__VARIABLES__ = null, $__CAPTURE__ = true)
 	{
 		if (isset($__VARIABLES__))
 		{
@@ -96,47 +129,19 @@ class View extends Extension
 	}
 	
 	/**
-	 * Returns a context view.
-	 *
-	 * @param Context $context
-	 *	The context to get the view for.
-	 *
-	 * @param string $view
-	 *	An alias resolving to the intended view, relative to the
-	 *	context views path.
-	 *
-	 * @return View
-	 *	Returns the view instance.
-	 */
-	public static function getContextView(Context $context, $view, $type = 'view')
-	{
-		$file = Lumina::getAliasPath($view, $type . '.php', $context->getViewsPath());
-		return new View($context, $file);
-	}
-	
-	/**
 	 * Constructor.
 	 *
-	 * For security reasons you should NEVER use this constructor directly and
-	 * instead use the static "getContextView" function.
-	 *
-	 * @param Context $parent
+	 * @param Extension $parent
 	 *	The extension this view belongs to.
 	 *
-	 * @param string $view
-	 *	The view to be rendered.
-	 *
-	 * @param string $base
-	 *	The base path to resolve the view from.
-	 *
-	 * @param string $type
-	 *	The type of view to be rendered.
+	 * @param string $filePath
+	 *	The absolute path to the file wrapped by this view.
 	 */
-	public function __construct(Context $parent, $file)
+	protected function __construct(Extension $parent, $filePath)
 	{
 		parent::__construct($parent);
-		$this->filePath = $file;
-		$this->basePath = dirname($file);
+		$this->filePath = $filePath;
+		$this->basePath = dirname($filePath);
 	}
 	
 	/**
@@ -148,6 +153,17 @@ class View extends Extension
 	public function getFilePath()
 	{
 		return $this->filePath;
+	}
+	
+	/**
+	 * Returns the view base path.
+	 *
+	 * @return string
+	 *	The view base path.
+	 */
+	public function getBasePath()
+	{
+		return $this->basePath;
 	}
 	
 	/**
@@ -167,10 +183,10 @@ class View extends Extension
 	}
 	
 	/**
-	 * Renders a child partial view.
+	 * Renders a child view.
 	 *
 	 * @param string $view
-	 *	The name of the partial view to render.
+	 *	The name of the view to render.
 	 *
 	 * @param array $variables
 	 *	An associative array holding the variables to be extracted
@@ -185,7 +201,7 @@ class View extends Extension
 	 */
 	public function render($view, array $variables = null, $capture = false)
 	{
-		$nested = new View($this->controller, $view, $this->basePath, 'partial');
+		$nested = new View(Lumina::getAliasPath($view, 'php', $this->basePath));
 		
 		if (isset($variables))
 		{
