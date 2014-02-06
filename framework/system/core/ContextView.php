@@ -48,13 +48,16 @@ class ContextView extends View
 	 *	An alias resolving to the view script file, relative to the
 	 *	context views path.
 	 *
+	 * @param array $variables
+	 *	The variables to be initially defined for this view.
+	 *
 	 * @return View
 	 *	Returns the view instance.
 	 */
-	public static function getContextView(Context $context, $view)
+	public static function getContextView(Context $context, $view, array $variables = null)
 	{
 		$file = Lumina::getAliasPath($view, 'php', $context->getViewsPath());
-		return new ContextView($context, $file);
+		return new ContextView($context, $file, $variables);
 	}
 	
 	/**
@@ -66,12 +69,15 @@ class ContextView extends View
 	 * @param string $filePath
 	 *	The absolute path to the file wrapped by the view.
 	 *
+	 * @param array $variables
+	 *	The variables to be initially defined for this view.
+	 *
 	 * @return View
 	 *	Returns the view instance.
 	 */
-	public static function getContextFileView(Context $context, $filePath)
+	public static function getContextFileView(Context $context, $filePath, array $variables = null)
 	{
-		return new ContextView($context, $filePath);
+		return new ContextView($context, $filePath, $variables);
 	}
 	
 	/**
@@ -82,10 +88,13 @@ class ContextView extends View
 	 *
 	 * @param string $filePath
 	 *	The absolute path to the file wrapped by this view.
+	 *
+	 * @param array $variables
+	 *	The variables to be initially defined for this view.
 	 */
-	protected function __construct(Context $parent, $filePath)
+	protected function __construct(Context $parent, $filePath, array $variables = null)
 	{
-		parent::__construct($parent, $filePath);
+		parent::__construct($parent, $filePath, $variables);
 	}
 	
 	/**
@@ -120,12 +129,11 @@ class ContextView extends View
 	 */
 	public function render($view, array $variables = null, $capture = false)
 	{
-		$nested = new ContextView($this->getParent(), Lumina::getAliasPath($view, 'php', $this->basePath));
-		
-		if (isset($variables))
-		{
-			$nested->setVariables($variables);
-		}
+		$nested = new ContextView(
+			$this->getParent(),
+			Lumina::getAliasPath($view, 'php', $this->basePath), 
+			$variables
+		);
 		
 		return $nested->run($capture);
 	}

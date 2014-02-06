@@ -56,7 +56,7 @@ class View extends Extension
 	 *
 	 * @type array
 	 */
-	private $variables = array();
+	private $variables;
 	
 	/**
 	 * Returns the instance of a view linked with the given extension.
@@ -67,28 +67,72 @@ class View extends Extension
 	 * @param string $view
 	 *	An absolute alias resolving to the view script file.
 	 *
+	 * @param array $variables
+	 *	The variables to be initially defined for this view.
+	 *
 	 * @return View
 	 *	Returns the view instance.
 	 */
-	public static function getExtensionView(Extension $extension, $view)
+	public static function getExtensionView(Extension $extension, $view, array $variables = null)
 	{
 		$file = Lumina::getAliasPath($view, 'php');
-		return new View($extension, $file);
+		return new View($extension, $file, $variables);
+	}
+	
+	/**
+	 * Returns the instance of a view linked with the given extension.
+	 *
+	 * @param Extension $extension
+	 *	The extension to link the view to.
+	 *
+	 * @param string $filePath
+	 *	The absolute path to the script wrapped by this view.
+	 *
+	 * @param array $variables
+	 *	The variables to be initially defined for this view.
+	 *
+	 * @return View
+	 *	Returns the view instance.
+	 */
+	public static function getExtensionFileView(Extension $extension, $filePath, array $variables = null)
+	{
+		return new View($extension, $filePath, $variables);
 	}
 	
 	/**
 	 * Returns the instance of a view linked to the application.
 	 *
 	 * @param string $view
-	 *	An absolute alias resolving to the view script file.
+	 *	An alias resolving to the view script file, relative to the
+	 *	application path.
+	 *
+	 * @param array $variables
+	 *	The variables to be initially defined for this view.
 	 *
 	 * @return View
 	 *	Returns the view instance.
 	 */
-	public static function getApplicationView($alias)
+	public static function getApplicationView($view, array $variables = null)
 	{
-		$file = Lumina::getAliasPath($view, 'php');
-		return new View(Lumina::getApplication(), $file);
+		$file = Lumina::getAliasPath($view, 'php', L_APPLICATION);
+		return new View(Lumina::getApplication(), $file, $variables);
+	}
+	
+	/**
+	 * Returns the instance of a view linked to the application.
+	 *
+	 * @param string $filePath
+	 *	The absolute path to the script wrapped by this view.
+	 *
+	 * @param array $variables
+	 *	The variables to be initially defined for this view.
+	 *
+	 * @return View
+	 *	Returns the view instance.
+	 */
+	public static function getApplicationFileView($filePath, array $variables = null)
+	{
+		return new View(Lumina::getApplication(), $filePath, $variables);
 	}
 	
 	/**
@@ -134,14 +178,18 @@ class View extends Extension
 	 * @param Extension $parent
 	 *	The extension this view belongs to.
 	 *
+	 * @param array $variables
+	 *	The variables to be extracted into the script context.
+	 *
 	 * @param string $filePath
 	 *	The absolute path to the file wrapped by this view.
 	 */
-	protected function __construct(Extension $parent, $filePath)
+	protected function __construct(Extension $parent, $filePath, array $variables = null)
 	{
 		parent::__construct($parent);
 		$this->filePath = $filePath;
 		$this->basePath = dirname($filePath);
+		$this->variables = (array) $variables;
 	}
 	
 	/**
