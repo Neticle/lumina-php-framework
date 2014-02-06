@@ -25,6 +25,7 @@
 namespace system\data;
 
 use \system\core\Element;
+use \system\core\exception\RuntimeException;
 use \system\data\validation\Rule;
 
 /**
@@ -38,6 +39,13 @@ use \system\data\validation\Rule;
 abstract class Model extends Element
 {
 	/**
+	 * Cached model instances, indexed by class name.
+	 *
+	 * @type array
+	 */
+	private static $modelInstances = array();
+	
+	/**
 	 * The model attribute values, indexed by name.
 	 *
 	 * @type array
@@ -50,6 +58,14 @@ abstract class Model extends Element
 	 * @type string[]
 	 */
 	private $attributeNames;
+	
+	/**
+	 * An associative array defining the attribute validation error
+	 * messages, indexed by name.
+	 *
+	 * @type array
+	 */
+	private $attributeErrors = array();
 	
 	/**
 	 * The model validation context.
@@ -66,12 +82,49 @@ abstract class Model extends Element
 	private $rules;
 	
 	/**
-	 * An associative array defining the attribute validation error
-	 * messages, indexed by name.
+	 * Returns base instance of a model of the specified class after
+	 * resetting it to the given context.
 	 *
-	 * @type array
+	 * This function will re-use a model instance that was previously
+	 * created for this purpose, which means you can not use a nested
+	 * instance of the same class.
+	 *
+	 * If nested instances of the same model are required you can simply
+	 * create them yourself (new MyModel($context, ...)).
+	 *
+	 * This is simply an utility method that needs to be reflected by each
+	 * model class, allowing you to use your models without having to
+	 * manually create a new instance each time.
+	 *
+	 * @param string $class
+	 *	The name of the class to get the model of.
+	 *
+	 * @param string $context
+	 *	The context to reset the model to.
+	 *
+	 * @return Model
+	 *	The created model instance.
 	 */
-	private $errors = array();
+	public static function getBaseModel($class = null, $context = 'default')
+	{
+		if (isset($class))
+		{
+			if (isset(self::$modelInstances[$class]))
+			{
+				$instance = self::$modelInstances[$class];
+				$instance->setContext($context);
+			}
+			else
+			{
+				$instance = new $class($context);
+				self::$modelInstances[$class] = $instance;
+			}
+			
+			return $instance;
+		}
+		
+		throw new RuntimeException('Undefined model class.');
+	}
 	
 	/**
 	 * Constructor.
@@ -94,7 +147,7 @@ abstract class Model extends Element
 	public function reset()
 	{
 		$this->attributes = array();
-		$this->errors = array();
+		$this->attributeErrors = array();
 	}
 	
 	/**
@@ -164,8 +217,10 @@ abstract class Model extends Element
 	 */
 	public final function getAttribute($attribute)
 	{
-		return isset($this->attributes[$attribute]) ?
-			$this->attributes[$attribute] : null;
+		if (isset($this->attributes[$attribute]))
+		{
+			return $this->attributes[$attribute];
+		}
 	}
 	
 	/**
@@ -397,8 +452,8 @@ abstract class Model extends Element
 			$result = false;
 		}
 		
-		$this->onAfterValidation($names, $result);
-		return $result;
+		return ($result & $this->onAfterValidation($names)) 
+			&& empty($this->attributeErrors);
 	}
 	
 	/**
@@ -412,7 +467,7 @@ abstract class Model extends Element
 	 */
 	public function addAttributeError($attribute, $message)
 	{
-		$this->errors[$attribute][] = $message;
+		$this->attributeErrors[$attribute][] = $message;
 	}
 	
 	/**
@@ -435,10 +490,10 @@ abstract class Model extends Element
 				$attributes = preg_split('(\s*\,\s*)', $attributes, -1, PREG_SPLIT_NO_EMPTY);
 			}
 			
-			return array_intersect_keys($this->attributeErrors, array_flip($attributes));
+			return array_intersect_key($this->attributeErrors, array_flip($attributes));
 		}
 		
-		return $this->errors;
+		return $this->attributeErrors;
 	}
 	
 	/**
@@ -463,11 +518,11 @@ abstract class Model extends Element
 				$attributes = preg_split('(\s*\,\s*)', $attributes, -1, PREG_SPLIT_NO_EMPTY);
 			}
 			
-			$errors = array_intersect_keys($this->attributeErrors, array_flip($attributes));
+			$errors = array_intersect_key($this->attributeErrors, array_flip($attributes));
 		}
 		else
 		{
-			$errors = $this->errors;
+			$errors = $this->attributeErrors;
 		}
 		
 		$messages = array();
@@ -481,6 +536,35 @@ abstract class Model extends Element
 	}
 	
 	/**
+	 * Checks if an attribute has validation errors reported for it.
+	 *
+	 * @param string $attributes
+	 *	The name(s) of the attribute(s) to  to verify.
+	 *
+	 * @return bool
+	 *	Returns TRUE if the attribute has reported validation errors,
+	 *	FALSE otherwise.
+	 */
+	public function hasAttributeErrors($attributes = null)
+	{
+		if (isset($attributes))
+		{
+			if (is_string($attributes))
+			{
+				$attributes = preg_split('(\s*\,\s*)', $attributes, -1, PREG_SPLIT_NO_EMPTY);
+			}
+			
+			$errors = array_intersect_key($this->attributeErrors, array_flip($attributes));
+		}
+		else
+		{
+			$errors = $this->attributeErrors;
+		}
+		
+		return !empty($errors);
+	}
+	
+	/**
 	 * This method encapsulates the 'validation' event.
 	 *
 	 * Canceling this event will cause the validation to fail, thus FALSE
@@ -491,7 +575,7 @@ abstract class Model extends Element
 	 *	The name of the attributes being validated.
 	 *
 	 * @return bool
-	 *	Returns FALSE to cancel the validation event, FALSE otherwise.
+	 *	Returns FALSE to cancel the validation event, TRUE otherwise.
 	 */
 	protected function onValidation(array $attributes)
 	{
@@ -509,7 +593,7 @@ abstract class Model extends Element
 	 *	The name of the attributes being validated.
 	 *
 	 * @return bool
-	 *	Returns FALSE to cancel the validation event, FALSE otherwise.
+	 *	Returns FALSE to cancel the validation event, TRUE otherwise.
 	 */
 	protected function onBeforeValidation(array $attributes)
 	{
@@ -523,11 +607,11 @@ abstract class Model extends Element
 	 *	The name of the attributes being validated.
 	 *
 	 * @return bool
-	 *	Returns FALSE to cancel the validation event, FALSE otherwise.
+	 *	Returns FALSE to cancel the validation event, TRUE otherwise.
 	 */
-	protected function onAfterValidation(array $attributes, $result)
+	protected function onAfterValidation(array $attributes)
 	{
-		return $this->raiseArray('afterValidation', array($attributes, $result));
+		return $this->raiseArray('afterValidation', array($attributes));
 	}
 }
 

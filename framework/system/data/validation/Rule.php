@@ -172,6 +172,45 @@ abstract class Rule extends Express
 	}
 	
 	/**
+	 * Defines the context(s) this rule applies to.
+	 *
+	 * @param string|string[] $contexts
+	 *	The context(s) the rule applies to either as a CSV string or
+	 *	an array of strings.
+	 */
+	public function setContext($contexts)
+	{
+		if (is_string($contexts))
+		{
+			$contexts = preg_split('/(\s*\,\s*)/', $contexts, -1, PREG_SPLIT_NO_EMPTY);
+		}
+		
+		$this->contexts = $contexts;
+	}
+	
+	/**
+	 * Defines the contexts this rule applies to.
+	 *
+	 * @param string[] $contexts
+	 *	The contexts the rule applies to.
+	 */
+	public function setContexts(array $contexts)
+	{
+		$this->contexts = $context;
+	}
+	
+	/**
+	 * Returns the contexts this rule applies to.
+	 *
+	 * @return string[]
+	 *	The contexts the rule applies to.
+	 */
+	public function getContexts()
+	{
+		return $this->contexts;
+	}
+	
+	/**
 	 * Returns the names of the attributes the rules applies to.
 	 *
 	 * @return string[]
@@ -320,7 +359,6 @@ abstract class Rule extends Express
 					{
 						$success = false;
 						$this->report($model, $attribute);
-						return false;
 					}
 				}
 			

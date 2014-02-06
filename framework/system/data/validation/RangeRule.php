@@ -51,6 +51,8 @@ class RangeRule extends NumericRule {
 	 */
 	private $maximum = 0;
 	
+	protected $message = 'Value of "{attribute}" is not a valid number in the required range.';
+	
 	/**
 	 * Defines the minimum required for a value to be considered valid.
 	 *
