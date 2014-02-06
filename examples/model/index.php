@@ -26,5 +26,5 @@ define('L_APPLICATION_ROOT', dirname(__FILE__));
 require '../../framework/bootstrap.php';
 
 $app = \system\core\Lumina::load();
-$app->dispatch('model/index');
+$app->dispatch('model');
 

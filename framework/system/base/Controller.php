@@ -50,6 +50,13 @@ abstract class Controller extends Context
 	 * @type string
 	 */
 	private $viewsPath;
+	
+	/**
+	 * The default action.
+	 *
+	 * @type string
+	 */
+	private $defaultAction = 'index';
 
 	/**
 	 * Constructor.
@@ -322,6 +329,28 @@ abstract class Controller extends Context
 	}
 	
 	/**
+	 * Defines the default action for this controller.
+	 *
+	 * @param string $action
+	 *	The default action for this controller.
+	 */
+	public final function setDefaultAction($action)
+	{
+		$this->defaultAction = $action;
+	}
+	
+	/**
+	 * Returns the default action for this controller.
+	 *
+	 * @return string
+	 *	The default action for this controller.
+	 */
+	public final function getDefaultAction()
+	{
+		return $this->defaultAction;
+	}
+	
+	/**
 	 * Dispatches the current request.
 	 *
 	 * @param string $action
@@ -342,6 +371,11 @@ abstract class Controller extends Context
 		if (!$this->isInitialized())
 		{
 			$this->initialize();
+		}
+		
+		if (!isset($action))
+		{
+			$action = $this->defaultAction;
 		}
 		
 		// Normalize the action name.
