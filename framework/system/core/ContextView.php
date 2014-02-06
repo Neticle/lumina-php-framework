@@ -45,14 +45,15 @@ class ContextView extends View
 	 *	The context to link the view to.
 	 *
 	 * @param string $view
-	 *	An absolute alias resolving to the view script file.
+	 *	An alias resolving to the view script file, relative to the
+	 *	context views path.
 	 *
 	 * @return View
 	 *	Returns the view instance.
 	 */
 	public static function getContextView(Context $context, $view)
 	{
-		$file = Lumina::getAliasPath($view, 'php');
+		$file = Lumina::getAliasPath($view, 'php', $context->getViewsPath());
 		return new ContextView($context, $file);
 	}
 	
