@@ -236,7 +236,7 @@ class HtmlElement
 	 * @param array $attributes
 	 *	An array of attribute values, indexed by name.
 	 */
-	public function setAttributes($attributes)
+	public function setAttributes(array $attributes)
 	{
 		$this->attributes = array_merge($this->attributes, $attributes);
 	}
