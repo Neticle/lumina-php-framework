@@ -164,7 +164,7 @@ abstract class Record extends Model
 			if (isset($primaryKey[0]))
 			{
 				$instance->primaryKey = array_intersect_key(
-					array_flip($primaryKey), $record
+					$record, array_flip($primaryKey)
 				);
 			}
 			
@@ -212,7 +212,7 @@ abstract class Record extends Model
 			// Define the current primary key values to enable 'update'
 			if (isset($primaryKey))
 			{
-				$instance->primaryKey = array_intersect_key($primaryKey, $record);
+				$instance->primaryKey = array_intersect_key($record, $primaryKey);
 			}
 			
 			$instances[] = $instance;

@@ -102,7 +102,7 @@ if ($record->save())
 	));
 	
 	lumina_test_set('Match ID', $record->id);
-	lumina_test_identical('Primary Key', $record->id, $record->getPrimaryKey()['id']);
+	lumina_test_identical('Primary Key', $record->id, $match->getPrimaryKey()['id']);
 	
 	if ($match)
 	{
