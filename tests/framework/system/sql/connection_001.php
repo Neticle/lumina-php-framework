@@ -90,3 +90,13 @@ $db->insert('lumina_test_table_001', array(
 	'column10' => new Expression('NOW()'),
 	'column11' => null
 ));
+
+
+$db->update('lumina_test_table_001', array(
+	'column2' => 'column2-value-updated'
+), array(
+	'condition' => 'column1=:column1',
+	'parameters' => array(
+		':column1' => 'column1-value'
+	)
+));
