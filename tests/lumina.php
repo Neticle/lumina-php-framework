@@ -167,6 +167,44 @@ function lumina_test_report($description, $success, array $entries)
 }
 
 /**
+ * Stringifies a value by adding it's type prefix and it's own string
+ * representation.
+ *
+ * @param string $value
+ *	The value to stringify.
+ *
+ * @return string
+ *	The value.
+ */
+function lumina_test_stringify($value)
+{
+	if ($value === null)
+	{
+		return 'null';
+	}
+	
+	else if (is_bool($value))
+	{
+		return 'bool: ' . ($value ? 'true' : 'false');
+	}
+	
+	else if (is_int($value))
+	{
+		return 'int: ' . $value;
+	}
+	
+	else if (is_float($value))
+	{
+		return 'float: ' . $value;
+	}
+	
+	else
+	{
+		return 'string: ' . $value;
+	}
+}
+
+/**
  * Compares the expected and the output values to make sure they are
  * identical and reports the result.
  *
@@ -182,8 +220,8 @@ function lumina_test_report($description, $success, array $entries)
 function lumina_test_identical($description, $expected, $output)
 {
 	lumina_test_report($description, $expected === $output, array(
-		'Expected' => (string) $expected,
-		'Output' => (string) $output
+		'Expected' => lumina_test_stringify($expected),
+		'Output' => lumina_test_stringify($output)
 	));
 }
 
