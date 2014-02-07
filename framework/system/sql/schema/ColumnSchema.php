@@ -42,6 +42,7 @@ class ColumnSchema extends Schema
 	const TYPE_BOOL = 'bool';
 	const TYPE_BINARY = 'binary';
 	const TYPE_ENUM = 'enum';
+	const TYPE_TIMESTAMP = 'timestamp';
 
 	/**
 	 * The column data type, as defined by the ColumnSchema::TYPE_* constants.

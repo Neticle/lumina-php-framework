@@ -199,9 +199,14 @@ class MysqlSchema extends Schema
 		// Determine the column data type and size
 		switch (strtolower($schema['DATA_TYPE']))
 		{
-			// strings
+			// char/strings
 			case 'char':
 			case 'varchar':
+				$size = (int) $schema['CHARACTER_MAXIMUM_LENGTH'];
+				$column->setType($size === 1 ? 'char' : 'string');
+				$column->setSize($size);
+				break;
+			
 			case 'tinytext':
 			case 'text':
 			case 'mediumtext':
@@ -246,6 +251,11 @@ class MysqlSchema extends Schema
 				$column->setType('enum');
 				$column->setSize($schema['CHARACTER_MAXIMUM_LENGTH']);
 				// TODO parse enum options
+				break;
+			
+			// timestamp
+			case 'timestamp':
+				$column->setType('timestamp');
 				break;
 		}
 		

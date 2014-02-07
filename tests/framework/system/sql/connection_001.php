@@ -43,7 +43,7 @@ column6 TINYINT NULL,
 column7 INT NOT NULL,
 column8 INT NULL,
 column9 INT,
-column10 DATETIME NOT NULL,
+column10 TIMESTAMP NOT NULL,
 column11 DATETIME NULL,
 
 CONSTRAINT lumina_test_table_001_pk_id
