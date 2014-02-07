@@ -247,27 +247,34 @@ class Module extends Context
 	 * @return Module
 	 *	The module instance.
 	 */
-	public final function loadModuleFromArray($name, array $configuration)
+	public final function loadModuleFromArray($name, array $configuration = null)
 	{
-		if (isset($configuration['class']))
+		if (isset($configuration))
 		{
-			$class = $configuration['class'];
-			$namespace = Lumina::getClassNamespace($class);
-			unset($configuration['class']);
+			if (isset($configuration['class']))
+			{
+				$class = $configuration['class'];
+				$namespace = Lumina::getClassNamespace($class);
+				unset($configuration['class']);
+			}
+			else
+			{
+				$class = $this->getDefaultModuleClass($name);
+			}
+		
+			if (isset($configuration['namespace']))
+			{
+				$namespace = $configuration['namespace'];
+				unset($configuration['namespace']);
+			}
+			else
+			{
+				$namespace = $this->getDefaultModuleNamespace($name);
+			}
 		}
 		else
 		{
 			$class = $this->getDefaultModuleClass($name);
-		}
-		
-		if (isset($configuration['namespace']))
-		{
-			$namespace = $configuration['namespace'];
-			unset($configuration['namespace']);
-		}
-		
-		else if (!isset($configuration['namespace']))
-		{
 			$namespace = $this->getDefaultModuleNamespace($name);
 		}
 		
@@ -345,9 +352,20 @@ class Module extends Context
 			new $class($name, $this, $configuration);
 	}
 	
+	/**
+	 * Checks wether or not a child module is defined.
+	 *
+	 * @param string $name
+	 *	The name of the module to verify.
+	 *
+	 * @return bool
+	 *	Returns TRUE if the module is defined, FALSE otherwise.
+	 */
 	public final function hasModule($name)
 	{
-		return isset($this->modules[$name]);
+		return isset($this->moduleInstances[$name]) ||
+			array_key_exists($name, $this->modules) ||
+			in_array($name, $this->modules);
 	}
 	
 	/**
@@ -370,13 +388,7 @@ class Module extends Context
 		if (isset($this->moduleInstances[$name]))
 		{
 			$instance = $this->moduleInstances[$name];
-		}
-		
-		else if (isset($this->modules[$name]))
-		{
-			$instance = $this->loadModuleFromArray($name, $this->modules[$name]);
-		}
-		
+		}		
 		else
 		{
 			throw new RuntimeException('Module "' . $name . '" is not defined.');
@@ -571,6 +583,34 @@ class Module extends Context
 	protected function getDefaultModuleNamespace($name)
 	{
 		return $this->namespace . '\\modules\\' . $name;
+	}
+	
+	/**
+	 * This method is invoked during the extension initialization procedure,
+	 * before the child extensions get loaded -- when applicable.
+	 *
+	 * This method encapsulates the "initialize" event.
+	 *
+	 * @return bool
+	 *	Returns TRUE to continue with the event, FALSE to cancel it.
+	 */
+	protected function onInitialize()
+	{
+		if (isset($this->modules))
+		{
+			foreach ($this->modules as $name => $configuration)
+			{
+				if (is_string($configuration))
+				{
+					$name = $configuration;
+					$configuration = null;
+				}
+			
+				$this->loadModuleFromArray($name, $configuration);
+			}
+		}
+		
+		return parent::onInitialize();
 	}
 	
 	/**

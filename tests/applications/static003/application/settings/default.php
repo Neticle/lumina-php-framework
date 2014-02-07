@@ -22,10 +22,18 @@
 //
 // =============================================================================
 
-use \system\core\Lumina;
+return array(
 
-define('L_APPLICATION_ROOT', dirname(__FILE__));
-require L_APPLICATION_ROOT . '/../../../framework/bootstrap.php';
+	'modules' => array(
+		'alpha' => array(
+			'modules' => array(
+				'beta', 
+				'charlie' => array(
+					'modules' => array('delta')
+				)
+			)
+		)
+	)
 
-Lumina::load('~settings.default');
+);
 
