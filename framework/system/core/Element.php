@@ -87,22 +87,26 @@ abstract class Element extends Express
 	 * Returns a component instance.
 	 *
 	 * @throws RuntimeException
-	 *	Thrown when: an application is yet to be loaded; the specified
-	 *	component is not defined.
+	 *	Thrown when: the component does not exist; the component configuration
+	 *	settings are invalid; the component fails to construct;
 	 *
-	 * @param string $component
+	 * @param string $name
 	 *	The name of the component to return.
 	 *
+	 * @param bool $initialize
+	 *	When set to TRUE the component will be initialized -- unless it already
+	 *	was -- before being returned.
+	 *
 	 * @param bool $recursive
-	 *	A flag indicating wether or not this component should be checked
-	 *	recursively through the parent extensions.
+	 *	When set to TRUE the component will be returned from the parent
+	 *	extensions if it's not explicitly defined for this extension.
 	 *
 	 * @return Component
-	 *	The component instance.
+	 *	Returns the component instance.
 	 */
-	public function getComponent($component, $recursive = true)
+	public function getComponent($name, $initialize = true, $recursive = true)
 	{
-		return Lumina::getApplication()->getComponent($component, false);
+		return Lumina::getApplication()->getComponent($name, $initialize, false);
 	}
 	
 	/**
@@ -121,9 +125,9 @@ abstract class Element extends Express
 	 * @return bool
 	 *	Returns TRUE if the component is defined, FALSE otherwise.
 	 */
-	public function hasComponent($component, $recursive = true)
+	public function hasComponent($name, $recursive = true)
 	{
-		return Lumina::getApplication()->hasComponent($component, false);
+		return Lumina::getApplication()->hasComponent($name, false);
 	}
 	
 	/**
