@@ -26,6 +26,7 @@ namespace system\sql\data;
 
 use \system\data\Model;
 use \system\sql\Criteria;
+use \system\sql\Reader;
 
 /**
  * The Record combines the features provided by the Model and StatementFactory
@@ -115,6 +116,64 @@ abstract class Record extends Model
 		}
 		
 		return $this->schema;
+	}
+	
+	/**
+	 * Finds and returns the first record matching the criteria.
+	 *
+	 * The returned record instance will be a clone from this model with its
+	 * context set to 'update' and the new attributes.
+	 *
+	 * @param Criteria|array $criteria
+	 *	An instance of Criteria or an associative array defining it's
+	 *	express configuration.
+	 *
+	 * @return Record
+	 *	The record instance, if any.
+	 */
+	public function find($criteria = null)
+	{
+		$db = $this->getDatabase();
+		$reader = $db->select($this->getTableName(), $criteria);
+		$record = $reader->fetch(Reader::FETCH_ASSOC, true);
+		
+		if ($record)
+		{
+			$instance = clone $this;
+			$instance->setContext('update');
+			$instance->setAttributes($record);
+			return $instance;
+		}
+	}
+	
+	/**
+	 * Finds and returns all records matching the criteria.
+	 *
+	 * The returned record instance will be a clone from this model with its
+	 * context set to 'update' and the new attributes.
+	 *
+	 * @param Criteria|array $criteria
+	 *	An instance of Criteria or an associative array defining it's
+	 *	express configuration.
+	 *
+	 * @return Record[]
+	 *	The record instances.
+	 */
+	public function findAll($criteria = null)
+	{
+		$db = $this->getDatabase();
+		$reader = $db->select($this->getTableName(), $criteria);
+		$instances = array();
+		
+		while ($record = $reader->fetch(Reader::FETCH_ASSOC, false))
+		{
+			$instance = clone $this;
+			$instance->setContext('update');
+			$instance->setAttributes($record);
+			$instances[] = $instance;
+		}
+		
+		return $instances;
 	}
 	
 	/**
