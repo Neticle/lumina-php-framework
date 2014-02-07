@@ -388,6 +388,24 @@ class Connection extends Component
 	 */
 	public function exists($table, $criteria = null)
 	{
+		return $this->count($table, $criteria) > 0;
+	}
+	
+	/**
+	 * Builds and executes a COUNT SELECT statement against the specified table.
+	 *
+	 * @param string $table
+	 *	The name of the table (unquoted) to select the data from.
+	 *
+	 * @param array|Criteria $criteria
+	 *	An instance of a criteria object or an associative array defining its
+	 *	express configuration.
+	 *
+	 * @return int
+	 *	The number of matching results.
+	 */
+	public function count($table, $criteria = null)
+	{
 		if (isset($criteria))
 		{
 			if (is_array($criteria))
@@ -402,7 +420,7 @@ class Connection extends Component
 		
 		$criteria->setSelect('COUNT(*)');
 		
-		return ((int) $this->select($table, $criteria, true)) > 0;
+		return (int) $this->select($table, $criteria, true);
 	}
 	
 	/**
