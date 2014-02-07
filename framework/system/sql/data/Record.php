@@ -1,0 +1,254 @@
+<?php
+
+// =============================================================================
+//
+// Copyright 2013 Neticle
+// http://lumina.neticle.com
+//
+// This file is part of "Lumina/PHP Framework", hereafter referred to as 
+// "Lumina".
+//
+// Lumina is free software: you can redistribute it and/or modify it under the 
+// terms of the GNU General Public License as published by the Free Software 
+// Foundation, either version 3 of the License, or (at your option) any later
+// version.
+//
+// Lumina is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+// A PARTICULAR PURPOSE. See theGNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// "Lumina". If not, see <http://www.gnu.org/licenses/>.
+//
+// =============================================================================
+
+namespace system\sql\data;
+
+use \system\data\Model;
+use \system\sql\Criteria;
+
+/**
+ * The Record combines the features provided by the Model and StatementFactory
+ * classes in order to automate the input data validation and it's effects
+ * on the database.
+ *
+ * @author Lumina Framework <lumina@incubator.neticle.com>
+ * @package system.sql.data
+ * @since 0.2.0
+ */
+abstract class Record extends Model
+{
+	/**
+	 * The schema of the table this record is linked to.
+	 *
+	 * @type TableSchema
+	 */
+	private $schema;
+	
+	/**
+	 * A flag indicating wether or not this is a new record.
+	 *
+	 * @type bool
+	 */
+	private $newRecord;
+	
+	/**
+	 * The primary key values identifying this record in the database.
+	 *
+	 * @type array
+	 */
+	private $primaryKey;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $context
+	 *	The initial model context.
+	 *
+	 * @param array $attributes
+	 *	An associative array containing the initial attribute values.
+	 */
+	public function __construct($context = 'insert', array $attributes = null)
+	{
+		parent::__construct($context, $attributes);
+		$this->newRecord = true;
+	}
+	
+	/**
+	 * Returns the name of the table this record is to be linked with.
+	 *
+	 * @return string
+	 *	The record table name.
+	 */
+	protected abstract function getTableName();
+	
+	/**
+	 * Returns the database component to be used by the record.
+	 *
+	 * The default implementation returns the application "database"
+	 * component.
+	 *
+	 * @return Connection
+	 *	The database connection component.
+	 */
+	protected function getDatabase()
+	{
+		return $this->getComponent('database');
+	}
+	
+	/**
+	 * Returns the schema of the table this record is linked to.
+	 *
+	 * @param bool $refresh
+	 *	When set to TRUE any previously cached schema information will be
+	 *	invalidated and re-fetched.
+	 *
+	 * @return TableSchema
+	 *	The schema of the table this record is linked to.
+	 */
+	protected final function getTableSchema($refresh = false)
+	{
+		if (!isset($this->schema))
+		{
+			$this->schema = $this->getDatabase()->getDriver()->
+				getSchema()->getTableSchema($this->getTableName(), $refresh);
+		}
+		
+		return $this->schema;
+	}
+	
+	/**
+	 * Saves the changes made to this record.
+	 *
+	 * @param bool $validate
+	 *	When set to TRUE the record will be validated before the save
+	 *	procedure actually starts.
+	 *
+	 *	You are strongly encouraged to validate it before saving any
+	 *	value to the database.
+	 *
+	 * @return bool
+	 *	Returns TRUE on success, FALSE otherwise.
+	 */
+	public function save($validate = true)
+	{	
+		if (!$this->onBeforeSave())
+		{
+			return false;
+		}
+	
+		if ($validate && !$this->validate())
+		{
+			return false;
+		}
+		
+		if (!$this->onSave())
+		{
+			return false;
+		}
+		
+		// Build the fields array
+		$db = $this->getDatabase();
+		$table = $this->getTableSchema();
+		$tableName = $table->getName();
+		$columns = $table->getColumns();
+		$primaryKey = $table->getPrimaryKey();
+		$autoIncrementable = false;
+		$fields = array();
+		
+		// Go through all column schemas
+		foreach ($columns as $name => $column)
+		{
+			if ($column->isAutoIncrementable())
+			{
+				$autoIncrementable = $name;
+			}
+			
+			$fields[$name] = $this->getAttribute($name);
+		}
+		
+		
+		if ($this->newRecord)
+		{
+			// It's a new record
+			$db->insert($tableName, $fields);
+			
+			if ($autoIncrementable)
+			{
+				$this->setAttribute($autoIncrementable, (int) $db->getLastInsertId());
+			}
+		}
+		else
+		{
+			// Update records matching this 
+			$criteria = new Criteria();
+			$criteria->setAlias('t');
+			
+			if (!isset($primaryKey[0]))
+			{
+				throw new RuntimeException('Can not update record without primary key.');
+			}
+			
+			foreach ($primaryKey as $index => $key)
+			{
+				$parameter = ':srsp_' . $index;
+				
+				$criteria->addCondition('t.' . $db->quote($key) . '=' . $parameter);
+				$criteria->setParameter($parameter, $this->primaryKey[$key]);
+			}
+			
+			$db->update($tableName, $fields, $criteria);
+		}
+		
+		$this->newRecord = false;
+		
+		// Reload the primary key field values
+		if (isset($primaryKey[0]))
+		{
+			foreach ($primaryKey as $field)
+			{
+				$this->primaryKey[$field] = $this->getAttribute($field);
+			}
+		}
+		
+		if ($this->onAfterSave())
+		{
+			return true;
+		}
+	}
+	
+	/**
+	 * This method encapsulates the 'save' event.
+	 *
+	 * @return bool
+	 *	Returns FALSE to cancel the event, TRUE otherwise.
+	 */
+	protected function onSave()
+	{
+		return $this->raiseArray('save');
+	}
+	
+	/**
+	 * This method encapsulates the 'beforeSave' event.
+	 *
+	 * @return bool
+	 *	Returns FALSE to cancel the event, TRUE otherwise.
+	 */
+	protected function onBeforeSave()
+	{
+		return $this->raiseArray('beforeSave');
+	}
+	
+	/**
+	 * This method encapsulates the 'afterSave' event.
+	 *
+	 * @return bool
+	 *	Returns FALSE to cancel the event, TRUE otherwise.
+	 */
+	protected function onAfterSave()
+	{
+		return $this->raiseArray('afterSave');
+	}
+	
+}
+

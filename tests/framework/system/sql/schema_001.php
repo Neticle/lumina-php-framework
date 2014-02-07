@@ -77,6 +77,7 @@ lumina_test_start();
 lumina_test_identical('driver.name', 'mysql', $driver->getName());
 lumina_test_identical('schema.tables.count', 2, count($dbschema->getTables()));
 lumina_test_identical('table.columns.count', 6, count($table->getColumns()));
+lumina_test_identical('table.name', 'lumina_test_table_002', $table->getName());
 lumina_test_identical('table.pk', 'id', implode(', ', $table->getPrimaryKey()));
 
 lumina_test_identical('table.id.type', 'int', $table->getColumn('id')->getType());

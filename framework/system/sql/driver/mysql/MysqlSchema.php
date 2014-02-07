@@ -24,6 +24,7 @@
 
 namespace system\sql\driver\mysql;
 
+use \system\core\exception\RuntimeException;
 use \system\sql\Reader;
 use \system\sql\driver\Driver;
 use \system\sql\driver\Schema;
@@ -106,6 +107,11 @@ class MysqlSchema extends Schema
 		
 		$schema = $connection->query($statement, $parameters)
 			->fetch(Reader::FETCH_ASSOC, true);
+			
+		if (!$schema)
+		{
+			throw new RuntimeException('Table "' . $table . '" schema not found.');
+		}
 		
 		$table = $this->createTableSchema($schema);
 		$primaryKey = array();

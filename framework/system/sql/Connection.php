@@ -75,6 +75,13 @@ class Connection extends Component
 	private $driver;
 	
 	/**
+	 * The underlying PDO connection handle.
+	 *
+	 * @type \PDO
+	 */
+	private $pdo;
+	
+	/**
 	 * This method is invoked during the extension initialization procedure,
 	 * before the child extensions get loaded -- when applicable.
 	 *
@@ -248,6 +255,17 @@ class Connection extends Component
 	public function getDriver()
 	{
 		return $this->driver;
+	}
+	
+	/**
+	 * Returns the ID of the last inserted row.
+	 *
+	 * @return int
+	 *	The ID of the last inserted row.
+	 */
+	public function getLastInsertId()
+	{
+		return $this->pdo->lastInsertId();
 	}
 	
 	/**

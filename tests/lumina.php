@@ -249,3 +249,19 @@ function lumina_test_class($description, $class, $object)
 	));
 }
 
+/**
+ * Compares a value to make sure it is set.
+ *
+ * @param string $description
+ *	The test description.
+ *
+ * @param string $value
+ *	The value to compare.
+ */
+function lumina_test_set($description, $value)
+{
+	lumina_test_report($description, isset($value), array(
+		'Value' => lumina_test_stringify($value)
+	));
+}
+
