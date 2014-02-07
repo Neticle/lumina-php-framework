@@ -119,6 +119,20 @@ abstract class Record extends Model
 	}
 	
 	/**
+	 * Returns the primary key values of this instance.
+	 *
+	 * If the record is still to be saved, or if a primary key is not defined
+	 * for the table it is linked to, NULL will be returned.
+	 *
+	 * @return array
+	 *	The primary key values, indexed by field, or NULL.
+	 */
+	public final function getPrimaryKey()
+	{
+		return $this->primaryKey;
+	}
+	
+	/**
 	 * Finds and returns the first record matching the criteria.
 	 *
 	 * The returned record instance will be a clone from this model with its
@@ -139,9 +153,21 @@ abstract class Record extends Model
 		
 		if ($record)
 		{
+			$primaryKey = $this->getTableSchema()->getPrimaryKey();
+		
 			$instance = clone $this;
 			$instance->setContext('update');
 			$instance->setAttributes($record);
+			$instance->newRecord = false;
+			
+			// Define the current primary key values to enable 'update'
+			if (isset($primaryKey[0]))
+			{
+				$instance->primaryKey = array_intersect_key(
+					array_flip($primaryKey), $record
+				);
+			}
+			
 			return $instance;
 		}
 	}
@@ -162,14 +188,33 @@ abstract class Record extends Model
 	public function findAll($criteria = null)
 	{
 		$db = $this->getDatabase();
-		$reader = $db->select($this->getTableName(), $criteria);
 		$instances = array();
+		$primaryKey = $this->getTableSchema()->getPrimaryKey();
+		$reader = $db->select($this->getTableName(), $criteria);
+		
+		if (isset($primaryKey[0]))
+		{
+			$primaryKey = array_flip($primaryKey);
+		}
+		else
+		{
+			$primaryKey = null;
+		}
 		
 		while ($record = $reader->fetch(Reader::FETCH_ASSOC, false))
 		{
 			$instance = clone $this;
 			$instance->setContext('update');
 			$instance->setAttributes($record);
+			
+			$instance->newRecord = false;
+			
+			// Define the current primary key values to enable 'update'
+			if (isset($primaryKey))
+			{
+				$instance->primaryKey = array_intersect_key($primaryKey, $record);
+			}
+			
 			$instances[] = $instance;
 		}
 		
@@ -231,6 +276,7 @@ abstract class Record extends Model
 		{
 			// It's a new record
 			$db->insert($tableName, $fields);
+			$this->newRecord = false;
 			
 			if ($autoIncrementable)
 			{
@@ -258,8 +304,6 @@ abstract class Record extends Model
 			
 			$db->update($tableName, $fields, $criteria);
 		}
-		
-		$this->newRecord = false;
 		
 		// Reload the primary key field values
 		if (isset($primaryKey[0]))
