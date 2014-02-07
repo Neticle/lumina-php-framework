@@ -175,7 +175,7 @@ abstract class Record extends Model
 			
 			if ($autoIncrementable)
 			{
-				$this->setAttribute($autoIncrementable, (int) $db->getLastInsertId());
+				$this->setAttribute($autoIncrementable, $db->getLastInsertId());
 			}
 		}
 		else

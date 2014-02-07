@@ -265,7 +265,7 @@ class Connection extends Component
 	 */
 	public function getLastInsertId()
 	{
-		return $this->pdo->lastInsertId();
+		return (int) $this->pdo->lastInsertId();
 	}
 	
 	/**
