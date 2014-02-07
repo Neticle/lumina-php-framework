@@ -373,6 +373,39 @@ class Connection extends Component
 	}
 	
 	/**
+	 * Builds and executes a COUNT SELECT statement against the specified table.
+	 *
+	 * @param string $table
+	 *	The name of the table (unquoted) to select the data from.
+	 *
+	 * @param array|Criteria $criteria
+	 *	An instance of a criteria object or an associative array defining its
+	 *	express configuration.
+	 *
+	 * @return bool
+	 *	Returns TRUE if at least one record exists matching the specified
+	 *	criteria.
+	 */
+	public function exists($table, $criteria = null)
+	{
+		if (isset($criteria))
+		{
+			if (is_array($criteria))
+			{
+				$criteria = new Criteria($criteria);
+			}
+		}
+		else
+		{
+			$criteria = new Criteria();
+		}
+		
+		$criteria->setSelect('COUNT(*)');
+		
+		return ((int) $this->select($table, $criteria, true)) > 0;
+	}
+	
+	/**
 	 * Builds and executes an UPDATE statement against the specified table.
 	 *
 	 * @param string $table
