@@ -43,9 +43,9 @@ $tests = array(
 foreach ($tests as $class => $expected)
 {
 	lumina_test_identical(
-		'class="' . $class . '"; type=null; base=null', 
+		'class="' . $class . '"', 
 		$expected, 
-		Lumina::getClassPath($class, null, null)
+		Lumina::getClassPath($class)
 	);
 }
 
