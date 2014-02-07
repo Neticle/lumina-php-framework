@@ -116,6 +116,17 @@ class Module extends Context
 	}
 	
 	/**
+	 * Returns the module namespace.
+	 *
+	 * @return string
+	 *	The module namespace.
+	 */
+	public final function getNamespace()
+	{
+		return $this->namespace;
+	}
+	
+	/**
 	 * Returns the module path.
 	 *
 	 * @return string

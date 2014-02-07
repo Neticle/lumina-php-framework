@@ -225,3 +225,27 @@ function lumina_test_identical($description, $expected, $output)
 	));
 }
 
+/**
+ * Compares an object to make sure if it's of the specified class or a class
+ * that inherits from it.
+ *
+ * @param string $description
+ *	The test description.
+ *
+ * @param string $class
+ *	The expected object class.
+ *
+ * @param object $object
+ *	The object to test the class of
+ */
+function lumina_test_class($description, $class, $object)
+{
+	$success = is_a($object, $class);
+	
+	lumina_test_report($description, $success, array(
+		'Expected Class' => $class,
+		'Final Class' => get_class($object),
+		'Is Expected Class' => lumina_test_stringify($success)
+	));
+}
+
