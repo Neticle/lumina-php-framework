@@ -409,7 +409,7 @@ class Criteria extends Express
 	 *	When set to TRUE the given parameters will be merged with previously
 	 *	defined ones.
 	 */
-	public function setParameters(array $paramaters, $merge = true)
+	public function setParameters(array $parameters, $merge = true)
 	{
 		$this->parameters = $merge ?
 			array_replace((array) $this->parameters, $parameters) : $parameters;
@@ -426,7 +426,7 @@ class Criteria extends Express
 	 */
 	public function setParameter($name, $value)
 	{
-		$this->paramaters[$name] = $value;
+		$this->parameters[$name] = $value;
 	}
 	
 	/**
