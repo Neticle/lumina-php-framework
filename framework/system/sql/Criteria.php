@@ -25,6 +25,7 @@
 namespace system\sql;
 
 use \system\core\Express;
+use \system\sql\Expression;
 
 /**
  * Criteria.
@@ -35,6 +36,13 @@ use \system\core\Express;
  */
 class Criteria extends Express
 {
+	/**
+	 * The next available unique parameter identifier.
+	 *
+	 * @type int
+	 */
+	private static $nextParameterId = 1;
+
 	/**
 	 * The fields to select.
 	 *
@@ -104,6 +112,17 @@ class Criteria extends Express
 	 * @type array
 	 */
 	private $parameters;
+	
+	/**
+	 * Returns a unique parameter identifier.
+	 *
+	 * @return string
+	 *	The unique parameter identifier.
+	 */
+	public static function getUniqueParameterIdentifier()
+	{
+		return ':lmn_' . self::$nextParameterId++;
+	}
 	
 	/**
 	 * Constructor.
@@ -243,6 +262,43 @@ class Criteria extends Express
 	{
 		$this->condition = empty($this->condition) ?
 			$condition : ($this->condition . ' ' . $glue . ' ' . $condition);
+	}
+	
+	/**
+	 * Defines an additional condition to be applied to this criteria based
+	 * on the comparison between a field and an input value.
+	 *
+	 * Fields matching commonly reserved keywords should be quoted before
+	 * usage. You are encouraged to prefix all columns with the table name
+	 * or alias.
+	 *
+	 * @param string $field
+	 *	The name of the field or expression to compare against.
+	 *
+	 * @param string $value
+	 *	The value or expression to be compared.
+	 *
+	 * @param string $glue
+	 *	The operator to be applied between the new condition and the ones
+	 *	previously defined. Valid values are: "AND" and "OR".
+	 */
+	public function addComparison($field, $value, $type = '=', $glue = 'AND')
+	{
+		$condition = $field . $type;
+	
+		if ($value instanceof Expression)
+		{
+			$condition .= $value->toString();
+		}
+		else
+		{
+			$parameter = self::getUniqueParameterIdentifier();
+			
+			$condition .= $parameter;
+			$this->setParameter($parameter, $value);
+		}
+		
+		$this->addCondition($condition, $glue);
 	}
 	
 	/**
