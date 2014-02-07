@@ -221,6 +221,15 @@ abstract class Record extends Model
 		return $instances;
 	}
 	
+	/**
+	 * Creates a criteria instance based on the given attributes.
+	 *
+	 * @param array $attributes
+	 *	The attributes to create the criteria from, indexed by name.
+	 *
+	 * @return Criteria
+	 *	The criteria instance.
+	 */
 	private function createCriteriaFromAttributes(array $attributes)
 	{
 		$database = $this->getDatabase();
@@ -236,11 +245,35 @@ abstract class Record extends Model
 		return $criteria;
 	}
 	
+	/**
+	 * Finds and returns the first record matching the criteria.
+	 *
+	 * The returned record instance will be a clone from this model with its
+	 * context set to 'update' and the new attributes.
+	 *
+	 * @param array $attributes
+	 *	The attributes to create the criteria from, indexed by name.
+	 *
+	 * @return Record
+	 *	The record instance, if any.
+	 */
 	public function findByAttributes(array $attributes)
 	{
 		return $this->find($this->createCriteriaFromAttributes($attributes));
 	}
 	
+	/**
+	 * Finds and returns all records matching the criteria.
+	 *
+	 * The returned record instance will be a clone from this model with its
+	 * context set to 'update' and the new attributes.
+	 *
+	 * @param array $attributes
+	 *	The attributes to create the criteria from, indexed by name.
+	 *
+	 * @return Record[]
+	 *	The record instances.
+	 */
 	public function findAllByAttributes(array $attributes)
 	{
 		return $this->findAll($this->createCriteriaFromAttributes($attributes));
