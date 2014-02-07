@@ -80,6 +80,8 @@ lumina_test_identical('table.columns.count', 6, count($table->getColumns()));
 lumina_test_identical('table.pk', 'id', implode(', ', $table->getPrimaryKey()));
 
 lumina_test_identical('table.id.type', 'int', $table->getColumn('id')->getType());
+lumina_test_identical('table.id.autoIncrementable', true, $table->getColumn('id')->isAutoIncrementable());
+lumina_test_identical('table.column1.autoIncrementable', false, $table->getColumn('column1')->isAutoIncrementable());
 lumina_test_identical('table.column1.type', 'string', $table->getColumn('column1')->getType());
 lumina_test_identical('table.column2.type', 'int', $table->getColumn('column2')->getType());
 lumina_test_identical('table.column3.type', 'char', $table->getColumn('column3')->getType());

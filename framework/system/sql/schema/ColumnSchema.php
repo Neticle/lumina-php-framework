@@ -73,6 +73,13 @@ class ColumnSchema extends Schema
 	private $required;
 	
 	/**
+	 * A flag indicating wether or not this column is auto incrementable.
+	 *
+	 * @type bool
+	 */
+	private $autoIncrementable;
+	
+	/**
 	 * Constructor.
 	 *
 	 * @param array $configuration
@@ -185,6 +192,28 @@ class ColumnSchema extends Schema
 	public function getOptions()
 	{
 		return $this->options;
+	}
+	
+	/**
+	 * Defines wether or not this column is auto incrementable.
+	 *
+	 * @param bool $autoIncrementable
+	 *	Set to TRUE if the column is auto incrementable, FALSE otherwise.
+	 */
+	public function setAutoIncrementable($autoIncrementable)
+	{
+		$this->autoIncrementable = $autoIncrementable;
+	}
+	
+	/**
+	 * Checks wether or not this column is auto incrementable.
+	 *
+	 * @return bool
+	 *	Returns TRUE if the column is auto incrementable, FALSE otherwise.
+	 */
+	public function isAutoIncrementable()
+	{
+		return $this->autoIncrementable;
 	}
 }
 

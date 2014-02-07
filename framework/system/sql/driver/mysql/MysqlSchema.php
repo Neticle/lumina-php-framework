@@ -195,6 +195,7 @@ class MysqlSchema extends Schema
 		$column->setName($schema['COLUMN_NAME']);
 		$column->setCharset($schema['CHARACTER_SET_NAME']);
 		$column->setRequired($schema['IS_NULLABLE'] === 'NO');
+		$column->setAutoIncrementable($schema['EXTRA'] === 'auto_increment');
 	
 		// Determine the column data type and size
 		switch (strtolower($schema['DATA_TYPE']))
