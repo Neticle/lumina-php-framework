@@ -43,7 +43,7 @@ $tests = array(
 foreach ($tests as $alias => $expected)
 {
 	lumina_test_identical(
-		'alias=' . $alias . '; type=null; base=null', 
+		'alias="' . $alias . '"; type=null; base=null', 
 		$expected, 
 		Lumina::getAliasPath($alias, null, null)
 	);
@@ -59,7 +59,7 @@ $tests = array(
 foreach ($tests as $alias => $expected)
 {
 	lumina_test_identical(
-		'alias=' . $alias . '; type=php; base=/base', 
+		'alias="' . $alias . '"; type="php"; base="/base"', 
 		$expected, 
 		Lumina::getAliasPath($alias, 'php', '/base')
 	);
@@ -79,7 +79,7 @@ $tests = array(
 foreach ($tests as $alias => $expected)
 {
 	lumina_test_identical(
-		'alias=' . $alias . '; type=null; base=/base', 
+		'alias="' . $alias . '"; type=null; base="/base"', 
 		$expected, 
 		Lumina::getAliasPath($alias, null, '/base')
 	);
