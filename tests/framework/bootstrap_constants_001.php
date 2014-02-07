@@ -22,46 +22,18 @@
 //
 // =============================================================================
 
-/*
+include '../lumina.php';
 
-Expected output:
-	5 + 5 = 10
+define('L_APPLICATION_ROOT', '/var/www');
+$lumina = realpath('../../framework/bootstrap.php');
+include $lumina;
 
-*/
+lumina_test_start('Bootstrap Constants');
 
-use \system\core\Lumina;
-use \system\core\Express;
+lumina_test_identical('L_INSTALLATION_DIRECTORY', dirname($lumina), L_INSTALLATION_DIRECTORY);
+lumina_test_identical('L_APPLICATION', '/var/www/application', L_APPLICATION);
+lumina_test_identical('L_PUBLIC', '/var/www', L_PUBLIC);
+lumina_test_identical('L_SYSTEM', L_INSTALLATION_DIRECTORY . '/system', L_SYSTEM);
 
-define('L_APPLICATION_ROOT', dirname(__FILE__));
-require '../../../framework/bootstrap.php';
-
-class Sum extends Express {
-	
-	private $_a;
-	
-	private $_b;
-	
-	public function setA($a)
-	{
-		$this->_a = $a;
-	}
-	
-	public function setB($b)
-	{
-		$this->_b = $b;
-	}
-	
-	public function getResult()
-	{
-		return $this->_a + $this->_b;
-	}
-	
-}
-
-$o = new Sum(array(
-	'a' => 5,
-	'b' => 5
-));
-
-echo '5 + 5 = ', $o->getResult();
+lumina_test_end();
 
