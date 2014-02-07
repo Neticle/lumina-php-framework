@@ -24,6 +24,7 @@
 
 namespace system\sql\data;
 
+use \system\core\exception\RuntimeException;
 use \system\data\Model;
 use \system\sql\Criteria;
 use \system\sql\Reader;
@@ -314,7 +315,6 @@ abstract class Record extends Model
 		$table = $this->getTableSchema();
 		$tableName = $table->getName();
 		$columns = $table->getColumns();
-		$primaryKey = $table->getPrimaryKey();
 		$autoIncrementable = false;
 		$fields = array();
 		
@@ -340,36 +340,31 @@ abstract class Record extends Model
 			{
 				$this->setAttribute($autoIncrementable, $db->getLastInsertId());
 			}
+			
+			// Reload the primary key field values
+			$primaryKey = $table->getPrimaryKey();
+		
+			if (isset($primaryKey[0]))
+			{
+				foreach ($primaryKey as $field)
+				{
+					$this->primaryKey[$field] = $this->getAttribute($field);
+				}
+			}
 		}
 		else
 		{
-			// Update records matching this 
-			$criteria = new Criteria();
-			$criteria->setAlias('t');
-			
-			if (!isset($primaryKey[0]))
+			if (empty($this->primaryKey))
 			{
 				throw new RuntimeException('Can not update record without primary key.');
 			}
 			
-			foreach ($primaryKey as $index => $key)
-			{
-				$parameter = ':srsp_' . $index;
-				
-				$criteria->addCondition('t.' . $db->quote($key) . '=' . $parameter);
-				$criteria->setParameter($parameter, $this->primaryKey[$key]);
-			}
-			
+			// Update based on the current primary key
+			$criteria = $this->createCriteriaFromAttributes($this->primaryKey);			
 			$db->update($tableName, $fields, $criteria);
-		}
-		
-		// Reload the primary key field values
-		if (isset($primaryKey[0]))
-		{
-			foreach ($primaryKey as $field)
-			{
-				$this->primaryKey[$field] = $this->getAttribute($field);
-			}
+			
+			// Reload the current primary key
+			$this->primaryKey = array_intersect_key($fields, $this->primaryKey);
 		}
 		
 		if ($this->onAfterSave())
