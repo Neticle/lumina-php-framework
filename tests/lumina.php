@@ -150,7 +150,7 @@ HTML;
 function lumina_test_report($description, $success, array $entries)
 {
 	echo 
-		'<div class="lumina-test lumina-test-', ($success ? 'success' : 'failure'), '">',
+		'<div class="lumina-test lumina-test-', (isset($success) ? ($success ? 'success' : 'failure') : 'neutral'), '">',
 			'<div class="lumina-test-description">', htmlentities($description), '</div>';
 	;
 	
