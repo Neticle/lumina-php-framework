@@ -221,6 +221,31 @@ abstract class Record extends Model
 		return $instances;
 	}
 	
+	private function createCriteriaFromAttributes(array $attributes)
+	{
+		$database = $this->getDatabase();
+	
+		$criteria = new Criteria();
+		$criteria->setAlias('t');
+		
+		foreach ($attributes as $name => $value)
+		{
+			$criteria->addComparison($database->quote('t.' . $name), $value);
+		}
+		
+		return $criteria;
+	}
+	
+	public function findByAttributes(array $attributes)
+	{
+		return $this->find($this->createCriteriaFromAttributes($attributes));
+	}
+	
+	public function findAllByAttributes(array $attributes)
+	{
+		return $this->findAll($this->createCriteriaFromAttributes($attributes));
+	}
+	
 	/**
 	 * Saves the changes made to this record.
 	 *

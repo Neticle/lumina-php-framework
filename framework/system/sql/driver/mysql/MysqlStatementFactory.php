@@ -222,7 +222,6 @@ class MysqlStatementFactory extends StatementFactory
 	{
 		$definitions = array();
 		$parameters = array();
-		$pid = 0;
 		
 		foreach ($fields as $field => $value)
 		{	
@@ -232,7 +231,7 @@ class MysqlStatementFactory extends StatementFactory
 			}
 			else
 			{
-				$key = ':sfcp_' . ++$pid;
+				$key = Criteria::getUniqueParameterIdentifier();
 				$parameters[$key] = $value;
 				$value = $key;
 			}
@@ -306,7 +305,6 @@ class MysqlStatementFactory extends StatementFactory
 		$names = array();
 		$values = array();
 		$parameters = array();
-		$pid = 0;
 		
 		foreach ($fields as $name => $value)
 		{
@@ -316,7 +314,7 @@ class MysqlStatementFactory extends StatementFactory
 			}
 			else
 			{
-				$key = ':sfcp_' . ++$pid;
+				$key = Criteria::getUniqueParameterIdentifier();
 				$parameters[$key] = $value;
 				$value = $key;
 			}
