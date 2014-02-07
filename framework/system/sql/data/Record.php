@@ -215,6 +215,8 @@ abstract class Record extends Model
 		{
 			return true;
 		}
+		
+		return false;
 	}
 	
 	/**
