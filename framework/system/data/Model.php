@@ -428,6 +428,7 @@ abstract class Model extends Element
 	{
 		// Determine the attributes to validate
 		$names = $this->getAttributeNames();
+		$this->attributeErrors = array();
 		
 		if (isset($attributes))
 		{			
@@ -474,22 +475,16 @@ abstract class Model extends Element
 	 * Returns all attribute validation errors, optionally filtered
 	 * by attribute names.
 	 *
-	 * @param string|string[] $attributes
-	 *	The name(s) of the attribute(s) to get the error messages for, either
-	 *	as a CSV string or an array of strings.
+	 * @param string[] $attributes
+	 *	The name(s) of the attribute(s) to get the error messages for.
 	 *
 	 * @return array
 	 *	The attribute error messages, indexed by name.
 	 */
-	public function getAttributeErrors($attributes = null)
+	public function getAttributeErrors(array $attributes = null)
 	{
 		if (isset($attributes))
 		{
-			if (is_string($attributes))
-			{
-				$attributes = preg_split('(\s*\,\s*)', $attributes, -1, PREG_SPLIT_NO_EMPTY);
-			}
-			
 			return array_intersect_key($this->attributeErrors, array_flip($attributes));
 		}
 		
@@ -502,22 +497,16 @@ abstract class Model extends Element
 	 *
 	 * Unlike 'getAttributeErrors', only the error messages will be returned.
 	 *
-	 * @param string|string[] $attributes
-	 *	The name(s) of the attribute(s) to get the error messages for, either
-	 *	as a CSV string or an array of strings.
+	 * @param string[] $attributes
+	 *	The name(s) of the attribute(s) to get the error messages for.
 	 *
 	 * @return string[]
 	 *	The attribute error messages.
 	 */
-	public function getAttributeErrorMessages($attributes = null)
+	public function getAttributeErrorMessages(array $attributes = null)
 	{
 		if (isset($attributes))
-		{
-			if (is_string($attributes))
-			{
-				$attributes = preg_split('(\s*\,\s*)', $attributes, -1, PREG_SPLIT_NO_EMPTY);
-			}
-			
+		{			
 			$errors = array_intersect_key($this->attributeErrors, array_flip($attributes));
 		}
 		else
@@ -545,15 +534,10 @@ abstract class Model extends Element
 	 *	Returns TRUE if the attribute has reported validation errors,
 	 *	FALSE otherwise.
 	 */
-	public function hasAttributeErrors($attributes = null)
+	public function hasAttributeErrors(array $attributes = null)
 	{
 		if (isset($attributes))
-		{
-			if (is_string($attributes))
-			{
-				$attributes = preg_split('(\s*\,\s*)', $attributes, -1, PREG_SPLIT_NO_EMPTY);
-			}
-			
+		{			
 			$errors = array_intersect_key($this->attributeErrors, array_flip($attributes));
 		}
 		else
@@ -612,6 +596,72 @@ abstract class Model extends Element
 	protected function onAfterValidation(array $attributes)
 	{
 		return $this->raiseArray('afterValidation', array($attributes));
+	}
+	
+	/**
+	 * Returns the value of a virtual property.
+	 *
+	 * The base implementation considers all model attributes virtual properties
+	 * and has the same behaviour as 'getAttribute'.
+	 *
+	 * @param string $property
+	 *	The name of the property to return.
+	 *
+	 * @return mixed
+	 *	The property value, or NULL.
+	 */
+	public function __get($property)
+	{
+		return isset($this->attributes[$property]) ?
+			$this->attributes[$property] : null;
+	}
+	
+	/**
+	 * Defines the value of a virtual property.
+	 *
+	 * The base implementation considers all model attributes virtual properties
+	 * and has the same behavior as 'setAttribute'.
+	 *
+	 * @param string $property
+	 *	The name of the property to define.
+	 *
+	 * @param mixed $value
+	 *	The value to define the property with.
+	 */
+	public function __set($property, $value)
+	{
+		$this->attributes[$property] = $value;
+	}
+	
+	/**
+	 * Checks wether or not a value is defined for a virtual property.
+	 *
+	 * The base implementation considers all model attributes
+	 * virtual properties.
+	 *
+	 * @param string $property
+	 *	The name of the property to verify.
+	 *
+	 * @return bool
+	 *	Returns TRUE if the property is defined and not NULL, FALSE otherwise.
+	 */
+	public function __isset($property)
+	{
+		return isset($this->attributes[$property]);
+	}
+	
+	/**
+	 * Clears the definition of a virtual property value.
+	 *
+	 * The base implementation considers all model attributes
+	 * virtual properties.
+	 *
+	 * @param string $property
+	 *	The name of the property to remove the definition of.
+	 */
+	public function __unset($property)
+	{
+		unset($this->attributes[$property]);
 	}
 }
 
