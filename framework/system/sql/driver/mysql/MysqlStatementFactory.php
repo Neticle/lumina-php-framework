@@ -233,7 +233,7 @@ class MysqlStatementFactory extends StatementFactory
 			else
 			{
 				$key = ':sfcp_' . ++$pid;
-				$parameters[$value] = $value;
+				$parameters[$key] = $value;
 				$value = $key;
 			}
 			
@@ -259,6 +259,9 @@ class MysqlStatementFactory extends StatementFactory
 			{
 				$statement .= ' ' . $criteria['alias'];
 			}
+			
+			// ... SET 
+			$statement .= ' SET ' . $definitions;
 			
 			// ... JOIN
 			if ($criteria['join'])
