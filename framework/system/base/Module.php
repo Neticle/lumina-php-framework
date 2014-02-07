@@ -596,21 +596,26 @@ class Module extends Context
 	 */
 	protected function onInitialize()
 	{
-		if (isset($this->modules))
+		if (parent::onInitialize())
 		{
-			foreach ($this->modules as $name => $configuration)
+			if (isset($this->modules))
 			{
-				if (is_string($configuration))
+				foreach ($this->modules as $name => $configuration)
 				{
-					$name = $configuration;
-					$configuration = null;
-				}
+					if (is_string($configuration))
+					{
+						$name = $configuration;
+						$configuration = null;
+					}
 			
-				$this->loadModuleFromArray($name, $configuration);
+					$this->loadModuleFromArray($name, $configuration);
+				}
 			}
+			
+			return true;
 		}
 		
-		return parent::onInitialize();
+		return false;
 	}
 	
 	/**
