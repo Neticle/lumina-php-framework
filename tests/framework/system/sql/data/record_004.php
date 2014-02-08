@@ -114,7 +114,15 @@ if ($record->save())
 $instances = TestTable2::model()->findAllByAttributes(array(
 ));
 
-lumina_test_identical('Has More Matches', true, count($instances) > 1);
+lumina_test_identical('Exists (1)', true, TestTable2::model()->exists());
+
+foreach ($instances as $instance)
+{
+	$instance->delete();
+}
+
+lumina_test_identical('Count', 0, TestTable2::model()->count());
+lumina_test_identical('Exists (2)', false, TestTable2::model()->exists());
 
 lumina_test_set('Record ID', $record->id);
 lumina_test_end();

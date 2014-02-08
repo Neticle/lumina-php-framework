@@ -281,7 +281,48 @@ abstract class Record extends Model
 	}
 	
 	/**
+	 * Counts and returns the number of records matching the given criteria.
+	 *
+	 * @throws PDOException
+	 *	Thrown when the underlying statement fails to be prepared
+	 *	or executed with the underlying database connection handle.
+	 *
+	 * @param Criteria|array $criteria
+	 *	The criteria as an instance or an express configuration array.
+	 *
+	 * @return int
+	 *	The number of records matching the criteria.
+	 */
+	public function count($criteria = null)
+	{
+		return $this->getDatabase()->count($this->getTableName(), $criteria);
+	}
+	
+	/**
+	 * Checks if there's any record matching the criteria.
+	 *
+	 * @throws PDOException
+	 *	Thrown when the underlying statement fails to be prepared
+	 *	or executed with the underlying database connection handle.
+	 *
+	 * @param Criteria|array $criteria
+	 *	The criteria as an instance or an express configuration array.
+	 *
+	 * @return bool
+	 *	Returns TRUE if there's at least one record matching the criteria,
+	 *	FALSE otherwise.
+	 */
+	public function exists($criteria = null)
+	{
+		return $this->getDatabase()->exists($this->getTableName(), $criteria);
+	}
+	
+	/**
 	 * Saves the changes made to this record.
+	 *
+	 * @throws PDOException
+	 *	Thrown when the underlying statement fails to be prepared
+	 *	or executed with the underlying database connection handle.
 	 *
 	 * @param bool $validate
 	 *	When set to TRUE the record will be validated before the save
@@ -348,7 +389,7 @@ abstract class Record extends Model
 			{
 				foreach ($primaryKey as $field)
 				{
-					$this->primaryKey[$field] = $this->getAttribute($field);
+					$this->primaryKey[$field] = $fields[$field];
 				}
 			}
 		}
@@ -367,12 +408,87 @@ abstract class Record extends Model
 			$this->primaryKey = array_intersect_key($fields, $this->primaryKey);
 		}
 		
-		if ($this->onAfterSave())
+		return $this->onAfterSave();
+	}
+	
+	/**
+	 * Deletes this record from the database.
+	 *
+	 * @throws PDOException
+	 *	Thrown when the underlying statement fails to be prepared
+	 *	or executed with the underlying database connection handle.
+	 *
+	 * @return bool
+	 *	Returns TRUE on success, FALSE otherwise.
+	 */
+	public function delete()
+	{
+		if ($this->newRecord || empty($this->primaryKey))
 		{
-			return true;
+			throw new RuntimeException('Can not delete record without primary key.');
 		}
 		
-		return false;
+		if (!$this->onDelete())
+		{
+			return false;
+		}
+		
+		$db = $this->getDatabase();
+		$criteria = $this->createCriteriaFromAttributes($this->primaryKey);
+		
+		$db->delete($this->getTableName(), $criteria);
+		$this->primaryKey = null;
+		$this->newRecord = true;
+		return $this->onAfterDelete();
+	}
+	
+	/**
+	 * Deletes a set of records matching the criteria from the database.
+	 *
+	 * @throws PDOException
+	 *	Thrown when the underlying statement fails to be prepared
+	 *	or executed with the underlying database connection handle.
+	 *
+	 * @param Criteria|array $criteria
+	 *	The criteria as an instance or an express configuration array.
+	 */
+	public function deleteAll($criteria = null)
+	{
+		if (isset($criteria))
+		{
+			if (is_array($criteria))
+			{
+				$criteria = new Criteria($criteria);
+			}
+		}
+		
+		$db->delete($this->getTableName(), $criteria);
+	}
+	
+	/**
+	 * This method encapsulates the 'delete' event.
+	 *
+	 * @return bool
+	 *	Returns FALSE to cancel the event, TRUE otherwise.
+	 */
+	protected function onDelete()
+	{
+		return $this->raiseArray('delete');
+	}
+	
+	/**
+	 * This method encapsulates the 'afterDelete' event.
+	 *
+	 * Please note that even though the event may be canceled the record
+	 * has already been deleted from the database and can not be brought back
+	 * unless you are using transactions!
+	 *
+	 * @return bool
+	 *	Returns FALSE to cancel the event, TRUE otherwise.
+	 */
+	protected function onAfterDelete()
+	{
+		return $this->raiseArray('afterDelete');
 	}
 	
 	/**
@@ -399,6 +515,10 @@ abstract class Record extends Model
 	
 	/**
 	 * This method encapsulates the 'afterSave' event.
+	 *
+	 * Please note that even though the event may be canceled the record
+	 * has already been saved to the database and can not be removed
+	 * unless you are using transactions!
 	 *
 	 * @return bool
 	 *	Returns FALSE to cancel the event, TRUE otherwise.
