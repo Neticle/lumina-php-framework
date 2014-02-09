@@ -22,7 +22,7 @@
 //
 // =============================================================================
 
-namespace system\web;
+namespace system\web\html;
 
 /**
  * Provides static methods useful for the generation and validation

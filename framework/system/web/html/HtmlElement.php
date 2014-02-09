@@ -22,9 +22,9 @@
 //
 // =============================================================================
 
-namespace system\web;
+namespace system\web\html;
 
-use \system\web\Html;
+use \system\web\html\Html;
 
 /**
  * This class is a standard builder class and can be used to build, modify
