@@ -101,7 +101,7 @@ class DefaultRouter extends Router
 		}
 	
 		$url = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') ?
-			'http://' : 'https://';
+			'https://' : 'http://';
 			
 		$url .= $_SERVER['HTTP_HOST'];
 		
