@@ -159,8 +159,8 @@ class AssetManager extends Component
 				continue;
 			}
 			
-			$spath = $source . $file;
-			$dpath = $destination . $file;
+			$spath = $source . DIRECTORY_SEPARATOR . $file;
+			$dpath = $destination . DIRECTORY_SEPARATOR . $file;
 			
 			// Copy the files or directories recursively
 			if (is_dir($spath))
@@ -172,7 +172,7 @@ class AssetManager extends Component
 						throw new RuntimeException('Unable to create "' . $dpath . '" sub directory.');
 					}
 				
-					$this->copyDirectoryContents($spath . DIRECTORY_SEPARATOR, $dpath . DIRECTORY_SEPARATOR);
+					$this->copyDirectoryContents($spath, $dpath);
 				}
 				catch (RuntimeException $e)
 				{
@@ -209,13 +209,32 @@ class AssetManager extends Component
 	 */
 	public function publish($directory, $refresh = false)
 	{
-		// Get the source directory path and hash
-		$directory = Lumina::getAliasPath($directory, null) . DIRECTORY_SEPARATOR;
-		$hash = hash('md5', $directory);
-		
+		$directory = Lumina::getAliasPath($directory, null);
+		return $this->publishPath($directory, $refresh);
+	}
+	
+	/**
+	 * Publishes a directory.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when the directory fails to be published.
+	 *
+	 * @param string $directory
+	 *	An absolute path to the directory to publish.
+	 *
+	 * @param bool $refresh
+	 *	When set to TRUE the published directory will be refreshed with the
+	 *	new contents.
+	 *
+	 * @return string
+	 *	Returns the published directory URL, including the ending slash, which
+	 *	can than be used to link the assets within the document.
+	 */
+	public function publishPath($directory, $refresh = false)
+	{
 		// Determine the destination directory and publish status
-		$destination = $this->publishDirectoryPath . DIRECTORY_SEPARATOR 
-			. $hash . DIRECTORY_SEPARATOR;
+		$hash = hash('md5', $directory);
+		$destination = $this->publishDirectoryPath . DIRECTORY_SEPARATOR . $hash;
 		
 		$unpublished = !file_exists($destination);
 	
