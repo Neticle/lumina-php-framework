@@ -24,6 +24,8 @@
 
 namespace system\web\router;
 
+use \system\base\Component;
+
 /**
  * The router is responsible for parsing the information contained in the
  * current request into a route array and generate URLs that link to a specific

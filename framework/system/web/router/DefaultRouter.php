@@ -24,7 +24,7 @@
 
 namespace system\web\router;
 
-use \system\base\Component;
+use \system\web\router\Router;
 
 /**
  * The router is responsible for parsing the information contained in the
@@ -35,7 +35,7 @@ use \system\base\Component;
  * @package system.web.router
  * @since 0.2.0
  */
-class DefaultRouter extends Component
+class DefaultRouter extends Router
 {
 	/**
 	 * The query string variable holding the route to link to.
@@ -106,7 +106,7 @@ class DefaultRouter extends Component
 		$url .= $_SERVER['HTTP_HOST'];
 		
 		$url .= $_SERVER['REQUEST_URI'] ? 
-			(substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/'))) : '/';
+			(substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)) : '/';
 		
 		return $url;
 	}
