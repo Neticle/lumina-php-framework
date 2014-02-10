@@ -24,6 +24,8 @@
 
 namespace system\web;
 
+use \system\web\exception\HttpException;
+
 /**
  * Application.
  *
@@ -63,6 +65,23 @@ class Application extends \system\base\Application
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Dispatches the current request based on the information provided by it
+	 * and parsed by the router component.
+	 *
+	 * @throws HttpException
+	 *	Thrown when the dispatch procedure fails.
+	 */
+	public function dispatchRequest()
+	{
+		$route = $this->getComponent('router')->getRequestRoute();
+		
+		if (!$this->dispatch($route[0], $route[1]))
+		{
+			throw new HttpException(404, 'Document Not Found');
+		}
 	}
 }
 
