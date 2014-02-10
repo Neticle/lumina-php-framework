@@ -51,6 +51,10 @@ class Application extends \system\base\Application
 				
 				'router' => array(
 					'class' => 'system\\web\\router\\DefaultRouter'
+				),
+				
+				'assetManager' => array(
+					'class' => 'system\\web\\asset\\AssetManager'
 				)
 				
 			));
