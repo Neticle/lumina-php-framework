@@ -25,6 +25,7 @@
 namespace system\web\asset;
 
 use \system\core\Extension;
+use \system\core\LazyExtension;
 use \system\web\Document;
 
 /**
@@ -39,7 +40,7 @@ use \system\web\Document;
  * @package system.web.asset
  * @since 0.2.0
  */
-abstract class Bundle extends Extension
+abstract class Bundle extends LazyExtension
 {
 	/**
 	 * Constructor.
@@ -52,7 +53,8 @@ abstract class Bundle extends Extension
 	 */
 	public final function __construct(Extension $parent, array $configuration = null)
 	{
-		parent::__construct($parent, $configuration);
+		parent::__construct($parent);
+		$this->construct($configuration);
 	}
 
 	/**
