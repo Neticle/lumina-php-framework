@@ -90,6 +90,13 @@ class Module extends Context
 	 * @type string
 	 */
 	private $viewsPath;
+	
+	/**
+	 * The default controller name.
+	 *
+	 * @type string
+	 */
+	private $defaultController = 'default';
 
 	/**
 	 * Constructor.
@@ -233,6 +240,17 @@ class Module extends Context
 		}
 		
 		return $this->layoutPath;
+	}
+	
+	/**
+	 * Defines the module default controller.
+	 *
+	 * @param string $controller
+	 *	The module default controller name.
+	 */
+	public final function setDefaultController($controller)
+	{
+		$this->defaultController = $controller;
 	}
 	
 	/**
