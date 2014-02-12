@@ -411,6 +411,24 @@ class Lumina
 	}
 	
 	/**
+	 * Loads an application instance.
+	 *
+	 * @param string|array $configuration
+	 *	An alias relative to the application path resolving to a configuration
+	 *	script file, or an associative array with the settings.
+	 *
+	 * @param string $class
+	 *	The application class.
+	 *
+	 * @return Application
+	 *	Returns the application instance.
+	 */
+	public static function loadWebApplication($configuration = null, $class = 'system\\web\\Application')
+	{
+		return self::load($configuration, $class);
+	}
+	
+	/**
 	 * Returns the application instance.
 	 *
 	 * @return Application
