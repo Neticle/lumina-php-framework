@@ -47,6 +47,7 @@ if (!defined('L_PUBLIC'))
 // Lumina constants
 define('L_INSTALLATION_DIRECTORY', dirname(__FILE__));
 define('L_SYSTEM', L_INSTALLATION_DIRECTORY . '/system');
+define('L_VENDOR', L_INSTALLATION_DIRECTORY . '/vendor');
 
 // Register the default packages
 require(L_SYSTEM . '/core/Lumina.php');
@@ -54,6 +55,7 @@ require(L_SYSTEM . '/core/Lumina.php');
 \system\core\Lumina::setPackagePath('system', L_SYSTEM);
 \system\core\Lumina::setPackagePath('application', L_APPLICATION);
 \system\core\Lumina::setPackagePath('public', L_PUBLIC);
+\system\core\Lumina::setPackagePath('vendor', L_VENDOR);
 
 // Register the Lumina auto loader implementation
 spl_autoload_register(array('system\\core\\Lumina', 'loadClass'), true, true);
