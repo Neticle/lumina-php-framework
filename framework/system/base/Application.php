@@ -56,6 +56,11 @@ class Application extends Module
 					'driver' => 'mysql'
 				),
 				
+				'dictionary' => array(
+					'class' => 'system\\i18n\\dictionary\\StaticDictionary',
+					'locale' => 'en_GB'
+				),
+				
 				'cache' => array(
 					'class' => 'system\\cache\\DefaultCache'
 				)
