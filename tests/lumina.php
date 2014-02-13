@@ -206,7 +206,28 @@ function lumina_test_stringify($value)
 
 /**
  * Compares the expected and the output values to make sure they are
- * identical and reports the result.
+ * equal (==) and reports the result.
+ *
+ * @param string $description
+ *	The test description.
+ *
+ * @param string $expected
+ *	The expected output.
+ *
+ * @param string $output
+ *	The actual output.
+ */
+function lumina_test_equal($description, $expected, $output)
+{
+	lumina_test_report($description, $expected == $output, array(
+		'Expected' => lumina_test_stringify($expected),
+		'Output' => lumina_test_stringify($output)
+	));
+}
+
+/**
+ * Compares the expected and the output values to make sure they are
+ * identical (===) and reports the result.
  *
  * @param string $description
  *	The test description.
