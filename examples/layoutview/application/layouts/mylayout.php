@@ -22,8 +22,6 @@
 //
 // =============================================================================
 
-use \system\web\extension\widget\DocumentWidget;
-
 $document = $self->getComponent('document');
 
 ?>
@@ -32,7 +30,7 @@ $document = $self->getComponent('document');
 
 <html>
 	<head>
-		<?php (new DocumentWidget($document))->deploy() ?>
+		<?php $document->deploy('head') ?>
 	</head>
 	<body>
 		<h1>Behold, the VIEW!</h1>
