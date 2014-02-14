@@ -56,20 +56,27 @@ class AssetManager extends Component
 
 	/**
 	 * This method is invoked during the application construction procedure,
-	 * before the configuration takes place.
+	 * after the configuration takes place.
 	 *
-	 * This method encapsulates the "construction" event.
+	 * This method encapsulates the "afterConstruction" event.
 	 *
 	 * @return bool
 	 *	Returns TRUE to continue with the event, FALSE to cancel it.
 	 */
-	protected function onConstruction()
+	protected function onAfterConstruction()
 	{
-		if (parent::onConstruction())
+		if (parent::onAfterConstruction())
 		{
-			$this->publishDirectoryPath = L_PUBLIC . DIRECTORY_SEPARATOR . 'assets';
-			$this->publishDirectoryUrl = $this->getComponent('router')->
-				getBaseUrl() . 'assets/';
+			if (!isset($this->publishDirectoryPath))
+			{
+				$this->publishDirectoryPath = L_PUBLIC . DIRECTORY_SEPARATOR . 'assets';
+			}
+			
+			if (!isset($this->publishDirectoryUrl))
+			{
+				$this->publishDirectoryUrl = $this->getComponent('router')->
+					getBaseUrl() . 'assets/';
+			}
 			
 			return true;
 		}
