@@ -22,7 +22,7 @@
 //
 // =============================================================================
 
-namespace system\web\extension\widget;
+namespace system\ext\web\widget;
 
 use \system\base\Widget;
 use \system\web\Document;
