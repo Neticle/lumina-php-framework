@@ -25,6 +25,7 @@
 namespace system\web;
 
 use \system\base\Component;
+use \system\ext\web\widget\DocumentWidget;
 
 /**
  * The Document component acts as a repository for the HTML document
@@ -93,6 +94,7 @@ class Document extends Component
 	 * @type array
 	 */
 	private $styles = array();
+	
 	/**
 	 * The document inline scripts.
 	 *
@@ -122,6 +124,13 @@ class Document extends Component
 	private $title = 'Untitled Document';
 	
 	/**
+	 * The document widget.
+	 *
+	 * @type DocumentWidget
+	 */
+	private $documentWidget;
+	
+	/**
 	 * Adds a new script to the document head.
 	 *
 	 * @param string $script
@@ -130,15 +139,18 @@ class Document extends Component
 	 * @param string $id
 	 *	The ID of the script to add. If the given ID is already defined
 	 *	it will be overwritten with the new script.
+	 *
+	 * @param string $position
+	 *	The script position identifier.
 	 */
-	public function addScript($script, $id = null)
+	public function addScript($script, $id = null, $position = 'head')
 	{
 		if (!isset($id))
 		{
 			$id = 'script-' . self::$nextAssetId++;
 		}
 		
-		$this->scripts[$id] = $script;
+		$this->scripts[$id] = array($script, $position);
 	}
 	
 	/**
@@ -150,15 +162,18 @@ class Document extends Component
 	 * @param string $id
 	 *	The ID of the script to add. If the given ID is already defined
 	 *	it will be overwritten with the new script.
+	 *
+	 * @param string $position
+	 *	The script position identifier.
 	 */
-	public function addInlineScript($script, $id = null)
+	public function addInlineScript($script, $id = null, $position = 'head')
 	{
 		if (!isset($id))
 		{
 			$id = 'script-' . self::$nextAssetId++;
 		}
 		
-		$this->inlineScripts[$id] = $script;
+		$this->inlineScripts[$id] = array($script, $position);
 	}
 	
 	/**
@@ -214,15 +229,18 @@ class Document extends Component
 	 * @param string $id
 	 *	The ID of the style to add. If the given ID is already defined
 	 *	it will be overwritten with the new style.
+	 *
+	 * @param string $position
+	 *	The style position identifier.
 	 */
-	public function addStyle($style, $id = null)
+	public function addStyle($style, $id = null, $position = 'head')
 	{
 		if (!isset($id))
 		{
 			$id = 'style-' . self::$nextAssetId++;
 		}
 		
-		$this->styles[$id] = $style;
+		$this->styles[$id] = array($style, $position);
 	}
 	
 	/**
@@ -234,15 +252,18 @@ class Document extends Component
 	 * @param string $id
 	 *	The ID of the style to add. If the given ID is already defined
 	 *	it will be overwritten with the new style.
+	 *
+	 * @param string $position
+	 *	The style position identifier.
 	 */
-	public function addInlineStyle($style, $id = null)
+	public function addInlineStyle($style, $id = null, $position = 'head')
 	{
 		if (!isset($id))
 		{
 			$id = 'style-' . self::$nextAssetId++;
 		}
 		
-		$this->inlineStyles[$id] = $style;
+		$this->inlineStyles[$id] = array($style, $position);
 	}
 	
 	/**
@@ -460,6 +481,16 @@ class Document extends Component
 				$instance->apply($this);
 			}
 		}
+	}
+	
+	public function deploy($position = 'head')
+	{
+		if (!isset($this->documentWidget))
+		{
+			$this->documentWidget = new DocumentWidget($this);
+		}
+		
+		$this->documentWidget->deploy($position);
 	}
 		
 }

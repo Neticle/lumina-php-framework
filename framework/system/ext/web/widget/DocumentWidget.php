@@ -62,50 +62,69 @@ class DocumentWidget extends Widget
 	
 	/**
 	 * Deploys the document HEAD section contents.
+	 *
+	 * @param string $position
+	 *	The identifier of the document position to deploy. The 'head' position
+	 *	also includes the base URL, title and meta data.
 	 */
-	public function deploy()
+	public function deploy($position = 'head')
 	{
-		// Base url
-		echo '<base href="', Html::encode($this->getComponent('router')->getBaseUrl()), '" />';
-		
 		$document = $this->document;
 		
-		// Meta data
-		foreach ($document->getMeta() as $meta)
+		if ($position === 'head')
 		{
-			echo '<meta ', Html::encode($meta[0]), '="', Html::encode($meta[1]), '" content="',
-				Html::encode($meta[2]), '" />';
-		}
+			// Base url
+			echo '<base href="', Html::encode($this->getComponent('router')->getBaseUrl()), '" />';
 		
-		// Document title
-		echo '<title>', Html::encode($document->getTitle()), '</title>';
+			// Meta data
+			foreach ($document->getMeta() as $meta)
+			{
+				echo '<meta ', Html::encode($meta[0]), '="', Html::encode($meta[1]), '" content="',
+					Html::encode($meta[2]), '" />';
+			}
+			
+			// Document title
+			echo '<title>', Html::encode($document->getTitle()), '</title>';
+		}
 		
 		// Styles
 		foreach ($document->getStyles() as $id => $style)
 		{
-			echo '<link id="', Html::encode($id), '" rel="stylesheet" type="text/css" ',
-				'href="', Html::encode($style), '" />';
+			if ($style[1] === $position)
+			{
+				echo '<link id="', Html::encode($id), '" rel="stylesheet" type="text/css" ',
+					'href="', Html::encode($style[0]), '" />';
+			}
 		}
 		
 		// Inline styles
 		foreach ($document->getInlineStyles() as $id => $style)
 		{
-			echo '<style id="', Html::encode($id), '" type="text/css">',
-				Html::encode($style), '</style>';
+			if ($style[1] === $position)
+			{
+				echo '<style id="', Html::encode($id), '" type="text/css">',
+					Html::encode($style[0]), '</style>';
+			}
 		}
 		
 		// Scripts
 		foreach ($document->getScripts() as $id => $script)
 		{
-			echo '<script type="text/javascript" id="', Html::encode($id), '" src="',
-				Html::encode($script), '"></script>';
+			if ($script[1] === $position)
+			{
+				echo '<script type="text/javascript" id="', Html::encode($id), '" src="',
+					Html::encode($script[0]), '"></script>';
+			}
 		}
 		
 		// Inline scripts
 		foreach ($document->getInlineScripts() as $id => $script)
 		{
-			echo '<script type="text/javascript" id="', Html::encode($id), '">',
-				Html::encode($script), '</script>';
+			if ($script[1] === $position)
+			{
+				echo '<script type="text/javascript" id="', Html::encode($id), '">',
+					Html::encode($script[0]), '</script>';
+			}
 		}
 	}
 }

@@ -73,15 +73,15 @@ class BootstrapBundle extends Bundle
 		$document->requireBundle('jquery');
 		
 		// Add the stylesheets
-		$document->addStyle($base . 'css/bootstrap.min.css');
+		$document->addStyle($base . 'css/bootstrap.min.css', 'bootstrap-css');
 		
 		if ($this->loadDefaultTheme)
 		{
-			$document->addStyle($base . 'css/bootstrap-theme.min.css');
+			$document->addStyle($base . 'css/bootstrap-theme.min.css', 'bootstrap-theme-css');
 		}
 		
 		// Bootstrap library
-		$document->addScript($base . 'js/bootstrap.min.js');
+		$document->addScript($base . 'js/bootstrap.min.js', 'bootstrap-js', 'footer');
 	}
 }
 
