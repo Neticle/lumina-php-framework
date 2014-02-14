@@ -22,73 +22,42 @@
 //
 // =============================================================================
 
-namespace vendor\jquery;
+namespace vendor\bootstrap;
 
 use \system\web\Document;
 use \system\web\asset\Bundle;
 
 /**
- * JQuery Bundle containing the first and second major versions, compatible
- * with older browsers and HTML5 respectively.
+ * Bootstrap CSS framework bundle.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package vendor.jquery
+ * @package vendor.bootstrap
  * @since 0.2.0
  */
-class JQueryBundle extends Bundle
+class BootstrapBundle extends Bundle
 {
-
 	/**
-	 * The first major version of jQuery (1.x.x), compatible with older browsers
-	 * like IE7 and IE8.
+	 * A flag indicating wether or not the default theme should be loaded.
 	 *
-	 * @type string
+	 * @type bool
 	 */
-	const VERSION_1 = '1.11.0';
+	private $loadDefaultTheme = true;
 	
 	/**
-	 * The first major version of jQuery (1.x.x), compatible with older browsers
-	 * like IE7 and IE8, minified.
+	 * Defines wether or not the default theme should be linked to the 
+	 * current document when the bundle is applied.
 	 *
-	 * @type string
-	 */
-	const VERSION_1_MIN = '1.11.0.min';
-	
-	/**
-	 * The second major version of jQuery (2.x.x), compatible with all major
-	 * browsers that support for HTML5.
+	 * You should set this to FALSE if you have your own theme and link it
+	 * to the current document.
 	 *
-	 * @type string
+	 * @param bool $loadDefaultTheme
+	 *	A flag indicating wether or not the default theme should be loaded.
 	 */
-	const VERSION_2 = '2.1.0';
-	
-	/**
-	 * The second major version of jQuery (2.x.x), compatible with all major
-	 * browsers that support for HTML5, minified.
-	 *
-	 * @type string
-	 */
-	const VERSION_2_MIN = '2.1.0.min';
-	
-	/**
-	 * The version to use when applying the bundle to the document.
-	 *
-	 * @type string
-	 */
-	private $version = '2.1.0.min';
-	
-	/**
-	 * Defines the JQuery version to be applied to the document, as defined
-	 * by the JQueryBundle::VERSION_* constants.
-	 *
-	 * @param string $version
-	 *	The version to apply to the document.
-	 */
-	public function setVersion($version)
+	public function setLoadDefaultTheme($loadDefaultTheme)
 	{
-		$this->version = $version;
+		$this->loadDefaultTheme = $loadDefaultTheme;
 	}
-	
+
 	/**
 	 * Applies the asset bundle to the document.
 	 *
@@ -100,8 +69,19 @@ class JQueryBundle extends Bundle
 		$base = $this->getComponent('assetManager')->
 			publishPath(dirname(__FILE__) . '/assets');
 		
-		$document->addScript($base . 'jquery-' . $this->version . '.js');
+		// Bootstrap requires jquery
+		$document->requireBundle('jquery');
+		
+		// Add the stylesheets
+		$document->addStyle($base . 'css/bootstrap.min.css');
+		
+		if ($this->loadDefaultTheme)
+		{
+			$document->addStyle($base . 'css/bootstrap-theme.min.css');
+		}
+		
+		// Bootstrap library
+		$document->addScript($base . 'js/bootstrap.min.js');
 	}
-
 }
 
