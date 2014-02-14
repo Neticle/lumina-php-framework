@@ -163,6 +163,28 @@ abstract class Controller extends Context
 	}
 	
 	/**
+	 * This method is invoked right after the controller dispatch procedure
+	 * fails binding the provided parameters.
+	 *
+	 * This method encapsulates the "dispatchActionBindFailure" event.
+	 *
+	 * @param string $action
+	 *	The name of the action to dispatch to.
+	 *
+	 * @param array $parameters
+	 *	An associative array defining the values to be bound to the action
+	 *	parameters, indexed by name.
+	 *
+	 * @return bool
+	 *	Returns TRUE.
+	 */
+	protected function onDispatchActionBindFailure($action, array $parameters = null)
+	{
+		$this->raiseArray('dispatchActionBindFailure', array($action, $parameters));
+		return true;
+	}
+	
+	/**
 	 * This method is invoked right after all action parameters are bound and
 	 * the action method is validated.
 	 *
@@ -429,6 +451,10 @@ abstract class Controller extends Context
 							$this->onAfterDispatch($action, $filter, $arguments);
 							return true;
 						}
+					}
+					else
+					{
+						$this->onDispatchActionBindFailure($action, $parameters);
 					}
 				}
 				else
