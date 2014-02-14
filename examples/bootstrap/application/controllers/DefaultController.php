@@ -24,7 +24,7 @@
 
 namespace application\controllers;
 
-use \system\base\Controller;
+use \system\web\Controller;
 
 /**
  * Default Controller.
