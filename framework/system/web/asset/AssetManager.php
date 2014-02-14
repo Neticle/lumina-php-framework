@@ -55,17 +55,17 @@ class AssetManager extends Component
 	private $publishDirectoryUrl;
 
 	/**
-	 * This method is invoked during the application construction procedure,
-	 * after the configuration takes place.
+	 * This method is invoked during the extension initialization procedure,
+	 * before the child extensions get loaded -- when applicable.
 	 *
-	 * This method encapsulates the "afterConstruction" event.
+	 * This method encapsulates the "initialize" event.
 	 *
 	 * @return bool
 	 *	Returns TRUE to continue with the event, FALSE to cancel it.
 	 */
-	protected function onAfterConstruction()
+	protected function onInitialize()
 	{
-		if (parent::onAfterConstruction())
+		if (parent::onInitialize())
 		{
 			if (!isset($this->publishDirectoryPath))
 			{
