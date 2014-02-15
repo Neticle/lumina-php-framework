@@ -67,6 +67,19 @@ abstract class Schema extends Extension
 	}
 	
 	/**
+	 * Returns the parent driver instance.
+	 *
+	 * This function is an alias of 'getParent'.
+	 *
+	 * @return Driver
+	 *	The parent driver instance.
+	 */
+	public function getDriver()
+	{
+		return $this->getParent();
+	}
+	
+	/**
 	 * Returns the database schema.
 	 *
 	 * @param bool $refresh

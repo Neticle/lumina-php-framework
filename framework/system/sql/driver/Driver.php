@@ -38,6 +38,29 @@ use \system\sql\Connection;
 abstract class Driver extends Extension
 {
 	/**
+	 * Specifies a table, column or row should be LOCK for READING, thus
+	 * making sure it's data does not change during a transaction.
+	 *
+	 * Once this lock is set the table/row/column becomes READ-ONLY and any
+	 * inserts from this or other connection sessions will hang until the lock
+	 * is released.
+	 *
+	 * @type int
+	 */
+	const LOCK_READ = 1;
+	
+	/**
+	 * Specifies a table, column or row should be LOCK for WRITTING, thus
+	 * making sure it's data can not be read while it's still being updated.
+	 *
+	 * Once this lock is set any queries made to the table/row/column will
+	 * hang, unless made from the current connection session.
+	 *
+	 * @type int
+	 */
+	const LOCK_WRITE = 2;
+	
+	/**
 	 * Constructor.
 	 *
 	 * @param Connection $connection
@@ -96,5 +119,27 @@ abstract class Driver extends Extension
 	{
 		return $this->getParent();
 	}
+	
+	/**
+	 * Locks the specified tables.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when the table fails to be locked.
+	 *
+	 * @param string[] $tables
+	 *	The name(s) of the table(s) to lock.
+	 *
+	 * @param int $type
+	 *	The lock type, as defined by Schema::LOCK_* constants.
+	 */
+	public abstract function setTableLocks(array $tables, $type = self::LOCK_WRITE);
+	
+	/**
+	 * Releases any existing table locks.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when the tables fail to be release.
+	 */
+	public abstract function releaseAllLocks();
 }
 

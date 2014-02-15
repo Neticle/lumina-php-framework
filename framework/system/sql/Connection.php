@@ -25,6 +25,7 @@
 namespace system\sql;
 
 use \system\base\Component;
+use \system\sql\driver\Schema;
 
 /**
  * Connection.
@@ -522,7 +523,7 @@ class Connection extends Component
 	 */
 	public function run($command)
 	{
-		return $this->exec($command);
+		$this->pdo->exec($command);
 	}
 	
 	/**
@@ -538,6 +539,57 @@ class Connection extends Component
 	public function quote($name)
 	{
 		return $this->driver->quote($name);
+	}
+	
+	/**
+	 * Creates the schema instance.
+	 *
+	 * @param array $schema
+	 *	The MySQL schema associative array.
+	 *
+	 * @return DatabaseSchema
+	 *	The schema instance.
+	 */
+	private function createDatabaseSchema($schema)
+	{
+		$database = new DatabaseSchema();
+		$database->setName($schema['SCHEMA_NAME']);
+		$database->setCharset($schema['DEFAULT_CHARACTER_SET_NAME']);
+		return $database;
+	}
+	
+	/**
+	 * Locks the specified tables.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when the table fails to be locked.
+	 *
+	 * @param string $tables
+	 *	The name(s) of the table(s) to lock, either as a CSV string
+	 *	or an array of strings.
+	 *
+	 * @param int $type
+	 *	The lock type, as defined by Schema::LOCK_* constants.
+	 */
+	public function setTableLocks($tables, $type = Schema::LOCK_WRITE)
+	{
+		if (is_string($tables))
+		{
+			$tables = preg_split('/(\s*\,\s*)/', $tables, -1, PREG_SPLIT_NO_EMPTY);
+		}
+	
+		$this->driver->setTableLocks($tables, $type);
+	}
+	
+	/**
+	 * Releases any existing table locks.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when the tables fail to be release.
+	 */
+	public function releaseAllLocks()
+	{
+		$this->driver->releaseAllLocks();
 	}
 }
 
