@@ -52,6 +52,13 @@ abstract class Extension extends Element
 	 * @type array
 	 */
 	private $components = array();
+	
+	/**
+	 * Extension-level cached component instances, indexed by name.
+	 *
+	 * @type array
+	 */
+	private $componentInstances = array();
 
 	/**
 	 * Constructor.
