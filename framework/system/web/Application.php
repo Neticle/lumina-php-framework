@@ -51,16 +51,20 @@ class Application extends \system\base\Application
 			// Register the core components
 			$this->setComponents(array(
 				
-				'router' => array(
-					'class' => 'system\\web\\router\\DefaultRouter'
+				'assetManager' => array(
+					'class' => 'system\\web\\asset\\AssetManager'
 				),
 				
 				'document' => array(
 					'class' => 'system\\web\\Document',
 				),
 				
-				'assetManager' => array(
-					'class' => 'system\\web\\asset\\AssetManager'
+				'router' => array(
+					'class' => 'system\\web\\router\\DefaultRouter'
+				),
+				
+				'session' => array(
+					'class' => 'system\\web\\session\\DefaultSession'
 				)
 				
 			));
