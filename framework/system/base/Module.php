@@ -572,7 +572,7 @@ class Module extends Context
 	protected function getDefaultControllerClass($name)
 	{
 		$name = str_replace(' ', '', ucwords(str_replace(array('_', '-'), ' ', $name)));
-		return $this->namespace . '\\controllers\\' . $name . 'Controller';
+		return $this->namespace . '\\controller\\' . $name . 'Controller';
 	}
 	
 	/**
@@ -600,7 +600,7 @@ class Module extends Context
 	 */
 	protected function getDefaultModuleNamespace($name)
 	{
-		return $this->namespace . '\\modules\\' . $name;
+		return $this->namespace . '\\module\\' . $name;
 	}
 	
 	/**
