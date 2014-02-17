@@ -24,7 +24,7 @@
 
 namespace system\cache;
 
-use \system\base\Component;
+use \system\cache\Cache;
 
 /**
  * The default (not so) cache component to use, for development purposes.
@@ -33,7 +33,7 @@ use \system\base\Component;
  * @package system.cache
  * @since 0.2.0
  */
-class DefaultCache extends Component
+class DefaultCache extends Cache
 {
 	/**
 	 * Opens or starts any resources required for cache management purposes.
@@ -96,7 +96,8 @@ class DefaultCache extends Component
 	 *
 	 * @param int $expiry
 	 *	The amount of seconds until this key expires. When set to NULL the
-	 *	default expiry will be used.
+	 *	value will be cached for an undeterminated amount of time, until it's
+	 *	invalidated explicitly.
 	 */
 	public function write($key, $value, $expiry = null)
 	{
