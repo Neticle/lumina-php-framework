@@ -94,7 +94,7 @@ abstract class Schema extends Extension
 		$cache = $this->getComponent('cache');
 		$connection = $this->getConnection();
 		$dsn = $connection->getDsn();
-		$key = 'sql.schema:' . $dsn;
+		$key = 'l:system.sql.schema.database:' . $dsn;
 		
 		if ($refresh || !($result = $cache->read($key)))
 		{
@@ -123,7 +123,7 @@ abstract class Schema extends Extension
 		$cache = $this->getComponent('cache');
 		$connection = $this->getConnection();
 		$dsn = $connection->getDsn();
-		$key = 'sql.schema.table:' . $table . ';' . $dsn;
+		$key = 'l:system.sql.schema.table:' . $table . ';' . $dsn;
 		
 		if ($refresh || !($result = $cache->read($key)))
 		{
@@ -155,7 +155,7 @@ abstract class Schema extends Extension
 		$cache = $this->getComponent('cache');
 		$connection = $this->getConnection();
 		$dsn = $connection->getDsn();
-		$key = 'sql.schema.table:' . $table . ';' . $column . ';' . $dsn;
+		$key = 'l:system.sql.schema.column:' . $table . ';' . $column . ';' . $dsn;
 		
 		if ($refresh || !($result = $cache->read($key)))
 		{
