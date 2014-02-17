@@ -36,39 +36,6 @@ use \system\base\Component;
 abstract class Cache extends Component
 {
 	/**
-	 * The default expiry to use when caching data.
-	 *
-	 * @type int
-	 */
-	private $defaultExpiry = 0;
-	
-	/**
-	 * Defines the default expiry to use when writing new values
-	 * into cache.
-	 *
-	 * @param int $defaultExpiry
-	 *	The number of seconds it takes until a value expires since the moment
-	 *	it was last modified.
-	 */
-	public function setDefaultExpiry($defaultExpiry)
-	{
-		$this->defaultExpiry = $defaultExpiry;
-	}
-	
-	/**
-	 * Returns the default expiry to use when writing new values
-	 * into cache.
-	 *
-	 * @return int
-	 *	The number of seconds it takes until a value expires since the moment
-	 *	it was last modified.
-	 */
-	public function getDefaultExpiry()
-	{
-		return $this->defaultExpiry;
-	}
-
-	/**
 	 * This method is invoked during the extension initialization procedure,
 	 * before the child extensions get loaded -- when applicable.
 	 *
@@ -140,7 +107,8 @@ abstract class Cache extends Component
 	 *
 	 * @param int $expiry
 	 *	The amount of seconds until this key expires. When set to NULL the
-	 *	default expiry will be used.
+	 *	value will be cached for an undeterminated amount of time, until it's
+	 *	invalidated explicitly.
 	 */
 	public abstract function write($key, $value, $expiry = null);
 	
