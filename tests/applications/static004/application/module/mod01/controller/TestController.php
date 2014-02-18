@@ -22,9 +22,9 @@
 //
 // =============================================================================
 
-namespace application\modules\mod01\controllers;
+namespace application\module\mod01\controller;
 
-use \system\base\Controller;
+use \system\web\Controller;
 
 /**
  * Test Controller
@@ -35,10 +35,31 @@ use \system\base\Controller;
  */
 class TestController extends Controller
 {
-	public function actionIndex()
+	public function actionIndex($redirect = false, $emulate = false)
 	{
+		if ($redirect)
+		{
+			$this->redirect(array('test/forward-action-b', 'emulate' => true));
+		}
+		
+		else if ($emulate)
+		{
+			$route = $this->getComponent('router')->getRequestRoute();
+			$this->forward('/' . $route[0], $route[1]);
+		}
+	
 		$assets = $this->getComponent('assetManager');
-		$base = $assets->publish('application.modules.mod01.assets');
+		$base = $assets->publish('application.module.mod01.assets');
 		echo $base . 'test-asset.txt';
+	}
+	
+	public function actionForwardActionB()
+	{
+		$this->forward('actionB');
+	}
+	
+	public function actionActionB()
+	{
+		echo 'this is action b';
 	}
 }

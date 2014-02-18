@@ -105,7 +105,15 @@ class Controller extends \system\base\Controller
 	 */
 	protected function redirect($location, $terminate = true)
 	{
-		Response::setLocation($location);
+		if (is_array($location))
+		{
+			$location = $this->getComponent('router')->createAbsoluteUrl(
+				$this->getResolvedContextRoute($location[0]), 
+				array_slice($location, 1)
+			);
+		}
+	
+		header('Location: ' . $location);
 		
 		if ($terminate)
 		{

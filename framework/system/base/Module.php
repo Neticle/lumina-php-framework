@@ -366,7 +366,7 @@ class Module extends Context
 	 */
 	public final function loadController($name, $class, array $configuration = null)
 	{
-		return $this->moduleInstances[$name] =
+		return $this->controllerInstances[$name] =
 			new $class($name, $this, $configuration);
 	}
 	
@@ -462,7 +462,7 @@ class Module extends Context
 	 */
 	public final function hasController($name)
 	{
-		if (isset($this->controllers[$name]))
+		if (isset($this->controllers[$name]) || isset($this->controllerInstances[$name]))
 		{
 			return true;
 		}
@@ -516,7 +516,14 @@ class Module extends Context
 	 * and controllers.
 	 *
 	 * @param string $route
-	 *	The route to dispatch to, resolving to 
+	 *	The route to dispatch to, relative to the current module.
+	 *
+	 * @param array $parameters
+	 *	An associative array defining the values to be bound to the action
+	 *	method, indexed by parameter name.
+	 *
+	 * @return bool
+	 *	Returns TRUE on success, FALSE otherwise.
 	 */
 	public final function dispatch($route, array $parameters = null)
 	{

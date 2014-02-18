@@ -24,6 +24,7 @@
 
 namespace system\core;
 
+use \system\base\Module;
 use \system\core\ContextView;
 use \system\core\LazyExtension;
 use \system\core\exception\RuntimeException;
@@ -216,6 +217,67 @@ abstract class Context extends LazyExtension
 		$this->onRender($view);
 		
 		return $view->run($capture);
+	}
+	
+	
+	
+	/**
+	 * Resolves and returns the context route.
+	 *
+	 * If the route starts with '/' it is considered an absolute route; if
+	 * the route contains '/' at any other position it is considered relative
+	 * to the parent module, unless the context is already a module; 
+	 * if the route does not contain '/' it is considered relative to the
+	 * current context.
+	 *
+	 * @param string $route
+	 *	The route to be resolved.
+	 *
+	 * @return string
+	 *	The resolved absolute route.
+	 */
+	protected function getResolvedContextRoute($route)
+	{
+		if (isset($route[0]))
+		{
+			if ($route[0] === '/')
+			{
+				return substr($route, 1);
+			}
+			
+			$context = ($this instanceof Module) || !strpos($route, '/') ?
+				$this : $this->getParentModule();
+			
+			return $context->getRoute() . '/' . $route;
+		}
+		
+		return $this->getRoute();
+	}
+	
+	/**
+	 * Forwards the current dispatch procedure to the specified route.
+	 *
+	 * @param string $route
+	 *	The route to dispatch to, relative to the current module.
+	 *
+	 * @param array $parameters
+	 *	An associative array defining the values to be bound to the action
+	 *	method, indexed by parameter name.
+	 *
+	 * @return bool
+	 *	Returns TRUE on success, FALSE otherwise.
+	 */
+	protected function forward($route, array $parameters = null, $terminate = true)
+	{
+		$route = $this->getResolvedContextRoute($route);		
+		$result = Lumina::getApplication()->dispatch($route, $parameters);
+		
+		if ($terminate)
+		{
+			exit;
+		}
+		
+		return $result;
 	}
 }
 

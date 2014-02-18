@@ -27,6 +27,6 @@ use \system\core\Lumina;
 define('L_APPLICATION_ROOT', dirname(__FILE__));
 require L_APPLICATION_ROOT . '/../../../framework/bootstrap.php';
 
-Lumina::load('~settings.default', 'system\\web\\Application')->
-	dispatch('mod01/test/index');
-
+$result = Lumina::loadWebApplication('~settings.default', 'system\\web\\Application')->
+	dispatch('mod01/test/index', $_GET);
+	
