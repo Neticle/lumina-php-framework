@@ -25,6 +25,7 @@
 namespace system\web;
 
 use \system\base\Component;
+use \system\web\Response;
 use \system\web\exception\HttpException;
 
 /**
@@ -89,6 +90,26 @@ class Controller extends \system\base\Controller
 		if ($this->raiseArray('dispatchActionBindFailure', array($action, $parameters)))
 		{
 			throw new HttpException(400, 'Bad Request');
+		}
+	}
+	
+	/**
+	 * Redirects the client to the given location.
+	 *
+	 * @param string|array $location
+	 *	The location to redirect to as a string or a route array.
+	 *
+	 * @param bool $terminate
+	 *	When set to TRUE the script execution will be terminated right after
+	 *	the location header is set.
+	 */
+	protected function redirect($location, $terminate = true)
+	{
+		Response::setLocation($location);
+		
+		if ($terminate)
+		{
+			exit;
 		}
 	}
 }
