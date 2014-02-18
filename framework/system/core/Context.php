@@ -176,7 +176,7 @@ abstract class Context extends LazyExtension
 	 * @return string
 	 *	The captured contents, if applicable.
 	 */
-	public final function display($view, array $variables = null, $capture = false)
+	public function display($view, array $variables = null, $capture = false)
 	{
 		$layout = $this->getLayoutPath();
 		
@@ -210,7 +210,7 @@ abstract class Context extends LazyExtension
 	 * @return string
 	 *	The captured contents, if applicable.
 	 */
-	public final function render($view, array $variables = null, $capture = false)
+	public function render($view, array $variables = null, $capture = false)
 	{
 		$view = Lumina::getAliasPath($view, 'php', $this->getViewsPath());
 		$view = ContextView::getContextFileView($this, $view, $variables);
