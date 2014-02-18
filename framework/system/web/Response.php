@@ -22,8 +22,9 @@
 //
 // =============================================================================
 
-namespace system\web\session;
+namespace system\web;
 
+use \system\core\Lumina;
 use \system\core\exception\RuntimeException;
 
 /**
@@ -127,7 +128,28 @@ class Response
 		header($_SERVER['SERVER_PROTOCOL'] . ' ' . $code . ' ' . $message, true);
 	}
 	
-	
+	/**
+	 * Defines the redirect location.
+	 *
+	 * Please note the script WILL NOT BE terminated by this function and such
+	 * behavior has to be explicitly implemented.
+	 *
+	 * If a route array is given as the intended location an absolute URL will
+	 * be created through the application 'router' component.
+	 *
+	 * @param string|array $location
+	 *	The location to redirect to as a string or a route array.
+	 */
+	public static function setLocation($location)
+	{
+		if (is_array($location))
+		{
+			$location = Lumina::getApplication()->getComponent('router')
+				->createAbsoluteUrl($location[0], array_slice($location, 1));
+		}
+		
+		header('Location: ' . $location);
+	}
 
 }
 
