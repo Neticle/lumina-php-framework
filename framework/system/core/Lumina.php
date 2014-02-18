@@ -140,6 +140,7 @@ class Lumina
 		{
 			$relative = $alias[1] === '~';
 			$member = substr($alias, $relative ? 2 : 1);
+			$type = null; // type takes no effect
 		}
 		else 
 		{

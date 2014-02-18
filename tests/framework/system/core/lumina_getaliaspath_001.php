@@ -85,5 +85,23 @@ foreach ($tests as $alias => $expected)
 	);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+$tests = array(
+	'@/my/folder' => '/my/folder',
+	'@~my/folder' => '/base/my/folder',
+	'@/my/folder/script.php' => '/my/folder/script.php',
+	'@~my/folder/script.php' => '/base/my/folder/script.php'
+);
+
+foreach ($tests as $alias => $expected)
+{
+	lumina_test_identical(
+		'alias="' . $alias . '"; type=php; base="/base"', 
+		$expected, 
+		Lumina::getAliasPath($alias, null, '/base')
+	);
+}
+
 lumina_test_end();
 
