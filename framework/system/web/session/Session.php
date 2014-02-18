@@ -196,8 +196,8 @@ abstract class Session extends Component
 	/**
 	 * Returns a value from the session.
 	 *
-	 * @param string $key
-	 *	The unique value identifier.
+	 * @param string $attribute
+	 *	The attribute to return.
 	 *
 	 * @param mixed $default
 	 *	The value to be returned by default.
@@ -205,117 +205,116 @@ abstract class Session extends Component
 	 * @return mixed
 	 *	The matching value, or 'default' if it's not defined.
 	 */
-	public function getValue($key, $default = null)
+	public function getAttribute($attribute, $default = null)
 	{
-		return isset($_SESSION[$key]) ?
-			$_SESSION[$key] : $default;
+		return isset($_SESSION[$attribute]) ?
+			$_SESSION[$attribute] : $default;
 	}
 	
 	/**
-	 * Defines a session value.
+	 * Defines a session attribute.
 	 *
-	 * @param string $key
-	 *	The unique value identifier.
+	 * @param string $attribute
+	 *	The attribute name.
 	 *
 	 * @param mixed $value
 	 *	The value to define.
 	 */
-	public function setValue($key, $value)
+	public function setAttribute($attribute, $value)
 	{
-		$_SESSION[$key] = $value;
+		$_SESSION[$attribute] = $value;
 	}
 	
 	/**
-	 * Pushes a value to a session array.
+	 * Pushes a value to a session array attribute.
 	 *
-	 * @param string $key
-	 *	The unique value identifier, which must not be set or set
-	 *	as an array.
+	 * @param string $attribute
+	 *	The session attribute, which must be defined as an array.
 	 *
 	 * @param mixed $value
 	 *	The value to push.
 	 */
-	public function pushValue($key, $value)
+	public function pushAttribute($attribute, $value)
 	{
-		$_SESSION[$key][] = $value;
+		$_SESSION[$attribute][] = $value;
 	}
 	
 	/**
-	 * Checks wether or not the specified key is defined.
+	 * Checks wether or not the specified attribute is defined.
 	 *
-	 * @param string $key
-	 *	The key to be verified.
+	 * @param string $attribute
+	 *	The attribute to be verified.
 	 *
 	 * @return bool
 	 *	Returns TRUE if the key is defined, FALSE otherwise.
 	 */
-	public function hasValue($key)
+	public function hasAttribute($attribute)
 	{
-		return isset($_SESSION[$key]);
+		return isset($_SESSION[$attribute]);
 	}
 	
 	/**
-	 * Clears a session value.
+	 * Clears a session attribute.
 	 *
-	 * @param string $key
-	 *	The unique value identifier.
+	 * @param string $attribute
+	 *	The attribute to clear from the session.
 	 */
-	public function clearValue($key)
+	public function clearAttribute($attribute)
 	{
-		unset($_SESSION[$key]);
+		unset($_SESSION[$attribute]);
 	}
 	
 	/**
-	 * Returns a value from the session.
+	 * Returns an attribute value from the session.
 	 *
-	 * @param string $key
-	 *	The unique value identifier.
+	 * @param string $attribute
+	 *	The attribute name.
 	 *
 	 * @return mixed
-	 *	The matching value, or 'default' if it's not defined.
+	 *	The attribute value, or 'default' if it's not defined.
 	 */
-	public function __get($key)
+	public function __get($attribute)
 	{
-		return $this->getValue($key);
+		return $this->getAttribute($attribute);
 	}
 	
 	/**
-	 * Defines a session value.
+	 * Defines a session attribute value.
 	 *
-	 * @param string $key
-	 *	The unique value identifier.
+	 * @param string $attribute
+	 *	The attribute name.
 	 *
 	 * @param mixed $value
 	 *	The value to define.
 	 */
-	public function __set($key, $value)
+	public function __set($attribute, $value)
 	{
-		$this->setValue($key, $value);
+		$this->setAttribute($attribute, $value);
 	}
 	
 	/**
-	 * Checks wether or not the specified key is defined.
+	 * Checks wether or not the specified attribute is defined.
 	 *
-	 * @param string $key
-	 *	The key to be verified.
+	 * @param string $attribute
+	 *	The attribute to be verified.
 	 *
 	 * @return bool
-	 *	Returns TRUE if the key is defined, FALSE otherwise.
+	 *	Returns TRUE if the attribute is defined, FALSE otherwise.
 	 */
-	public function __isset($key)
+	public function __isset($attribute)
 	{
-		return $this->hasValue($key);
+		return $this->hasAttribute($attribute);
 	}
 	
 	/**
-	 * Clears a session value.
+	 * Clears a session attribute.
 	 *
-	 * @param string $key
-	 *	The unique value identifier.
+	 * @param string $attribute
+	 *	The attribute to be cleared from the session.
 	 */
-	public function __unset($key)
+	public function __unset($attribute)
 	{
-		return $this->clearValue($key);
+		return $this->clearAttribute($attribute);
 	}
 	
 }
