@@ -38,6 +38,37 @@ use \system\core\exception\RuntimeException;
 class Response
 {
 	/**
+	 * The default HTTP status messages, indexed by status code.
+	 *
+	 * @type array
+	 */
+	private static $httpStatusMessages = array(
+		100 => 'Continue',
+		
+		200 => 'OK',
+		201 => 'Created',
+		202 => 'Accepted',
+		
+		300 => 'Multiple Choices',
+		301 => 'Moved Permanently',
+		303 => 'See Other',
+		307 => 'Temporary Redirect',
+		
+		400 => 'Bad Request',
+		401 => 'Unauthorized',
+		402 => 'Payment Required',
+		403 => 'Forbidden',
+		404 => 'Document Not Found',
+		405 => 'Method Not Allowed',
+		406 => 'Not Acceptable',
+		
+		500 => 'Internal Server Error',
+		501 => 'Not Implemented',
+		502 => 'Bad Gateway',
+		503 => 'Service Unavailable'		
+	);
+
+	/**
 	 * Defines a new response header.
 	 *
 	 * This function wraps 'header' and will generate an error if the
@@ -113,17 +144,33 @@ class Response
 	 * This function wraps 'header' and will generate an error if the
 	 * response headers have already been sent!
 	 *
+	 * @throws RuntimeException
+	 *	Thrown if no message is given and a default one is not defined for
+	 *	the specified status code.
+	 *
 	 * @param int $code
 	 *	The response status code.
 	 *
 	 * @param string $message
-	 *	The response status message.
+	 *	The response status message. If a message is not specified the default
+	 *	message for the given code will be used.
 	 */
-	public static function setStatus($code, $message)
+	public static function setStatus($code, $message = null)
 	{
-		$message = str_replace(array("\t", "\r"), ' ', 
-			str_replace("\n", "\n ", $message)
-		);
+		if (isset($message))
+		{
+			$message = str_replace(array("\t", "\r"), ' ', 
+				str_replace("\n", "\n ", $message)
+			);
+		}
+		else if (isset(self::$httpStatusMessages[$code]))
+		{
+			$message = self::$httpStatusMessages[$code];
+		}
+		else
+		{
+			throw new RuntimeException('Unable to determine "' . $code . '" status code message.'); 
+		}
 	
 		header($_SERVER['SERVER_PROTOCOL'] . ' ' . $code . ' ' . $message, true);
 	}
