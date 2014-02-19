@@ -36,6 +36,37 @@ use \system\cache\Cache;
 class ApcCache extends Cache
 {
 	/**
+	 * The cache keys prefix.
+	 *
+	 * @type string
+	 */
+	private $prefix;
+	
+	/**
+	 * Defines the cache keys prefix, which allow you to safely run paralel
+	 * clones of your application.
+	 *
+	 * @param string $prefix
+	 *	The cache keys prefix.
+	 */
+	public function setPrefix($prefix)
+	{
+		$this->prefix = $prefix;
+	}
+	
+	/**
+	 * Returns the cache keys prefix, which allow you to safely run paralel
+	 * clones of your application.
+	 *
+	 * @return string
+	 *	The cache keys prefix.
+	 */
+	public function getPrefix()
+	{
+		return $this->prefix;
+	}
+
+	/**
 	 * Opens or starts any resources required for cache management purposes.
 	 *
 	 * @throws RuntimeException
@@ -106,7 +137,7 @@ class ApcCache extends Cache
 			$expiry = 0;
 		}
 		
-		if (!apc_store($key, $value, $expiry))
+		if (!apc_store($this->prefix . $key, $value, $expiry))
 		{
 			throw new RuntimeException('Unable to store "' . $key . '" in APC cache.');
 		}
@@ -127,7 +158,7 @@ class ApcCache extends Cache
 	 */
 	public function read($key)
 	{
-		$result = apc_fetch($key, $success);
+		$result = apc_fetch($this->prefix . $key, $success);
 		
 		if ($success)
 		{
@@ -145,7 +176,7 @@ class ApcCache extends Cache
 	 */
 	public function clear($key)
 	{
-		apc_delete($key);
+		apc_delete($this->prefix . $key);
 	}
 }
 

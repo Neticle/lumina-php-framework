@@ -66,7 +66,8 @@ $app = Lumina::loadWebApplication(array(
 		),
 		
 		'cache' => array(
-			'class' => 'system\\cache\\ApcCache'
+			'class' => 'system\\cache\\ApcCache',
+			'prefix' => 'mycp:'
 		)
 	)
 	
