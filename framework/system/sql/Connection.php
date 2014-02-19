@@ -25,7 +25,7 @@
 namespace system\sql;
 
 use \system\base\Component;
-use \system\sql\driver\Schema;
+use \system\sql\driver\Driver;
 
 /**
  * Connection.
@@ -569,9 +569,9 @@ class Connection extends Component
 	 *	or an array of strings.
 	 *
 	 * @param int $type
-	 *	The lock type, as defined by Schema::LOCK_* constants.
+	 *	The lock type, as defined by Driver::LOCK_* constants.
 	 */
-	public function setTableLocks($tables, $type = Schema::LOCK_WRITE)
+	public function setTableLocks($tables, $type = Driver::LOCK_WRITE)
 	{
 		if (is_string($tables))
 		{

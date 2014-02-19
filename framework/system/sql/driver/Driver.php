@@ -130,7 +130,7 @@ abstract class Driver extends Extension
 	 *	The name(s) of the table(s) to lock.
 	 *
 	 * @param int $type
-	 *	The lock type, as defined by Schema::LOCK_* constants.
+	 *	The lock type, as defined by Driver::LOCK_* constants.
 	 */
 	public abstract function setTableLocks(array $tables, $type = self::LOCK_WRITE);
 	
