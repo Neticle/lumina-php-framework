@@ -133,6 +133,26 @@ abstract class Extension extends Element
 	}
 	
 	/**
+	 * Defines the configuration for a single extension component.
+	 *
+	 * @param string $name
+	 *	The name of the component to define.
+	 *
+	 * @param array $configuration
+	 *	The component express construction and configuration array.
+	 *
+	 * @param bool $merge
+	 *	A flag indicating wether or not the given settings should be merged
+	 *	with the previously defined ones instead of discarding them.
+	 */
+	public final function setComponent($name, array $configuration, $merge = true)
+	{
+		$this->components[$name] = ($merge && isset($this->components[$name]) && is_array($this->components[$name])) ?
+			array_replace_recursive($this->components[$name], $configuration) :
+			$configuration;
+	}
+	
+	/**
 	 * Checks wether or not a component is defined.
 	 *
 	 * @throws RuntimeException
