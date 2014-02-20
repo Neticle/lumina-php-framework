@@ -356,6 +356,7 @@ abstract class Record extends Model
 		$table = $this->getTableSchema();
 		$tableName = $table->getName();
 		$columns = $table->getColumns();
+		$attributes = $this->getAttributes();
 		$autoIncrementable = false;
 		$fields = array();
 		
@@ -367,7 +368,10 @@ abstract class Record extends Model
 				$autoIncrementable = $name;
 			}
 			
-			$fields[$name] = $this->getAttribute($name);
+			if (isset($attributes[$name]) || array_key_exists($name, $attributes))
+			{
+				$fields[$name] = $attributes[$name];
+			}
 		}
 		
 		
@@ -379,17 +383,21 @@ abstract class Record extends Model
 			
 			if ($autoIncrementable)
 			{
-				$this->setAttribute($autoIncrementable, $db->getLastInsertId());
+				$id = $db->getLastInsertId();
+				$this->setAttribute($autoIncrementable, $id);
+				$this->primaryKey[$autoIncrementable] = $id;
 			}
-			
-			// Reload the primary key field values
-			$primaryKey = $table->getPrimaryKey();
-		
-			if (isset($primaryKey[0]))
+			else
 			{
-				foreach ($primaryKey as $field)
+				// Reload the primary key field values
+				$primaryKey = $table->getPrimaryKey();
+		
+				if (isset($primaryKey[0]))
 				{
-					$this->primaryKey[$field] = $fields[$field];
+					foreach ($primaryKey as $field)
+					{
+						$this->primaryKey[$field] = $fields[$field];
+					}
 				}
 			}
 		}
