@@ -227,6 +227,49 @@ class Lumina
 	}
 	
 	/**
+	 * Resolves the given aliases into an absolute path.
+	 *
+	 * The aliases will be resolved in the same order as they were given and,
+	 * if one of the files exists, that path will be returned.
+	 *
+	 * If no file exists, the path of the last given alias will be returned
+	 * instead.
+	 *
+	 * @param string $aliases
+	 *	The relative or absolute aliases to be resolved.
+	 *
+	 * @param string $type
+	 *	The type of alias being resolved.
+	 *
+	 * @param string $base
+	 *	The base path to resolve relative aliases from.
+	 *
+	 * @return string
+	 *	The resolved alias path.
+	 */
+	public static function getMultiAliasPath(array $aliases, $type = 'php', $base = null)
+	{
+		if (!isset($aliases[0]))
+		{
+			throw new RuntimeException('At least one alias is required.');
+		}
+		
+		$length = count($aliases);
+		
+		for ($i = 0; $i < $length; ++$i)
+		{
+			$path = self::getAliasPath($aliases[$i], $type, $base);
+			
+			if ($i < ($length - 1) && file_exists($path))
+			{
+				break;
+			}
+		}
+		
+		return $path;
+	}
+	
+	/**
 	 * Returns the absolute path of the specified class as long as it's derived
 	 * from a defined base package.
 	 *
