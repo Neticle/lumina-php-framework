@@ -24,7 +24,7 @@
 
 namespace system\data\validation;
 
-use \system\core\Express;
+use \system\core\Element;
 use \system\data\Model;
 
 /**
@@ -39,7 +39,7 @@ use \system\data\Model;
  * @package system.data.validation
  * @since 0.2.0
  */
-abstract class Rule extends Express
+abstract class Rule extends Element
 {
 	/**
 	 * Holds the class names for rule aliases.
