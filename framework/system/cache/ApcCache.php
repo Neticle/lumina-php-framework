@@ -198,7 +198,7 @@ class ApcCache extends Cache
 			
 			foreach(new \APCIterator('user', $pattern, APC_ITER_KEY, APC_LIST_ACTIVE) as $key)
 			{
-				apc_delete($key);
+				apc_delete($key['key']);
 			}
 		}
 	}
