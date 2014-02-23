@@ -22,7 +22,7 @@
 //
 // =============================================================================
 
-namespace application\models;
+namespace application\model;
 
 use \system\data\Model;
 
@@ -92,7 +92,7 @@ class User extends Model
 	protected function onAfterValidation(array $attributes)
 	{
 		// This shows you how you can extend validation
-		if (in_array('email', $attributes) && !$this->hasAttributeErrors('email'))
+		if (in_array('email', $attributes) && !$this->hasAttributeErrors(array('email')))
 		{
 			$email = $this->getAttribute('email');
 			

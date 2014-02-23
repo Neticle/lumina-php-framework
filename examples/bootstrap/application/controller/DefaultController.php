@@ -22,45 +22,25 @@
 //
 // =============================================================================
 
-namespace application\controllers;
+namespace application\controller;
 
-use \application\models\User;
-use \system\base\Controller;
+use \system\web\Controller;
 
 /**
- * A simple controller that shows you how you can use a custom model to validate
- * input data received from any form.
- *
- * For the purpose of simplifying this example, a regular HTML form is used,
- * without any widgets.
+ * Default Controller.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package application.controllers
+ * @package application.controller
  * @since 0.2.0
  */
-class ModelController extends Controller
+class DefaultController extends Controller
 {
 	/**
-	 * Displays the form view and processes its input.
+	 * Displays the default page.
 	 */
 	public function actionIndex()
 	{
-		$user = new User('create');
-		
-		if (isset($_POST['User']))
-		{
-			$user->bindAttributes($_POST['User']);
-			
-			if ($user->validate())
-			{
-				echo '<h1>Model Validated!</h1>';
-				var_dump($user->getAttributes(true));
-				return;
-			}
-		}
-		
-		$this->render('~index', array(
-			'model' => $user
-		));
+		$this->display('~index');
 	}
 }
+

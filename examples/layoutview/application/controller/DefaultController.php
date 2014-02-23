@@ -22,25 +22,30 @@
 //
 // =============================================================================
 
-namespace application\controllers;
+namespace application\controller;
 
 use \system\base\Controller;
 
 /**
- * A simple message controller to display a "Hello World" message.
+ * The default application controller.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
  * @package application.controllers
  * @since 0.2.0
  */
-class MessageController extends Controller
+class DefaultController extends Controller
 {
 	/**
-	 * Displays a simple "Hello World" message.
+	 * Displays a message.
+	 *
+	 * @param string $message
+	 *	The message to display.
 	 */
-	public function actionHelloWorld()
+	public function actionIndex($message = 'Yes, this is view.')
 	{
-		echo 'Hello World';
+		$this->display('~myview', array(
+			'message' => $message
+		));
 	}
 }
 

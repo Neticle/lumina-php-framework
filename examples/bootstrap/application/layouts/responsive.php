@@ -34,7 +34,7 @@ use \system\web\html\Html;
 use \system\web\extension\widget\DocumentWidget;
 
 // Load the Bootstrap bundle (which also loads jQuery)
-$document = $self->getComponent('document');
+$document = $this->getComponent('document');
 $document->requireBundle('bootstrap');
 
 ?>
