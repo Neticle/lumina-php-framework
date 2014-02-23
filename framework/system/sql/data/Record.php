@@ -85,6 +85,17 @@ abstract class Record extends Model
 	protected abstract function getTableName();
 	
 	/**
+	 * Checks wether or not this record is yet to be saved.
+	 *
+	 * @return bool
+	 *	Returns TRUE if the record has not been saved, FALSE otherwise.
+	 */
+	public function isNewRecord()
+	{
+		return $this->newRecord;
+	}
+	
+	/**
 	 * Returns the database component to be used by the record.
 	 *
 	 * The default implementation returns the application "database"
