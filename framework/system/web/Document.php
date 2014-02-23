@@ -25,6 +25,7 @@
 namespace system\web;
 
 use \system\base\Component;
+use \system\core\exception\RuntimeException;
 use \system\ext\web\widget\DocumentWidget;
 
 /**
