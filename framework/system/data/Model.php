@@ -238,7 +238,7 @@ abstract class Model extends Element
 		
 		foreach ($attributes as $name => $value)
 		{
-			if (in_array($name, $safe))
+			if (in_array($name, $safe) && isset($value) && $value !== '')
 			{
 				$this->attributes[$name] = $value;
 			}
