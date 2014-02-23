@@ -35,7 +35,7 @@ use \system\core\Lumina;
  * @package system.core
  * @since 0.2.0
  */
-class View extends Extension
+class View extends Render
 {
 	/**
 	 * The view file wrapped by this instance.
@@ -133,43 +133,6 @@ class View extends Extension
 	public static function getApplicationFileView($filePath, array $variables = null)
 	{
 		return new View(Lumina::getApplication(), $filePath, $variables);
-	}
-	
-	/**
-	 * Renders a script file.
-	 *
-	 * Please note the 'self' variable is not defined by default, meaning that
-	 * you will have to call this function again if you wish to render a
-	 * child view from that context.
-	 *
-	 * Make sure you can not render the view file from a controller before
-	 * using this function.
-	 *
-	 * @param string $file
-	 *	The absolute path to the file being rendered.
-	 *
-	 * @param array $variables
-	 *	The variables to be extracted into the script context.
-	 *
-	 * @param bool $capture
-	 *	When set to TRUE the rendered contents will be captured instead
-	 *	of sent to the currently active output buffer.
-	 */
-	protected static function renderFile($__FILE__, array $__VARIABLES__ = null, $__CAPTURE__ = true)
-	{
-		if (isset($__VARIABLES__))
-		{
-			extract($__VARIABLES__);
-		}
-		
-		if ($__CAPTURE__)
-		{
-			ob_start();
-			require($__FILE__);
-			return ob_get_clean();
-		}
-		
-		require($__FILE__);
 	}
 	
 	/**
@@ -272,8 +235,7 @@ class View extends Extension
 	 */
 	public function run($capture = false)
 	{
-		$variables = array('self' => $this) + $this->variables;
-		return self::renderFile($this->filePath, $variables, $capture);
+		return $this->renderFile($this->filePath, $this->variables, $capture);
 	}
 }
 
