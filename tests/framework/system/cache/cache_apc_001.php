@@ -94,6 +94,11 @@ if (isset($count))
 	lumina_test_report('Cached Result Available', true, array(
 		'count' => $count
 	));
+	
+	if (isset($_GET['clearall']))
+	{
+		$cache->clear('lumina.test.cache.record*.count');
+	}
 }
 else
 {

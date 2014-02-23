@@ -128,7 +128,10 @@ abstract class Cache extends Component
 	public abstract function read($key);
 	
 	/**
-	 * Clears any cached value for the given key.
+	 * Clears any cached value for the given key(s).
+	 *
+	 * @param string $key
+	 *	The key or pattern of keys to remove.
 	 *
 	 * @throws RuntimeException
 	 *	Thrown when the clear operation fails.

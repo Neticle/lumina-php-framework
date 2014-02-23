@@ -169,14 +169,38 @@ class ApcCache extends Cache
 	}
 	
 	/**
-	 * Clears any cached value for the given key.
+	 * Clears any cached value for the given key(s).
+	 *
+	 * @param string $key
+	 *	The key or pattern of keys to remove.
 	 *
 	 * @throws RuntimeException
 	 *	Thrown when the clear operation fails.
 	 */
 	public function clear($key)
 	{
-		apc_delete($this->prefix . $key);
+		if (strrpos($key, '*') === false)
+		{
+			apc_delete($this->prefix . $key);
+		}
+		else
+		{
+			$pattern = '/^' . preg_quote($this->prefix, '/');
+			$offset = 0;
+			
+			while(($index = strpos($key, '*', $offset)) !== false)
+			{
+				$pattern .= preg_quote(substr($key, $offset, $index - $offset), '/') . '.*';
+				$offset = $index + 1;
+			}
+			
+			$pattern .= preg_quote(substr($key, $offset), '/') . '$/';
+			
+			foreach(new \APCIterator('user', $pattern, APC_ITER_KEY, APC_LIST_ACTIVE) as $key)
+			{
+				apc_delete($key);
+			}
+		}
 	}
 }
 
