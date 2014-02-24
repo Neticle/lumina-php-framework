@@ -245,13 +245,13 @@ abstract class Record extends Model
 	private function createCriteriaFromAttributes(array $attributes)
 	{
 		$database = $this->getDatabase();
+		$table = $this->getTableName();
 	
 		$criteria = new Criteria();
-		$criteria->setAlias('t');
 		
 		foreach ($attributes as $name => $value)
 		{
-			$criteria->addComparison($database->quote('t.' . $name), $value);
+			$criteria->addComparison($database->quote($table . '.' . $name), $value);
 		}
 		
 		return $criteria;
@@ -447,18 +447,18 @@ abstract class Record extends Model
 			throw new RuntimeException('Can not delete record without primary key.');
 		}
 		
-		if (!$this->onDelete())
+		if ($this->onDelete())
 		{
-			return false;
+			$db = $this->getDatabase();
+			$criteria = $this->createCriteriaFromAttributes($this->primaryKey);
+		
+			$db->delete($this->getTableName(), $criteria);
+			$this->primaryKey = null;
+			$this->newRecord = true;
+			return $this->onAfterDelete();
 		}
 		
-		$db = $this->getDatabase();
-		$criteria = $this->createCriteriaFromAttributes($this->primaryKey);
-		
-		$db->delete($this->getTableName(), $criteria);
-		$this->primaryKey = null;
-		$this->newRecord = true;
-		return $this->onAfterDelete();
+		return false;
 	}
 	
 	/**
@@ -473,12 +473,9 @@ abstract class Record extends Model
 	 */
 	public function deleteAll($criteria = null)
 	{
-		if (isset($criteria))
+		if (isset($criteria) && is_array($criteria))
 		{
-			if (is_array($criteria))
-			{
-				$criteria = new Criteria($criteria);
-			}
+			$criteria = new Criteria($criteria);
 		}
 		
 		$db->delete($this->getTableName(), $criteria);
