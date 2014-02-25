@@ -109,5 +109,36 @@ class MysqlDriver extends Driver
 	{
 		return '`' . str_replace(array('`', '.'), array('\\\`', '`.`'), $name) . '`';
 	}
+	
+	/**
+	 * Runs a SQL command that defines the transaction isolation level
+	 * acording to the given value.
+	 *
+	 * This isolation level will apply to all transactions started after
+	 * its definition, for the current session.
+	 *
+	 * @param int $level
+	 *	The transaction isolation level, as defined by the
+	 *	Driver::TRANSACTION_* constants.
+	 */
+	public function setTransactionIsolationLevel($level)
+	{
+		$command = 'SET TRANSACTION ISOLATION LEVEL ';
+	
+		switch($level)
+		{
+			case self::TRANSACTION_REPEATABLE_READ:
+			case self::TRANSACTION_READ_COMMITTED:
+			case self::TRANSACTION_READ_UNCOMMITTED:
+			case self::TRANSACTION_SERIALIZABLE:
+				$command .= ' ' . $level;
+				break;
+			
+			default:
+				throw RuntimeException('Invalid transaction isolation level "' . $level . '" specified.');
+		}
+		
+		$this->getConnection()->run($command);
+	}
 }
 

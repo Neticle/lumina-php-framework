@@ -544,11 +544,24 @@ class Connection extends Component
 	/**
 	 * Starts a new transaction.
 	 *
+	 * This method uses the driver 'setTransactionIsolationLevel' to
+	 * redefine the current default session-wide level before the
+	 * transaction is started.
+	 *
 	 * @throws PDOException
 	 *	Thrown when the underlying driver does not support transactions.
+	 *
+	 * @param int $level
+	 *	The transaction isolation level, as defined by the
+	 *	Driver::TRANSACTION_* constants.
+	 *
+	 *	The default transaction level is SERIALIZABLE, which means any rows
+	 *	read or modified during the transaction can not be updated by any other
+	 *	transactions until they are commited.
 	 */
-	public function startTransaction()
+	public function startTransaction($isolationLevel = Driver::TRANSACTION_SERIALIZABLE)
 	{
+		$this->driver->setTransactionIsolationLevel($isolationLevel);
 		$this->pdo->beginTransaction();
 	}
 	

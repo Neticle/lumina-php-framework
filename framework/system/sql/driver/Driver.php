@@ -38,27 +38,43 @@ use \system\sql\Connection;
 abstract class Driver extends Extension
 {
 	/**
-	 * Specifies a table, column or row should be LOCK for READING, thus
-	 * making sure it's data does not change during a transaction.
+	 * The defines future transaction isolation 
+	 * levels as 'REPEATABLE READ'.
 	 *
-	 * Once this lock is set the table/row/column becomes READ-ONLY and any
-	 * inserts from this or other connection sessions will hang until the lock
-	 * is released.
-	 *
-	 * @type int
+	 * @see http://dev.mysql.com/doc/refman/5.6/en/set-transaction.html
+	 * @type string
 	 */
-	const LOCK_READ = 1;
+	const TRANSACTION_REPEATABLE_READ = 'REPEATABLE READ';
 	
 	/**
-	 * Specifies a table, column or row should be LOCK for WRITTING, thus
-	 * making sure it's data can not be read while it's still being updated.
+	 * The defines future transaction isolation 
+	 * levels as 'READ COMMITTED'.
 	 *
-	 * Once this lock is set any queries made to the table/row/column will
-	 * hang, unless made from the current connection session.
-	 *
-	 * @type int
+	 * @see http://dev.mysql.com/doc/refman/5.6/en/set-transaction.html
+	 * @type string
 	 */
-	const LOCK_WRITE = 2;
+	const TRANSACTION_READ_COMMITTED = 'READ COMMITTED';
+	
+	/**
+	 * The defines future transaction isolation 
+	 * levels as 'READ UNCOMMITED'.
+	 *
+	 * @see http://dev.mysql.com/doc/refman/5.6/en/set-transaction.html
+	 * @type string
+	 */
+	const TRANSACTION_READ_UNCOMMITTED = 'READ UNCOMMITED';
+	
+	/**
+	 * The defines future transaction isolation 
+	 * levels as 'SERIALIZABLE'.
+	 *
+	 * This is the default transaction level for transactions started
+	 * through Lumina API and any subsequent ones.
+	 *
+	 * @see http://dev.mysql.com/doc/refman/5.6/en/set-transaction.html
+	 * @type string
+	 */
+	const TRANSACTION_SERIALIZABLE = 'SERIALIZABLE';
 	
 	/**
 	 * Constructor.
@@ -94,6 +110,19 @@ abstract class Driver extends Extension
 	 *	The driver name.
 	 */
 	public abstract function getName();
+	
+	/**
+	 * Runs a SQL command that defines the transaction isolation level
+	 * acording to the given value.
+	 *
+	 * This isolation level will apply to all transactions started after
+	 * its definition, for the current session.
+	 *
+	 * @param int $level
+	 *	The transaction isolation level, as defined by the
+	 *	Driver::TRANSACTION_* constants.
+	 */
+	public abstract function setTransactionIsolationLevel($level);
 	
 	/**
 	 * Quotes the given field or table name.
