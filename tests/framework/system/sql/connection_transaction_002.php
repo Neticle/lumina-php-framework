@@ -72,6 +72,7 @@ use \system\sql\driver\Driver;
 
 define('L_APPLICATION_ROOT', dirname(__FILE__));
 require '../../../../framework/bootstrap.php';
+require '../../../lumina.php';
 
 $app = Lumina::load(array(
 	
@@ -87,7 +88,13 @@ $app = Lumina::load(array(
 
 $db = $app->getComponent('database');
 
-$db->setTableLocks('lumina_test_table_001, lumina_test_table_002', Driver::LOCK_READ); 
-sleep(5);
 
-//  run ~data/record_002.php and it should not finish in the next 5 min
+
+lumina_test_start('Database Transaction');
+
+$db->startTransaction();
+$db->select('lumina_test_table_002', array('for' => 'update'));
+sleep(10);
+$db->commit();
+
+lumina_test_end();

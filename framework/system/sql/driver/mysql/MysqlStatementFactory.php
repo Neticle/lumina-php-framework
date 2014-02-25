@@ -24,6 +24,7 @@
 
 namespace system\sql\driver\mysql;
 
+use \system\core\exception\RuntimeException;
 use \system\sql\Criteria;
 use \system\sql\Expression;
 use \system\sql\driver\StatementFactory;
@@ -127,6 +128,24 @@ class MysqlStatementFactory extends StatementFactory
 			if ($criteria['offset'])
 			{
 				$statement .= ' OFFSET ' . $criteria['offset'];
+			}
+			
+			// ... FOR
+			if ($criteria['for'])
+			{
+				if (!$this->getDriverConnection()->inTransaction())
+				{
+					throw new RuntimeException('Criteria property "for" can not be used without an ongoing transaction.');
+				}
+			
+				if ($criteria['for'] === 'update')
+				{
+					$statement .= ' FOR UPDATE';
+				}
+				else if ($criteria['for'] === 'read')
+				{
+					$statement .= ' LOCK IN SHARE MODE';
+				}
 			}
 			
 			$parameters = $criteria['parameters'];

@@ -37,6 +37,22 @@ use \system\sql\Expression;
 class Criteria extends Express
 {
 	/**
+	 * Defines a SELECT statement as to be intended for update, thus placing
+	 * an explicit lock on the affected rows until the transaction completes.
+	 *
+	 * @type string
+	 */
+	const FOR_UPDATE = 'update';
+	
+	/**
+	 * Defines a SELECT statement as to be intended for reading, thus placing
+	 * a share lock on the affected rows until the transaction completes.
+	 *
+	 * @type string
+	 */
+	const FOR_READ = 'read';
+
+	/**
 	 * The next available unique parameter identifier.
 	 *
 	 * @type int
@@ -49,6 +65,17 @@ class Criteria extends Express
 	 * @type string
 	 */
 	private $select = '*';
+	
+	/**
+	 * The purpose of this select which may result in a specific lock
+	 * being set on the rows matched by this criteria.
+	 *
+	 * Values supported for all major drivers are defined by the
+	 * Criteria::FOR_* constants.
+	 *
+	 * @type string
+	 */
+	private $for;
 	
 	/**
 	 * A flag indicating wether or not a distinct selectis applied.
@@ -181,6 +208,33 @@ class Criteria extends Express
 	public function getSelectAsArray()
 	{
 		return preg_split('/(\s*\,\s*)/', $this->select, -1, PREG_SPLIT_NO_EMPTY);
+	}
+	
+	/**
+	 * Defines the purpose of this select which may result in a specific lock
+	 * being set on the rows matched by this criteria.
+	 *
+	 * Please note a statement factory will throw an exception if a value is
+	 * defined for this and there's no ongoing transaction!
+	 *
+	 * @param string $for
+	 *	The statement purpose, as defined by the Criteria::FOR_* constants.
+	 */
+	public function setFor($for)
+	{
+		$this->for = $for;
+	}
+	
+	/**
+	 * Returns the purpose of this select which may result in a specific lock
+	 * being set on the rows matched by this criteria.
+	 *
+	 * @return string
+	 *	The statement purpose, as defined by the Criteria::FOR_* constants.
+	 */
+	public function getFor()
+	{
+		return $this->for;
 	}
 	
 	/**
@@ -510,6 +564,7 @@ class Criteria extends Express
 	{
 		return array(
 			'select' => $this->select,
+			'for' => $this->for,
 			'distinct' => $this->isDistinct,
 			'alias' => $this->alias,
 			'join' => $this->join,
