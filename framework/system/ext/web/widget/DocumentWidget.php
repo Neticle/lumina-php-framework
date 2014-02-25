@@ -103,7 +103,7 @@ class DocumentWidget extends Widget
 			if ($style[1] === $position)
 			{
 				echo '<style id="', Html::encode($id), '" type="text/css">',
-					Html::encode($style[0]), '</style>';
+					$style[0], '</style>';
 			}
 		}
 		
@@ -123,7 +123,7 @@ class DocumentWidget extends Widget
 			if ($script[1] === $position)
 			{
 				echo '<script type="text/javascript" id="', Html::encode($id), '">',
-					Html::encode($script[0]), '</script>';
+					$script[0], '</script>';
 			}
 		}
 	}
