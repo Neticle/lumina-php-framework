@@ -175,6 +175,23 @@ class MysqlSchema extends Schema
 	 * @param array $schema
 	 *	The MySQL schema associative array.
 	 *
+	 * @return DatabaseSchema
+	 *	The schema instance.
+	 */
+	private function createDatabaseSchema($schema)
+	{
+		$database = new DatabaseSchema();
+		$database->setName($schema['SCHEMA_NAME']);
+		$database->setCharset($schema['DEFAULT_CHARACTER_SET_NAME']);
+		return $database;
+	}
+	
+	/**
+	 * Creates the schema instance.
+	 *
+	 * @param array $schema
+	 *	The MySQL schema associative array.
+	 *
 	 * @return TableSchema
 	 *	The schema instance.
 	 */

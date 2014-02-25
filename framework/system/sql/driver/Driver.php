@@ -119,27 +119,5 @@ abstract class Driver extends Extension
 	{
 		return $this->getParent();
 	}
-	
-	/**
-	 * Locks the specified tables.
-	 *
-	 * @throws RuntimeException
-	 *	Thrown when the table fails to be locked.
-	 *
-	 * @param string[] $tables
-	 *	The name(s) of the table(s) to lock.
-	 *
-	 * @param int $type
-	 *	The lock type, as defined by Driver::LOCK_* constants.
-	 */
-	public abstract function setTableLocks(array $tables, $type = self::LOCK_WRITE);
-	
-	/**
-	 * Releases any existing table locks.
-	 *
-	 * @throws RuntimeException
-	 *	Thrown when the tables fail to be release.
-	 */
-	public abstract function releaseAllLocks();
 }
 
