@@ -559,6 +559,53 @@ class Connection extends Component
 	}
 	
 	/**
+	 * Starts a new transaction.
+	 *
+	 * @throws PDOException
+	 *	Thrown when the underlying driver does not support transactions.
+	 */
+	public function startTransaction()
+	{
+		$this->pdo->beginTransaction();
+	}
+	
+	/**
+	 * Commits an ongoing transaction.
+	 *
+	 * @throws PDOException
+	 *	Thrown when the underlying driver does not support transactions.
+	 */
+	public function commit()
+	{
+		$this->pdo->commit();
+	}
+	
+	/**
+	 * Commits an ongoing transaction.
+	 *
+	 * @throws PDOException
+	 *	Thrown when the underlying driver does not support transactions.
+	 */
+	public function rollBack()
+	{
+		$this->pdo->rollBack();
+	}
+	
+	/**
+	 * Checks for an ongoing transaction.
+	 *
+	 * @throws PDOException
+	 *	Thrown when the underlying driver does not support transactions.
+	 *
+	 * @return bool
+	 *	Returns TRUE if there is an ongoing transaction, FALSE otherwise.
+	 */
+	public function inTransaction()
+	{
+		return $this->pdo->inTransaction();
+	}
+	
+	/**
 	 * Locks the specified tables.
 	 *
 	 * @throws RuntimeException
