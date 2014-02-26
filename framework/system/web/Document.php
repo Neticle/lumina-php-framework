@@ -115,7 +115,9 @@ class Document extends Component
 	 *
 	 * @type array
 	 */
-	private $meta = array();
+	private $meta = array(
+		'http-equiv:content-type' => array(array('http-equiv', 'content-type', 'text/html; charset=utf8'))
+	);
 	
 	/**
 	 * The document title.
@@ -329,7 +331,7 @@ class Document extends Component
 	 */
 	public function setMeta($key, $value, $type = 'name')
 	{
-		$index = $type . ':' . $key;
+		$index = strtolower($type . ':' . $key);
 		$this->meta[$index] = array(array($type, $key, $value));
 	}
 	
@@ -348,17 +350,8 @@ class Document extends Component
 	 */
 	public function addMeta($key, $value, $type = 'name')
 	{
-		$index = $type . ':' . $key;
-		$entry = array($type, $key, $value);
-		
-		if (isset($this->meta[$index]))
-		{
-			$this->meta[$index][] = $entry;
-		}
-		else
-		{
-			$this->meta[$index] = array($entry);
-		}
+		$index = strtolower($type . ':' . $key);
+		$this->meta[$index][] = array($type, $key, $value);
 	}
 	
 	/**
@@ -369,7 +362,14 @@ class Document extends Component
 	 */
 	public function getMeta()
 	{
-		return array_values($this->meta);
+		$collection = array();
+		
+		foreach(array_values($this->meta) as $entries)
+		{
+			$collection = array_merge($collection, $entries);
+		}
+		
+		return $collection;
 	}
 	
 	/**
