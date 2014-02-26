@@ -478,7 +478,7 @@ abstract class Record extends Model
 			$criteria = new Criteria($criteria);
 		}
 		
-		$db->delete($this->getTableName(), $criteria);
+		$this->getDatabase()->delete($this->getTableName(), $criteria);
 	}
 	
 	/**
