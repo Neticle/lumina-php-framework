@@ -353,7 +353,7 @@ abstract class Rule extends Element
 					$values[$attribute] : null;
 				
 				// Make sure the attribute
-				if (empty($value))
+				if (empty($value) && ($value === null || $value === ''))
 				{
 					if ($this->required)
 					{
