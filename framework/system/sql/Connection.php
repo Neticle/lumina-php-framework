@@ -259,6 +259,17 @@ class Connection extends Component
 	}
 	
 	/**
+	 * Returns the connection driver statement factory.
+	 *
+	 * @return StatementFactory
+	 *	The driver statement factory instance.
+	 */
+	public function getDriverStatementFactory()
+	{
+		return $this->driver->getStatementFactory();
+	}
+	
+	/**
 	 * Returns the ID of the last inserted row.
 	 *
 	 * @return int
@@ -524,6 +535,30 @@ class Connection extends Component
 	public function run($command)
 	{
 		$this->pdo->exec($command);
+	}
+	
+	/**
+	 * Creates a new statement to call a stored procedure.
+	 *
+	 * Although Lumina does translate all named parameters to numeric
+	 * parameters, you can still use named parameters to increase your code
+	 * readability without any performance impact.
+	 *
+	 * @param string $procedure
+	 *	The name of the procedure to call.
+	 *
+	 * @param array $parameters
+	 *	The parameters to be bound to the call statement, in the same order
+	 *	as they are declared by the procedure.
+	 *
+	 * @return Reader
+	 *	The resulting reader.
+	 */
+	public function call($procedure, array $parameters = null)
+	{
+		return $this->driver->getStatementFactory()
+			->createCallProcedureStatement($procedure, $parameters)
+			->query();
 	}
 	
 	/**

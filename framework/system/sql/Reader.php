@@ -141,6 +141,30 @@ class Reader
 	}
 	
 	/**
+	 * Fetches the first cell of the next row available in the current
+	 * result set.
+	 *
+	 * @param bool $close
+	 *	When set to TRUE the underlying cursor will be closed before the cell
+	 *	value is returned for use.
+	 *
+	 * @return mixed
+	 *	Returns the cell value or NULL if there are no more rows available.
+	 */
+	public function fetchScalar($close = true)
+	{
+		$row = $this->pdoStatement->fetch(self::FETCH_NUM);
+		$result = isset($row[0]) ? $row[0] : null;
+		
+		if ($close)
+		{
+			$this->close();
+		}
+		
+		return $result;
+	}
+	
+	/**
 	 * Fetches the remaining cells in the current result set.
 	 *
 	 * @throws \PDOException

@@ -184,12 +184,7 @@ class Statement extends Element
 	 */
 	public function scalar()
 	{
-		$row = $this->query()->fetch(Reader::FETCH_NUM, true);
-		
-		if ($row && isset($row[0]))
-		{
-			return $row[0];
-		}
+		return $this->query()->fetchScalar();
 	}
 	
 	/**

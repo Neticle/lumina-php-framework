@@ -176,5 +176,20 @@ abstract class StatementFactory
 	 *	The created Statement instance, ready for use.
 	 */
 	public abstract function createInsertStatement($table, array $fields);
+	
+	/**
+	 * Creates a new statement to call a stored procedure.
+	 *
+	 * @param string $procedure
+	 *	The name of the procedure to call.
+	 *
+	 * @param array $parameters
+	 *	An associative array holding the values to be bound to the
+	 *	statement parameters.
+	 *
+	 * @return Statement
+	 *	The created Statement instance, ready for use.
+	 */
+	public abstract function createCallProcedureStatement($procedure, array $parameters = null);
 }
 

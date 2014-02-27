@@ -348,5 +348,50 @@ class MysqlStatementFactory extends StatementFactory
 			
 		return $this->prepare($statement, $parameters);		
 	}
+	
+	/**
+	 * Creates a new statement to call a stored procedure.
+	 *
+	 * Although Lumina does translate all named parameters to numeric
+	 * parameters, you can still use named parameters to increase your code
+	 * readability without any performance impact.
+	 *
+	 * @param string $procedure
+	 *	The name of the procedure to call.
+	 *
+	 * @param array $parameters
+	 *	The parameters to be bound to the call statement, in the same order
+	 *	as they are declared by the procedure.
+	 */
+	public function createCallProcedureStatement($procedure, array $parameters = null)
+	{
+		$statement = 'CALL ' . $this->quote($procedure) . '(';
+		
+		if (isset($parameters))
+		{
+			$collection = array();
+			$values = array();
+			$i = 0;
+		
+			foreach ($parameters as $name => $value)
+			{
+				if ($value instanceof Expression)
+				{
+					$values[] = $value->toString();
+					continue;
+				}
+				
+				$values[] = '?';
+				$collection[++$i] = $value;
+			}
+			
+			$statement .= implode(', ', $values);
+			$parameters = $collection;
+		}
+		
+		$statement .= ')';
+		
+		return $this->prepare($statement, $parameters);
+	}
 }
 
