@@ -27,8 +27,12 @@ namespace system\security;
 use \system\base\Component;
 
 /**
- * The message digest component will apply a intercalated hash to a given
+ * The message digest component will apply a salt prefix to a given
  * string and digest it with an algorithm of choice.
+ *
+ * Although it was it's initial purpose, you should use 'PasswordDigest'
+ * component to generate secure password hashes, through PHP 'crypt'
+ * implementation.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
  * @package system.security
