@@ -45,25 +45,43 @@ $app = Lumina::load(array(
 $digest = $app->getComponent('digest');
 
 lumina_test_report('BLOWFISH', null, array(
-	'hash' => ($hash = $digest->digest('password', 'blowfish')),
+	'hash' => ($hash = $digest->digest('password')),
+	'match' => lumina_test_stringify($digest->match($hash)),
+	'algorithm' => lumina_test_stringify($digest->parse($hash)['algorithm']),
+	'modifier' => lumina_test_stringify($digest->parse($hash)['modifier']),
+	'compare correct' => lumina_test_stringify($digest->compare('password', $hash)),
+	'compare incorrect' => lumina_test_stringify($digest->compare('passwor', $hash))
+));
+
+lumina_test_report('BLOWFISH (WC5)', null, array(
+	'hash' => ($hash = $digest->digest('password', 'blowfish', array('cost' => 5))),
+	'match' => lumina_test_stringify($digest->match($hash)),
+	'algorithm' => lumina_test_stringify($digest->parse($hash)['algorithm']),
+	'modifier' => lumina_test_stringify($digest->parse($hash)['modifier']),
 	'compare correct' => lumina_test_stringify($digest->compare('password', $hash)),
 	'compare incorrect' => lumina_test_stringify($digest->compare('passwor', $hash))
 ));
 
 lumina_test_report('MD5', null, array(
 	'hash' => ($hash = $digest->digest('password', 'md5', array('rounds' => 10000))),
+	'algorithm' => lumina_test_stringify($digest->parse($hash)['algorithm']),
+	'modifier' => lumina_test_stringify($digest->parse($hash)['modifier']),
 	'compare correct' => lumina_test_stringify($digest->compare('password', $hash)),
 	'compare incorrect' => lumina_test_stringify($digest->compare('passwor', $hash))
 ));
 
 lumina_test_report('SHA256', null, array(
 	'hash' => ($hash = $digest->digest('password', 'sha256', array('rounds' => 10000))),
+	'algorithm' => lumina_test_stringify($digest->parse($hash)['algorithm']),
+	'modifier' => lumina_test_stringify($digest->parse($hash)['modifier']),
 	'compare correct' => lumina_test_stringify($digest->compare('password', $hash)),
 	'compare incorrect' => lumina_test_stringify($digest->compare('passwor', $hash))
 ));
 
 lumina_test_report('SHA512', null, array(
 	'hash' => ($hash = $digest->digest('password', 'sha512')),
+	'algorithm' => lumina_test_stringify($digest->parse($hash)['algorithm']),
+	'modifier' => lumina_test_stringify($digest->parse($hash)['modifier']),
 	'compare correct' => lumina_test_stringify($digest->compare('password', $hash)),
 	'compare incorrect' => lumina_test_stringify($digest->compare('passwor', $hash))
 ));
