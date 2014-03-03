@@ -35,7 +35,8 @@ $app = Lumina::load(array(
 	
 	'components' => array(
 		'digest' => array(
-			'class' => 'system\\security\\PasswordDigest'
+			'class' => 'system\\security\\PasswordDigest',
+			'salt' => 'JepL?gI5m!qb1E$5RDl&dQP3?lhCw!x66hz$pe%_'
 		)
 	)
 	

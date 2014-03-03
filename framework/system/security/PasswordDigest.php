@@ -53,6 +53,92 @@ class PasswordDigest extends Component
 	private $options = array(
 		'cost' => '07'
 	);
+	
+	/**
+	 * A static preffix salt to be applied to the raw passwords in order to
+	 * make the generation of rainbow tables exceptionally hard, even when
+	 * the attacker gains access to the original hash with lower cost.
+	 *
+	 * @type string
+	 */
+	private $salt;
+	
+	/**
+	 * Defines the default algorithm to use when digesting passwords.
+	 *
+	 * @param string $algorithm
+	 *	The default algorithm to use when digesting passwords.
+	 */
+	public function setAlgorithm($algorithm)
+	{
+		$this->algorithm = $algorithm;
+	}
+	
+	/**
+	 * Returns the default algorithm to use when digesting passwords.
+	 *
+	 * @return string
+	 *	The default algorithm to use when digesting passwords.
+	 */
+	public function getAlgorithm()
+	{
+		return $this->algorithm;
+	}
+	
+	/**
+	 * Defines the options to apply when the default algorithm is being used
+	 * to digest passwords.
+	 *
+	 * @param array $options
+	 *	The default algorithm options.
+	 */
+	public function setOptions(array $options)
+	{
+		$this->options = $options;
+	}
+	
+	/**
+	 * Returns the options to apply when the default algorithm is being used
+	 * to digest passwords.
+	 *
+	 * @return array
+	 *	The default algorithm options.
+	 */
+	public function getOptions()
+	{
+		return $this->options;
+	}
+	
+	/**
+	 * Defines a static preffix salt to be applied to the raw passwords in order
+	 * to make the generation of rainbow tables exceptionally hard, even when
+	 * the attacker gains access to the original hash with lower cost.
+	 *
+	 * Please note that in addition to any defined salt, a random salt is always
+	 * generated and used when digesting passwords. Unlike that random salt,
+	 * this static salt will not be contained in the final hash as it's applied
+	 * to the passwords directly.
+	 *
+	 * @param string $salt
+	 *	The static password salt.
+	 */
+	public function setSalt($salt)
+	{
+		$this->salt = $salt;
+	}
+	
+	/**
+	 * Returns a static preffix salt to be applied to the raw passwords in order
+	 * to make the generation of rainbow tables exceptionally hard, even when
+	 * the attacker gains access to the original hash with lower cost.
+	 *
+	 * @return string
+	 *	The static password salt.
+	 */
+	public function getSalt()
+	{
+		return $this->salt;
+	}
 
 	/**
 	 * Creates a random string to be used when building the salt.
@@ -159,7 +245,7 @@ class PasswordDigest extends Component
 			$options = $this->options;
 		}
 	
-		return crypt($password, $this->createRandomSalt($algorithm, $options));
+		return crypt($this->salt . $password, $this->createRandomSalt($algorithm, $options));
 	}
 	
 	/**
