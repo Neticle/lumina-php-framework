@@ -263,7 +263,7 @@ class PasswordDigest extends Component
 	 */
 	public function compare($password, $hash)
 	{
-		return crypt($password, $hash) == $hash;
+		return crypt($this->salt . $password, $hash) == $hash;
 	}
 }
 
