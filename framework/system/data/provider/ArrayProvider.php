@@ -58,6 +58,32 @@ class ArrayProvider extends Provider
 		$this->items = $items;
 	}
 	
+	/**
+	 * Fetches all applicable items.
+	 *
+	 * @return array
+	 *	The fetched items array.
+	 */
+	protected abstract function fetchItems()
+	{
+		return $this->items;
+	}
 	
+	/**
+	 * Fetches the total item count, which or may not match the number of
+	 * items returned by 'fetchItems'.
+	 *
+	 * For instance, if the final provider implementation supports paginator
+	 * it is to be handled internally, and 'fetchItems' will only return
+	 * those for the current page, while 'fetchTotalItemCount' should always
+	 * return the number of available items.
+	 *
+	 * @return int
+	 *	The number of available items.
+	 */
+	protected function fetchTotalItemCount()
+	{
+		return count($this->items);
+	}
 }
 
