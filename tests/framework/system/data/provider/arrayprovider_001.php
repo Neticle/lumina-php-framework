@@ -22,7 +22,7 @@
 //
 // =============================================================================
 
-use \system\data\sorter\ArraySorter;
+use \system\data\provider\ArrayProvider;
 
 define('L_APPLICATION_ROOT', dirname(__FILE__));
 require '../../../../../framework/bootstrap.php';
@@ -31,16 +31,46 @@ require '../../../../lumina.php';
 // 1 ~ 100
 $items = array();
 
-for ($i = 95; $i > 0; --$i)
+for ($i = 99; $i > -1; --$i)
 {
-	$items[] = array('id' => 0, 'title' => 'item #' . $i);
+	$items[] = array('id' => $i + 1, 'title' => 'R' . $i);
 }
 
-$sorter = new ArraySorter(array(
-	'rules' => array(
-		'id' => 'asc',
-		'title' => 'desc',
+$provider = new ArrayProvider($items, array(
+	'paginator' => array(
+		'interval' => '10'
+	),
+	'sorter' => array(
+		'rules' => array(
+			'id' => 'asc'
+		)
 	)
 ));
 
-var_dump($sorter->sort($items));
+// build the page content
+$page = array();
+
+foreach ($provider as $row)
+{
+	$page[] = $row['id'] . $row['title'];
+}
+
+$page = implode(', ', $page);
+
+// build the page content
+$page2 = array();
+$provider->getPaginator()->setActivePage(2);
+
+foreach ($provider->getIterator(true) as $row)
+{
+	$page2[] = $row['id'] . $row['title'];
+}
+
+$page2 = implode(', ', $page2);
+
+lumina_test_start('ArrayProvider');
+lumina_test_identical('Page Count', 10, $provider->getPaginator()->getPageCount());
+lumina_test_identical('Page 1', '1R0, 2R1, 3R2, 4R3, 5R4, 6R5, 7R6, 8R7, 9R8, 10R9', $page);
+lumina_test_identical('Page 2', '11R10, 12R11, 13R12, 14R13, 15R14, 16R15, 17R16, 18R17, 19R18, 20R19', $page2);
+lumina_test_end();
+

@@ -25,6 +25,8 @@
 namespace system\data\provider;
 
 use \system\data\provider\Provider;
+use \system\data\provider\paginator\ArrayPaginator;
+use \system\data\provider\sorter\ArraySorter;
 
 /**
  * A provider that works through an array of associative arrays, with
@@ -54,8 +56,9 @@ class ArrayProvider extends Provider
 	 */
 	public function __construct(array $items, array $configuration = null)
 	{
-		parent::__construct($configuration);
+		parent::__construct(null);
 		$this->items = $items;
+		$this->configure($configuration);
 	}
 	
 	/**
@@ -64,9 +67,27 @@ class ArrayProvider extends Provider
 	 * @return array
 	 *	The fetched items array.
 	 */
-	protected abstract function fetchItems()
+	protected function fetchItems()
 	{
-		return $this->items;
+		$items = $this->items;
+		
+		// Sort the available items
+		$sorter = $this->getSorter();
+		
+		if (isset($sorter))
+		{
+			$items = $sorter->sort($items);
+		}
+		
+		// Paginate the available items
+		$paginator = $this->getPaginator();
+		
+		if (isset($paginator))
+		{
+			$items = $paginator->filter($items);
+		}
+		
+		return $items;
 	}
 	
 	/**
@@ -84,6 +105,56 @@ class ArrayProvider extends Provider
 	protected function fetchTotalItemCount()
 	{
 		return count($this->items);
+	}
+	
+	/**
+	 * Defines the paginator handle to be used by this provider instance.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when the specified value is not compatible with the final
+	 *	provider implementation.
+	 *
+	 * @param Paginator|array $paginator
+	 *	An instance of a Paginator handle matching the final provider
+	 *	implementation, or an express configuration array to build one with.
+	 */
+	public function setPaginator($paginator)
+	{
+		if (!($paginator instanceof ArrayPaginator))
+		{
+			$paginator = new ArrayPaginator($this, $paginator);
+		}
+		else
+		{
+			$paginator->setProvider($this);
+		}
+		
+		parent::setPaginator($paginator);
+	}
+	
+	/**
+	 * Defines the data sorter handle to be used by this provider instance.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when the specified value is not compatible with the final
+	 *	provider implementation.
+	 *
+	 * @param ArraySorter|array $sorter
+	 *	An instance of ArraySorter or an express construction and configuration
+	 *	array to build one with.
+	 */
+	public function setSorter($sorter)
+	{
+		if (!($sorter instanceof ArraySorter))
+		{
+			$sorter = new ArraySorter($this, $sorter);
+		}
+		else
+		{
+			$sorter->setProvider($this);
+		}
+		
+		parent::setSorter($sorter);
 	}
 }
 

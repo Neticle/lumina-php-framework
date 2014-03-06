@@ -22,9 +22,10 @@
 //
 // =============================================================================
 
-namespace system\data\paginator;
+namespace system\data\provider\paginator;
 
-use \system\data\paginator\Paginator;
+use \system\data\provider\Provider;
+use \system\data\provider\paginator\Paginator;
 
 /**
  * An abstract paginator that provides a consistent API across multiple
@@ -35,7 +36,7 @@ use \system\data\paginator\Paginator;
  * feature.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.data.paginator
+ * @package system.data.provider.paginator
  * @since 0.2.0
  */
 class ArrayPaginator extends Paginator
@@ -43,12 +44,15 @@ class ArrayPaginator extends Paginator
 	/**
 	 * Constructor.
 	 *
+	 * @param Provider $provider
+	 *	The data provider this paginator is to be linked with.
+	 *
 	 * @param array $configuration
-	 *	The express configuration array.
+	 *	The paginator configuration.
 	 */
-	public function __construct(array $configuration = null)
+	public function __construct(Provider $provider, array $configuration = null)
 	{
-		parent::__construct($configuration);
+		parent::__construct($provider, $configuration);
 	}
 	
 	/**
@@ -56,30 +60,15 @@ class ArrayPaginator extends Paginator
 	 * page, according to the interval previously defined.
 	 *
 	 * @param array $items
-	 *	The array of items to filter and return from.
-	 *
-	 * @param int $page
-	 *	The page number to filter the items for, starting at one (1).
+	 *	The array of items to filter and return from, which must have the
+	 *	exact number of elements as defined in the paginator.
 	 *
 	 * @return array
-	 *	The items matching the given page number.
+	 *	The items matching the currently active page.
 	 */
-	public function filter(array $items, $page)
+	public function filter(array $items)
 	{
-		$pageCount = $this->getPageCount(count($items));
-		
-		if ($page > $pageCount || $page < 1)
-		{
-			throw new RuntimeException('Invalid page "' . $page . '" specified.');
-		}
-		
-		if ($pageCount < 2)
-		{
-			return $items;
-		}
-		
-		$interval = $this->getInterval();
-		return array_slice($items, (($page - 1)*$interval), $interval);		
+		return array_slice($items, $this->getActivePageOffset(), $this->getInterval());
 	}
 }
 

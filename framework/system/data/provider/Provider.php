@@ -115,7 +115,7 @@ abstract class Provider extends Element implements IProvider
 			$this->items = $this->fetchItems();
 		}
 		
-		return $items;
+		return $this->items;
 	}
 	
 	/**
@@ -179,8 +179,8 @@ abstract class Provider extends Element implements IProvider
 	 *	An instance of a Paginator handle matching the final provider
 	 *	implementation, or an express configuration array to build one with.
 	 */
-	protected function setPaginator(Paginator $paginator)
-	{
+	public function setPaginator($paginator)
+	{	
 		$this->paginator = $paginator;
 	}
 	
@@ -206,7 +206,7 @@ abstract class Provider extends Element implements IProvider
 	 *	An instance of a Paginator handle matching the final provider
 	 *	implementation.
 	 */
-	protected function setSorter(Sorter $sorter)
+	public function setSorter($sorter)
 	{
 		$this->sorter = $sorter;
 	}
