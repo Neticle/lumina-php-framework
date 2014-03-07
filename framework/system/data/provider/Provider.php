@@ -25,7 +25,6 @@
 namespace system\data\provider;
 
 use \system\core\Element;
-use \system\data\provider\IProvider;
 
 /**
  * An abstract data provider.
@@ -34,7 +33,7 @@ use \system\data\provider\IProvider;
  * @package system.data
  * @since 0.2.0
  */
-abstract class Provider extends Element implements IProvider
+abstract class Provider extends Element implements \IteratorAggregate
 {
 	/**
 	 * A cached copy of the last fetched items.
@@ -49,6 +48,13 @@ abstract class Provider extends Element implements IProvider
 	 * @param int
 	 */
 	private $totalItemCount;
+
+	/**
+	 * The item field labels, indexed by field name.
+	 *
+	 * @type array
+	 */
+	private $labels;
 	
 	/**
 	 * The underlying paginator handle.
@@ -96,6 +102,67 @@ abstract class Provider extends Element implements IProvider
 	 *	The number of available items.
 	 */
 	protected abstract function fetchTotalItemCount();
+	
+	/**
+	 * Returns the default label for a specific field.
+	 *
+	 * @param string $field
+	 *	The name of the field to return the default label for.
+	 *
+	 * @return string
+	 *	The default field label.
+	 */
+	public function getDefaultFieldLabel($field)
+	{
+		return ucwords(str_replace(array('_', '-', '.'), ' ', $field));
+	}
+	
+	/**
+	 * Defines the item field labels.
+	 *
+	 * @param array $labels
+	 *	An array of labels, indexed by field name.
+	 */
+	public function setFieldLabels(array $labels)
+	{
+		$this->labels = $labels;
+	}
+	
+	/**
+	 * Returns the label for a specific item field.
+	 *
+	 * If the field label has not been explicitly defined through the
+	 * 'setLabels' method, the default label will be returned instead.
+	 *
+	 * @param string $field
+	 *	The name of the field to get the label for.
+	 */
+	public function getFieldLabel($field)
+	{
+		if (isset($this->labels[$field]))
+		{
+			return $this->labels[$field];
+		}
+		
+		return $this->labels[$field] = $this->getDefaultFieldLabel($field);
+	}
+	
+	/**
+	 * Returns the value of the specified field in the given item.
+	 *
+	 * This method is intended to abstract the differences between array,
+	 * models and record items returned by their respective providers.
+	 *
+	 * @param mixed $item
+	 *	The item to get the field value of.
+	 *
+	 * @param string $field
+	 *	The field to get the value of.
+	 *
+	 * @return mixed
+	 *	The field value, if any.
+	 */
+	public abstract function getItemFieldValue($item, $field);
 	
 	/**
 	 * Returns the currently applicable items, fetching them

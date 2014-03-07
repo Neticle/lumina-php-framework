@@ -22,9 +22,12 @@
 //
 // =============================================================================
 
-namespace system\data\sorter;
+namespace system\data\provider\sorter;
 
-use \system\data\sorter\Sorter;
+use \system\data\Model;
+use \system\data\provider\Provider;
+use \system\data\provider\sorter\Sorter;
+
 
 /**
  * An abstract sorter that provides a consistent API across multiple
@@ -35,20 +38,23 @@ use \system\data\sorter\Sorter;
  * feature.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.data.sorter
+ * @package system.data.provider.sorter
  * @since 0.2.0
  */
-class ArraySorter extends Sorter
+class ModelSorter extends Sorter
 {
 	/**
 	 * Constructor.
 	 *
+	 * @param Provider $provider
+	 *	The data provider this sorter is to be linked with.
+	 *
 	 * @param array $configuration
 	 *	The express configuration array.
 	 */
-	public function __construct(array $configuration = null)
+	public function __construct(Provider $provider, array $configuration = null)
 	{
-		parent::__construct($configuration);
+		parent::__construct($provider, $configuration);
 	}
 	
 	/**
@@ -64,15 +70,12 @@ class ArraySorter extends Sorter
 	 *	Returns 1 if "alpha" is greater than "bravo", -1 if "alpha" is
 	 *	lesser than "bravo", or 0 if both items are equal.
 	 */
-	public function compare(array $alpha, array $bravo)
+	public function compare(Model $alpha, Model $bravo)
 	{		
 		foreach ((array) $this->getRules() as $key => $direction)
 		{
-			$left = isset($alpha[$key]) ?
-				$alpha[$key] : null;
-			
-			$right = isset($bravo[$key]) ?
-				$bravo[$key] : null;
+			$left = $alpha->getAttribute($key);
+			$right = $bravo->getAttribute($key);
 			
 			if ($left === $right)
 			{
@@ -104,7 +107,7 @@ class ArraySorter extends Sorter
 	 * defined rules.
 	 *
 	 * @param array $items
-	 *	An array of items, represented as associative arrays.
+	 *	An array of Model instances to sort.
 	 *
 	 * @return array
 	 *	The sorted array.

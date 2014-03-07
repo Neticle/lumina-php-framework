@@ -24,41 +24,69 @@
 
 namespace system\data\provider;
 
+use \system\data\Model;
 use \system\data\provider\Provider;
-use \system\data\provider\paginator\ArrayPaginator;
-use \system\data\provider\sorter\ArraySorter;
+use \system\data\provider\paginator\ModelPaginator;
+use \system\data\provider\sorter\ModelSorter;
 
 /**
- * A provider that works through an array of associative arrays, with
+ * A provider that works through an array of model instances, with
  * support for sorting and pagination.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
  * @package system.data.provider
  * @since 0.2.0
  */
-class ArrayProvider extends Provider
+class ModelProvider extends Provider
 {
+	/**
+	 * The base model instance.
+	 *
+	 * @type Model
+	 */
+	private $base;
+
 	/**
 	 * The items to be available through this provider.
 	 *
-	 * @type array
+	 * @type Model[]
 	 */
 	private $items;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param array $items
-	 *	The items to be available through this provider.
+	 * @param Model $base
+	 *	The base model instance, which main purpose will be to provide
+	 *	attribute labels.
+	 *
+	 * @param Model[] $items
+	 *	The items to be available through this provider, which must be instances
+	 *	of the same class as the given base model.
 	 *
 	 * @param array $configuration
 	 *	The provider express configuration array.
 	 */
-	public function __construct(array $items, array $configuration = null)
+	public function __construct(Model $base, array $items, array $configuration = null)
 	{
 		parent::__construct(null);
+		$this->base = $base;
 		$this->items = $items;
 		$this->configure($configuration);
+	}
+	
+	/**
+	 * Returns the default label for a specific field.
+	 *
+	 * @param string $field
+	 *	The name of the field to return the default label for.
+	 *
+	 * @return string
+	 *	The default field label.
+	 */
+	public function getDefaultFieldLabel($field)
+	{
+		return $this->base->getAttributeLabel($field);
 	}
 	
 	/**
@@ -91,6 +119,26 @@ class ArrayProvider extends Provider
 	}
 	
 	/**
+	 * Returns the value of the specified field in the given item.
+	 *
+	 * This method is intended to abstract the differences between array,
+	 * models and record items returned by their respective providers.
+	 *
+	 * @param mixed $item
+	 *	The item to get the field value of.
+	 *
+	 * @param string $field
+	 *	The field to get the value of.
+	 *
+	 * @return mixed
+	 *	The field value, if any.
+	 */
+	public function getItemFieldValue($item, $field)
+	{
+		return $item->getAttribute($field);
+	}
+	
+	/**
 	 * Fetches the total item count, which or may not match the number of
 	 * items returned by 'fetchItems'.
 	 *
@@ -108,42 +156,21 @@ class ArrayProvider extends Provider
 	}
 	
 	/**
-	 * Returns the value of the specified field in the given item.
-	 *
-	 * This method is intended to abstract the differences between array,
-	 * models and record items returned by their respective providers.
-	 *
-	 * @param mixed $item
-	 *	The item to get the field value of.
-	 *
-	 * @param string $field
-	 *	The field to get the value of.
-	 *
-	 * @return mixed
-	 *	The field value, if any.
-	 */
-	public function getItemFieldValue($item, $field)
-	{
-		return isset($item[$field]) ?
-			$item[$field] : null;
-	}
-	
-	/**
 	 * Defines the paginator handle to be used by this provider instance.
 	 *
 	 * @throws RuntimeException
 	 *	Thrown when the specified value is not compatible with the final
 	 *	provider implementation.
 	 *
-	 * @param Paginator|array $paginator
+	 * @param ModelPaginator|array $paginator
 	 *	An instance of a Paginator handle matching the final provider
 	 *	implementation, or an express configuration array to build one with.
 	 */
 	public function setPaginator($paginator)
 	{
-		if (!($paginator instanceof ArrayPaginator))
+		if (!($paginator instanceof ModelPaginator))
 		{
-			$paginator = new ArrayPaginator($this, $paginator);
+			$paginator = new ModelPaginator($this, $paginator);
 		}
 		else
 		{
@@ -160,15 +187,15 @@ class ArrayProvider extends Provider
 	 *	Thrown when the specified value is not compatible with the final
 	 *	provider implementation.
 	 *
-	 * @param ArraySorter|array $sorter
-	 *	An instance of ArraySorter or an express construction and configuration
+	 * @param ModelSorter|array $sorter
+	 *	An instance of ModelSorter or an express construction and configuration
 	 *	array to build one with.
 	 */
 	public function setSorter($sorter)
 	{
-		if (!($sorter instanceof ArraySorter))
+		if (!($sorter instanceof ModelSorter))
 		{
-			$sorter = new ArraySorter($this, $sorter);
+			$sorter = new ModelSorter($this, $sorter);
 		}
 		else
 		{

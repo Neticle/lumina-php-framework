@@ -22,21 +22,31 @@
 //
 // =============================================================================
 
-use \system\data\provider\ArrayProvider;
+use \system\data\provider\ModelProvider;
 
 define('L_APPLICATION_ROOT', dirname(__FILE__));
 require '../../../../../framework/bootstrap.php';
 require '../../../../lumina.php';
+
+class MyModel extends \system\data\Model
+{
+	public function getAttributeLabels()
+	{
+		return array(
+			'my_field' => 'My Field Label'
+		);
+	}
+}
 
 // 1 ~ 100
 $items = array();
 
 for ($i = 99; $i > -1; --$i)
 {
-	$items[] = array('id' => $i + 1, 'title' => 'R' . $i);
+	$items[] = new MyModel('insert', array('id' => $i + 1, 'title' => 'R' . $i));
 }
 
-$provider = new ArrayProvider($items, array(
+$provider = new ModelProvider(new MyModel(), $items, array(
 	'paginator' => array(
 		'interval' => '10'
 	),
@@ -52,7 +62,7 @@ $page = array();
 
 foreach ($provider as $row)
 {
-	$page[] = $row['id'] . $row['title'];
+	$page[] = $row->getAttribute('id') . $row->getAttribute('title');
 }
 
 $page = implode(', ', $page);
@@ -63,14 +73,15 @@ $provider->getPaginator()->setActivePage(2);
 
 foreach ($provider->getIterator(true) as $row)
 {
-	$page2[] = $provider->getItemFieldValue($row, 'id') . $row['title'];
+	$page2[] = $provider->getItemFieldValue($row, 'id') . $row->getAttribute('title');
 }
 
 $page2 = implode(', ', $page2);
 
-lumina_test_start('ArrayProvider');
+lumina_test_start('ModelProvider');
 lumina_test_identical('Page Count', 10, $provider->getPaginator()->getPageCount());
-lumina_test_identical('Label', 'My Field', $provider->getFieldLabel('my_field'));
+lumina_test_identical('Label', 'My Field Label', $provider->getFieldLabel('my_field'));
+lumina_test_identical('Label', 'My Field 2', $provider->getFieldLabel('my_field_2'));
 lumina_test_identical('Page 1', '1R0, 2R1, 3R2, 4R3, 5R4, 6R5, 7R6, 8R7, 9R8, 10R9', $page);
 lumina_test_identical('Page 2', '11R10, 12R11, 13R12, 14R13, 15R14, 16R15, 17R16, 18R17, 19R18, 20R19', $page2);
 lumina_test_end();
