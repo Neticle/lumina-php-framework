@@ -58,7 +58,11 @@ class ArrayProvider extends Provider
 	{
 		parent::__construct(null);
 		$this->items = $items;
-		$this->configure($configuration);
+		
+		if (isset($configuration))
+		{
+			$this->configure($configuration);
+		}
 	}
 	
 	/**

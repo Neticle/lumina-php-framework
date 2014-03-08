@@ -551,6 +551,20 @@ class Criteria extends Express
 	}
 	
 	/**
+	 * Creates and returns a criteria to be used with scalar COUNT statements,
+	 * that doesn't have any sorting rules applied to it.
+	 *
+	 * @return Criteria
+	 *	The count criteria instance.
+	 */
+	public function getCountCriteria()
+	{
+		$criteria = clone $this;
+		$criteria->sort = null;
+		return $criteria;
+	}
+	
+	/**
 	 * Returns a representation of this instance as an associative array.
 	 *
 	 * This method is intended to be used mainly by the statement factory

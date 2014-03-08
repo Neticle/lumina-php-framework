@@ -24,7 +24,11 @@
 
 namespace system\sql\data\provider;
 
-use \system\sql\data\provider\Provider;
+use \system\data\provider\Provider;
+use \system\sql\Criteria;
+use \system\sql\Connection;
+use \system\sql\data\provider\paginator\CriteriaPaginator;
+use \system\sql\data\provider\sorter\CriteriaSorter;
 
 /**
  * A provider that works through a criteria instance and changes it's
@@ -46,20 +50,142 @@ abstract class CriteriaProvider extends Provider
 	 * @type Criteria
 	 */
 	private $criteria;
+	
+	/**
+	 * The connection handle being used to fetch the data from the
+	 * database.
+	 *
+	 * @type Connection
+	 */
+	private $connection;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Criteria $criteria
-	 *	The instance of the Criteria to modify.
-	 *
 	 * @param array $configuration
 	 *	The provider express configuration array.
 	 */
-	public function __construct(Criteria $criteria, array $configuration = null)
+	public function __construct(array $configuration = null)
 	{
 		parent::__construct($configuration);
+	}
+	
+	/**
+	 * Returns the underlying connection handle.
+	 *
+	 * If a connection hasn't been previously defined, the 'database'
+	 * application component will be returned instead.
+	 *
+	 * @return Connection
+	 *	The connection handle being used to fetch the data from the
+	 *	database.
+	 */
+	public function getConnection()
+	{
+		if (!isset($this->connection))
+		{
+			$this->connection = $this->getComponent('database');
+		}
+		
+		return $this->connection;
+	}
+	
+	/**
+	 * Defines the underlying connection handle.
+	 *
+	 * @return Connection
+	 *	The connection handle being used to fetch the data from the
+	 *	database.
+	 */
+	public function setConnection(Connection $connection)
+	{
+		$this->connection = $connection;
+	}
+	
+	/**
+	 * Returns the underlying Criteria instance.
+	 *
+	 * If a Criteria instance hasn't been previously defined a new
+	 * one will be created, registered and returned.
+	 *
+	 * @return Criteria
+	 *	The underlying criteria instance.
+	 */
+	public function getCriteria()
+	{
+		if (!isset($this->criteria))
+		{
+			$this->criteria = new Criteria();
+		}
+		
+		return $this->criteria;
+	}
+	
+	/**
+	 * Defines the underlying Criteria configuration.
+	 *
+	 * @param Criteria|array $criteria
+	 *	A Criteria instance or an express configuration array to
+	 *	create one with.
+	 */
+	public function setCriteria($criteria)
+	{
+		if (!($criteria instanceof Criteria))
+		{
+			$criteria = new Criteria($criteria);
+		}
+		
 		$this->criteria = $criteria;
+	}
+	
+	/**
+	 * Defines the paginator handle to be used by this provider instance.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when the specified value is not compatible with the final
+	 *	provider implementation.
+	 *
+	 * @param CriteriaPaginator|array $paginator
+	 *	An instance of a Paginator handle matching the final provider
+	 *	implementation, or an express configuration array to build one with.
+	 */
+	public function setPaginator($paginator)
+	{
+		if (!($paginator instanceof CriteriaPaginator))
+		{
+			$paginator = new CriteriaPaginator($this, $paginator);
+		}
+		else
+		{
+			$paginator->setProvider($this);
+		}
+		
+		parent::setPaginator($paginator);
+	}
+	
+	/**
+	 * Defines the data sorter handle to be used by this provider instance.
+	 *
+	 * @throws RuntimeException
+	 *	Thrown when the specified value is not compatible with the final
+	 *	provider implementation.
+	 *
+	 * @param CriteriaSorter|array $sorter
+	 *	An instance of CriteriaSorter or an express construction and configuration
+	 *	array to build one with.
+	 */
+	public function setSorter($sorter)
+	{
+		if (!($sorter instanceof CriteriaSorter))
+		{
+			$sorter = new CriteriaSorter($this, $sorter);
+		}
+		else
+		{
+			$sorter->setProvider($this);
+		}
+		
+		parent::setSorter($sorter);
 	}
 }
 

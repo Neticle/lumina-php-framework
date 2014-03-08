@@ -70,9 +70,14 @@ class ModelProvider extends Provider
 	public function __construct(Model $base, array $items, array $configuration = null)
 	{
 		parent::__construct(null);
+		
 		$this->base = $base;
 		$this->items = $items;
-		$this->configure($configuration);
+		
+		if (isset($configuration))
+		{
+			$this->configure($configuration);
+		}
 	}
 	
 	/**
