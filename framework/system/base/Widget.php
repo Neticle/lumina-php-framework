@@ -38,6 +38,20 @@ use \system\core\Element;
 abstract class Widget extends Element
 {
 	/**
+	 * The next auto incrementable widget id.
+	 *
+	 * @type int
+	 */
+	private static $nextWidgetId = 1;
+
+	/**
+	 * The unique widget string identifier.
+	 *
+	 * @type string
+	 */
+	private $id;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param array $configuration
@@ -68,6 +82,38 @@ abstract class Widget extends Element
 	{
 		$file = Lumina::getAliasPath($view, 'php', null);
 		return View::getApplicationFileView($file, $variables)->run($capture);
+	}
+	
+	/**
+	 * Defines the widget unique identifier.
+	 *
+	 * @param string $id
+	 *	The widget unique identifier.
+	 */
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+	
+	/**
+	 * Returns the unique widget identifier, optionally generating one
+	 * based on an auto incrementable field.
+	 *
+	 * @param bool $generate
+	 *	When set to TRUE the ID will be generated before it is returned for use
+	 *	based on an incrementable field.
+	 *
+	 * @return string
+	 *	Returns the unique widget identifier.
+	 */
+	public function getId($generate = true)
+	{
+		if ($generate && !isset($this->id))
+		{
+			$this->id = 'lw' . self::$nextWidgetId++;
+		}
+		
+		return $this->id;
 	}
 }
 
