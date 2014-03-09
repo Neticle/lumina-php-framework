@@ -24,6 +24,7 @@
 
 namespace system\web\html;
 
+use \system\core\Element;
 use \system\web\html\Html;
 
 /**
@@ -34,7 +35,7 @@ use \system\web\html\Html;
  * @package system.web
  * @since 0.2.0
  */
-class HtmlElement
+class HtmlElement extends Element
 {
 	/**
 	 * The element tag name.
@@ -76,8 +77,13 @@ class HtmlElement
 	 */
 	public function __construct($tag, array $configuration = null) 
 	{
-		parent::__construct($configuration);
+		parent::__construct(null);
 		$this->tag = $tag;
+		
+		if (isset($configuration))
+		{
+			$this->configure($configuration);
+		}
 	}
 	
 	/**
@@ -302,6 +308,19 @@ class HtmlElement
 		{
 			$this->children[] = $element;
 		}		
+	}
+	
+	/**
+	 * Defines the entire inner content for this html element, overwritting
+	 * any previously defined contents.
+	 *
+	 * @param string $content
+	 *	The inner raw text contents to be encoded and defined as children
+	 *	of this element.
+	 */
+	public function setTextContent($content)
+	{
+		$this->children = array(Html::encode($content));
 	}
 	
 	/**
