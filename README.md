@@ -6,4 +6,4 @@ The framework focuses on meeting basic principles that result on high quality st
 
 As part of Neticle's "Incubator" program, Lumina is actively maintained and used in the development of most of our web based projects.
 
-The framework is available for free, for personal and commercial use, with additional support and training services provided by Neticle (http://www.neticle.pt/).
+The framework is available for free, with additional consultancy, support and training services provided by Neticle (http://www.neticle.com/).
