@@ -56,7 +56,7 @@ class DocumentWidget extends Widget
 	 */
 	public function __construct(Document $document, array $configuration = null)
 	{
-		parent::__construct(null, $configuration);
+		parent::__construct($configuration);
 		$this->document = $document;
 	}
 	

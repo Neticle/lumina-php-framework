@@ -36,47 +36,23 @@ use \system\core\Element;
  * @since 0.2.0
  */
 abstract class Widget extends Element
-{	
-	/**
-	 * The absolute path to the directory containing the widget files.
-	 *
-	 * @type string
-	 */
-	private $basePath;
-
+{
 	/**
 	 * Constructor.
-	 *
-	 * @param string $basePath
-	 *	The absolute path to the directory containing the widget files, or
-	 *	NULL if applicable.
 	 *
 	 * @param array $configuration
 	 *	The express configuration array.
 	 */
-	public function __construct($basePath, array $configuration = null)
+	public function __construct(array $configuration = null)
 	{
 		parent::__construct($configuration);
-		$this->basePath = $basePath;
-	}
-	
-	/**
-	 * Returns the widget base path, when available.
-	 *
-	 * @return string
-	 *	The widget base path.
-	 */
-	public function getBasePath()
-	{
-		return $this->basePath;
 	}
 	
 	/**
 	 * Renders a context-less application view.
 	 *
 	 * @param string $view
-	 *	An alias resolving to the view being rendered, relative to the
-	 *	widget base path.
+	 *	An absolute alias resolving to the view being rendered.
 	 *
 	 * @param array $variables
 	 *	The variables to be extracted into the script context.
@@ -90,7 +66,7 @@ abstract class Widget extends Element
 	 */
 	public function render($view, array $variables = null, $capture = false)
 	{
-		$file = Lumina::getAliasPath($view, 'php', $this->basePath);
+		$file = Lumina::getAliasPath($view, 'php', null);
 		return View::getApplicationFileView($file, $variables)->run($capture);
 	}
 }
