@@ -58,6 +58,11 @@ require '../../../../../../lumina.php';
 
 class TestTable2 extends Record
 {
+	public static function model($context = 'search')
+	{
+		return self::getBaseModel(__CLASS__, $context);
+	}
+
 	public function getTableName()
 	{
 		return 'lumina_test_table_002';
@@ -66,7 +71,7 @@ class TestTable2 extends Record
 
 lumina_test_start('GridWidget');
 
-$app = Lumina::load(array(
+$app = Lumina::loadWebApplication(array(
 	
 	'components' => array(
 		'database' => array(
@@ -77,6 +82,18 @@ $app = Lumina::load(array(
 	)
 	
 ));
+
+if (TestTable2::model()->count() !== 100)
+{
+	for ($i = 0; $i < 100; ++$i)
+	{
+		(new TestTable2('insert', array(
+			'column1' => 'V' . ($i + 1),
+			'column2' => $i,
+			'column3' => 't'
+		)))->save(false);
+	}
+}
 
 $p = new RecordProvider(new TestTable2(), array(
 	'paginator' => array(

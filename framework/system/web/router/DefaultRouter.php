@@ -57,7 +57,7 @@ class DefaultRouter extends Router
 	 *
 	 * @type string
 	 */
-	private $script = 'index.php';
+	private $script;
 	
 	/**
 	 * Returns the requested route and action parameters as a numeric array
@@ -85,6 +85,37 @@ class DefaultRouter extends Router
 		}
 		
 		return array($route, $query);
+	}
+	
+	/**
+	 * Returns the script used to load the application and dispatch based on the
+	 * current request, relative to the application base URL.
+	 *
+	 * If the script hasn't been previously defined, it will be determined
+	 * automatically based on the request uri.
+	 *
+	 * @return string
+	 *	The application script.
+	 */
+	public function getScript()
+	{
+		if (!isset($this->script))
+		{
+			$uri = isset($_SERVER['REQUEST_URI']) ?
+				$_SERVER['REQUEST_URI'] : '/';
+			
+			$script = substr($uri, strrpos($uri, '/') + 1);
+			
+			if (($index = strpos($script, '?')) !== false)
+			{
+				$script = substr($script, 0, $index);
+			}
+			
+			$this->script = empty($script) ?
+				'index.php' : $script;
+		}
+		
+		return $this->script;
 	}
 
 	/**
@@ -126,7 +157,7 @@ class DefaultRouter extends Router
 	 */
 	public function createUrl($route, array $parameters = null)
 	{
-		$url = $this->script;
+		$url = $this->getScript();
 		$query = array();
 		
 		if (!empty($route))

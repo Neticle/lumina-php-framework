@@ -26,6 +26,7 @@ namespace system\ext\web\widget\grid;
 
 use \system\base\Widget;
 use \system\data\provider\Provider;
+use \system\ext\web\widget\PaginatorWidget;
 use \system\ext\web\widget\grid\column\Column;
 use \system\ext\web\widget\grid\column\TextColumn;
 use \system\web\html\HtmlElement;
@@ -53,6 +54,13 @@ class GridWidget extends Widget
 	 * @type Column[]
 	 */
 	private $columns = array();
+	
+	/**
+	 * The grid widget paginator query string key.
+	 *
+	 * @type string
+	 */
+	private $paginatorKey;
 
 	/**
 	 * Constructor.
@@ -115,6 +123,36 @@ class GridWidget extends Widget
 	public function getColumns()
 	{
 		return $this->columns;
+	}
+	
+	/**
+	 * Defines the query string key to rely on when changing the paginators
+	 * active page.
+	 *
+	 * @param string $key
+	 *	The paginator key.
+	 */
+	public function setPaginatorKey($key)
+	{
+		$this->paginatorKey = $key;
+	}
+	
+	/**
+	 * Return the query string key to rely on when changing the paginators
+	 * active page.
+	 *
+	 * @return string
+	 *	The paginator key.
+	 */
+	public function getPaginatorKey()
+	{
+		if (!isset($this->paginatorKey))
+		{
+			$this->paginatorKey = strtolower(str_replace(array('-', '.'), '_', $this->getId()))
+				. '_page';
+		}
+		
+		return $this->paginatorKey;
 	}
 	
 	/**
@@ -231,11 +269,34 @@ class GridWidget extends Widget
 	 * Builds and deploys the widget HTML elements.
 	 */
 	public function deploy()
-	{
+	{	
 		$div = new HtmlElement('div');
-		$div->setContent($this->buildTable());
 		$div->setClass('ui-gridwidget ui-gridwidget-container');
 		$div->set('id', $this->getId(true));
+	
+		// Build the paginator widget instance
+		$paginator = $this->provider->getPaginator();
+		
+		if (isset($paginator))
+		{
+			$key = $this->getPaginatorKey();
+			
+			$widget = new PaginatorWidget($paginator);
+			$widget->setKey($key);
+			$widget->apply();
+			
+			$div->setContent(array(
+				$this->buildTable(),
+				$widget->build()
+			));
+		}
+		else
+		{
+			$div->setContent(array(
+				$this->buildTable()
+			));
+		}
+		
 		$div->render();
 	}
 }
