@@ -69,6 +69,14 @@ abstract class Sorter extends Element
 	 * @type array
 	 */
 	private $rules;
+	
+	/**
+	 * An array of fields this sorter handle can have rules bound to, thus
+	 * preventing URL based exploits.
+	 *
+	 * @type string[]
+	 */
+	private $fields;
 
 	/**
 	 * Constructor.
@@ -117,6 +125,12 @@ abstract class Sorter extends Element
 	 */
 	public function setRules(array $rules)
 	{
+		foreach ($rules as $field => $direction)
+		{
+			$rules[$field] = (strtolower($rules[$field]) === 'asc') ?
+				'asc' : 'desc';
+		}
+	
 		$this->rules = $rules;
 	}
 	
@@ -142,6 +156,66 @@ abstract class Sorter extends Element
 	public function hasRules()
 	{
 		return !empty($this->rules);
+	}
+	
+	/**
+	 * Defines the fields that are safe to have rules bound to, thus preventing
+	 * URL based exploits through some widgets.
+	 *
+	 * @param string|string[] $fields
+	 *	The fields to be explicitly defined, either as an array of strings
+	 *	or a CSV string.
+	 */
+	public function setFields($fields)
+	{
+		if (is_string($fields))
+		{
+			$fields = preg_split('/(\s*\,\s*)/', $fields, -1, PREG_SPLIT_NO_EMPTY);
+		}
+		
+		$this->fields = $fields;
+	}
+	
+	/**
+	 * Returns the fields that are safe to have rules bound to, thus preventing
+	 * URL based exploits through some widgets.
+	 *
+	 * @return string[]
+	 *	The explicitly defined fields, or NULL.
+	 */
+	public function getFields()
+	{
+		return $this->fields;
+	}
+	
+	/**
+	 * Binds the given rules to this sorter handle, as long as their fields
+	 * have been explicitly defined.
+	 *
+	 * @param array $rules
+	 *	The sorting rules, indexed by field name.
+	 *
+	 * @param bool $merge
+	 *	When set to TRUE the acceptable rules will be merged with the ones
+	 *	already defined, instead of completely replacing them.
+	 */
+	public function bind(array $rules, $merge = true)
+	{
+		if (!$merge)
+		{
+			$this->rules = array();
+		}
+		
+		if (isset($this->fields))
+		{
+			foreach ($this->fields as $field)
+			{
+				if (isset($rules[$field]))
+				{
+					$this->rules[$field] = $rules[$field];
+				}
+			}
+		}
 	}
 }
 
