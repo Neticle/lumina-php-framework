@@ -24,6 +24,8 @@
 
 return array(
 
+	'layout' => '~default',
+
 	'modules' => array(
 		'alpha' => array(
 			'modules' => array(

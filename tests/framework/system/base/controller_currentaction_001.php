@@ -24,8 +24,22 @@
 
 use \system\core\Lumina;
 
-define('L_APPLICATION_ROOT', dirname(__FILE__));
-require L_APPLICATION_ROOT . '/../../../framework/bootstrap.php';
+include '../../../lumina.php';
+include '../../../applications/static003/index.php';
 
-Lumina::loadWebApplication('~settings.default');
+Lumina::getEventBus()->onClassEvent('system\\base\\Controller', 'display', function($controller) {
+	global $c;
+	$c = $controller;
+	define('ACTION', $controller->getCurrentAction());
+});
+
+$app = Lumina::getApplication();
+ob_start();
+$app->dispatchRequest();
+ob_end_clean();
+
+lumina_test_start('Controller::currentAction');
+lumina_test_identical('Action', 'index', ACTION);
+lumina_test_identical('Action2', null, $c->getCurrentAction());
+lumina_test_end();
 

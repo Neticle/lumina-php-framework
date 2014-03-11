@@ -57,6 +57,15 @@ abstract class Controller extends Context
 	 * @type string
 	 */
 	private $defaultAction = 'index';
+	
+	/**
+	 * The name of the action being currently processed, which is defined
+	 * right before the action method is invoked and undefined right after
+	 * the script execution resumes.
+	 *
+	 * @type string
+	 */
+	private $currentAction;
 
 	/**
 	 * Constructor.
@@ -373,6 +382,20 @@ abstract class Controller extends Context
 	}
 	
 	/**
+	 * Returns the name of the action being processed, if any.
+	 *
+	 * The current action is only defined while the action method logic
+	 * is being executed and, once it's finished, the value will be undefined.
+	 *
+	 * @return string
+	 *	The current action identifier.
+	 */
+	public final function getCurrentAction()
+	{
+		return $this->currentAction;
+	}
+	
+	/**
 	 * Dispatches the current request.
 	 *
 	 * @param string $action
@@ -447,7 +470,10 @@ abstract class Controller extends Context
 					{
 						if ($this->onDispatch($action, $filter, $arguments))
 						{
+							$this->currentAction = $action;
 							$method->invokeArgs($this, $arguments);
+							$this->currentAction = null;
+							
 							$this->onAfterDispatch($action, $filter, $arguments);
 							return true;
 						}
