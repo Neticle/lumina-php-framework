@@ -85,7 +85,7 @@ class TextColumn extends Column
 		
 		// Build the html element
 		$html = new HtmlElement('td');
-		$html->setClass(array('ui-gridwidget-cell'), false);
+		$html->setClass(array('lw-grid-item-cell', 'lw-grid-item-cell-text'), false);
 		
 		if (isset($value))
 		{

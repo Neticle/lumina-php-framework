@@ -24,8 +24,8 @@
 
 namespace system\ext\web\widget;
 
-use \system\base\Widget;
 use \system\data\provider\paginator\Paginator;
+use \system\web\Widget;
 use \system\web\html\Html;
 use \system\web\html\HtmlElement;
 
@@ -154,8 +154,9 @@ class PaginatorWidget extends Widget
 		$items[] = $this->buildLastListItem($count, $active < $count);
 		
 		$ul = new HtmlElement('ul');
-		$ul->setClass('ui-paginatorwidget-list');
+		$ul->setClass('lw-paginator');
 		$ul->setContent($items);
+		$ul->setAttribute('id', $this->getId());
 		return $ul;
 	}
 	
@@ -166,15 +167,15 @@ class PaginatorWidget extends Widget
 		
 		if ($enable)
 		{
-			$a->set('href', $this->getPageUrl($page));
+			$a->setAttribute('href', $this->getPageUrl($page));
 		}
 	
 		$li = new HtmlElement('li');
 		$li->setContent($a);
 		$li->setClass(array(
-			'ui-paginatorwidget-item',
-			'ui-paginatorwidget-item-first',
-			($enable ? 'available' : 'disabled')
+			'lw-paginator-item',
+			'lw-paginator-item-first',
+			($enable ? 'lw-paginator-item-available' : 'lw-paginator-item-disabled')
 		));
 		
 		return $li;
@@ -187,15 +188,15 @@ class PaginatorWidget extends Widget
 		
 		if ($enable)
 		{
-			$a->set('href', $this->getPageUrl($page));
+			$a->setAttribute('href', $this->getPageUrl($page));
 		}
 	
 		$li = new HtmlElement('li');
 		$li->setContent($a);
 		$li->setClass(array(
-			'ui-paginatorwidget-item',
-			'ui-paginatorwidget-item-previous',
-			($enable ? 'available' : 'disabled')
+			'lw-paginator-item',
+			'lw-paginator-item-previous',
+			($enable ? 'lw-paginator-item-available' : 'lw-paginator-item-disabled')
 		));
 		
 		return $li;
@@ -208,15 +209,15 @@ class PaginatorWidget extends Widget
 		
 		if ($enable)
 		{
-			$a->set('href', $this->getPageUrl($page));
+			$a->setAttribute('href', $this->getPageUrl($page));
 		}
 	
 		$li = new HtmlElement('li');
 		$li->setContent($a);
 		$li->setClass(array(
-			'ui-paginatorwidget-item',
-			'ui-paginatorwidget-item-last',
-			($enable ? 'available' : 'disabled')
+			'lw-paginator-item',
+			'lw-paginator-item-last',
+			($enable ? 'lw-paginator-item-available' : 'lw-paginator-item-disabled')
 		));
 		
 		return $li;
@@ -229,15 +230,15 @@ class PaginatorWidget extends Widget
 		
 		if ($enable)
 		{
-			$a->set('href', $this->getPageUrl($page));
+			$a->setAttribute('href', $this->getPageUrl($page));
 		}
 	
 		$li = new HtmlElement('li');
 		$li->setContent($a);
 		$li->setClass(array(
-			'ui-paginatorwidget-item',
-			'ui-paginatorwidget-item-last',
-			($enable ? 'available' : 'disabled')
+			'lw-paginator-item',
+			'lw-paginator-item-last',
+			($enable ? 'lw-paginator-item-available' : 'lw-paginator-item-disabled')
 		));
 		
 		return $li;
@@ -262,11 +263,11 @@ class PaginatorWidget extends Widget
 		
 		if (!$active)
 		{
-			$a->set('href', $this->getPageUrl($page));
+			$a->setAttribute('href', $this->getPageUrl($page));
 		}
 	
 		$li = new HtmlElement('li');
-		$li->setClass(array('ui-paginatorwidget-item', ($active ? 'active' : 'available')));
+		$li->setClass(array('lw-paginator-item', ($active ? 'lw-paginator-item-active' : 'lw-paginator-item-available')));
 		$li->setContent($a);
 		return $li;
 	}
@@ -278,7 +279,7 @@ class PaginatorWidget extends Widget
 	 * @throws HttpException
 	 *	Throws a '404 Document Not Found' when the page number is out of range.
 	 */
-	public function apply()
+	public function bindRequest()
 	{
 		$key = $this->key;
 		
@@ -299,22 +300,11 @@ class PaginatorWidget extends Widget
 		$this->paginator->setActivePage($page);
 	}
 	
-	public function build()
+	protected function build()
 	{
 		$paginator = $this->paginator;
 		$count = $paginator->getPageCount();
-		
-		$list = $this->buildList(1, $count, $paginator->getActivePage(), $count);
-		
-		$div = new HtmlElement('div');
-		$div->setClass(array('ui-paginatorwidget ui-paginatorwidget-container'));
-		$div->setContent($list);
-		return $div;
-	}
-	
-	public function deploy()
-	{
-		$this->build()->render();
+		return $this->buildList(1, $count, $paginator->getActivePage(), $count);
 	}
 }
 

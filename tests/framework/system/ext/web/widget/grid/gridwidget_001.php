@@ -98,6 +98,9 @@ if (TestTable2::model()->count() !== 100)
 $p = new RecordProvider(new TestTable2(), array(
 	'paginator' => array(
 		'activePage' => 1
+	),
+	'sorter' => array(
+		'fields' => 'id, column1, column2, column3, column4'
 	)
 ));
 

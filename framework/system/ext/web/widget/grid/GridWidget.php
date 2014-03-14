@@ -24,11 +24,13 @@
 
 namespace system\ext\web\widget\grid;
 
-use \system\base\Widget;
 use \system\data\provider\Provider;
+use \system\data\provider\paginator\Paginator;
+use \system\data\provider\sorter\Sorter;
 use \system\ext\web\widget\PaginatorWidget;
 use \system\ext\web\widget\grid\column\Column;
 use \system\ext\web\widget\grid\column\TextColumn;
+use \system\web\Widget;
 use \system\web\html\HtmlElement;
 
 /**
@@ -61,6 +63,13 @@ class GridWidget extends Widget
 	 * @type string
 	 */
 	private $paginatorKey;
+	
+	/**
+	 * The grid widget sorter query string key.
+	 *
+	 * @type string
+	 */
+	private $sorterKey;
 
 	/**
 	 * Constructor.
@@ -125,179 +134,191 @@ class GridWidget extends Widget
 		return $this->columns;
 	}
 	
-	/**
-	 * Defines the query string key to rely on when changing the paginators
-	 * active page.
-	 *
-	 * @param string $key
-	 *	The paginator key.
-	 */
 	public function setPaginatorKey($key)
 	{
 		$this->paginatorKey = $key;
 	}
 	
-	/**
-	 * Return the query string key to rely on when changing the paginators
-	 * active page.
-	 *
-	 * @return string
-	 *	The paginator key.
-	 */
 	public function getPaginatorKey()
 	{
 		if (!isset($this->paginatorKey))
 		{
-			$this->paginatorKey = strtolower(str_replace(array('-', '.'), '_', $this->getId()))
-				. '_page';
+			$this->paginatorKey = $this->getId() . '_page';
 		}
 		
 		return $this->paginatorKey;
 	}
 	
-	/**
-	 * Builds the entire header section cells for this grid widget.
-	 *
-	 * @return HtmlElement[]
-	 *	The header cells (most likely "th" elements).
-	 */
-	public function buildHeaderCells()
+	public function setSorterKey($key)
 	{
-		$cells = array();
-	
-		foreach ((array) $this->columns as $index => $column)
-		{
-			$th = new HtmlElement('th');
-			$th->setClass('ui-gridwidget-header-cell');
-			$th->set('data-index', $index);
-			
-			$label = $column->getLabel();
-			
-			if (isset($label))
-			{
-				$th->setTextContent($label);
-			}
-			
-			$cells[] = $th;
-		}
-		
-		return $cells;
+		$this->sorterKey = $key;
 	}
 	
-	/**
-	 * Builds the entire header section of the grid widget.
-	 *
-	 * @return HtmlElement
-	 *	The entire header section of this widget.
-	 */
-	public function buildHeader()
+	public function getSorterKey()
 	{
+		if (!isset($this->sorterKey))
+		{
+			$this->sorterKey = $this->getId() . '_sort';
+		}
+		
+		return $this->sorterKey;
+	}
+	
+	public function buildSortingRuleUrl($field, $direction)
+	{
+		$key = $this->getSorterKey();
+		
+		$router = $this->getComponent('router');
+		$route = $router->getRequestRoute();
+		
+		$route[1][$key] = array(
+			$field => $direction
+		);
+		
+		return $router->createAbsoluteUrl($route[0], $route[1]);
+	}
+	
+	public function buildTable(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
+	{
+		$table = new HtmlElement('table');
+		$table->setClass(array('lw-grid-table'));
+		$table->setContent(array(
+			$this->buildTableHeader($provider, $paginator, $sorter),
+			$this->buildTableBody($provider, $paginator, $sorter)
+		));
+		return $table;
+	}
+	
+	public function buildTableHeader(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
+	{
+		$fields = isset($sorter) ? 
+			$sorter->getFields() : null;
+		
+		$content = array();
+		
+		foreach ($this->columns as $column)
+		{
+			$content[] = $this->buildTableHeaderItem($provider, $paginator, $sorter, $column);
+		}
+		
 		$tr = new HtmlElement('tr');
-		$tr->setClass(array('ui-gridwidget-header'));
-		$tr->setContent($this->buildHeaderCells());
+		$tr->setClass(array('lw-grid-header'));
+		$tr->setContent($content);
 		
 		$thead = new HtmlElement('thead');
+		$thead->setClass(array('lw-grid-header-container'));
 		$thead->setContent($tr);
 		return $thead;
 	}
 	
-	/**
-	 * Builds all rows for the body section of this grid widget.
-	 *
-	 * @return HtmlElement[]
-	 *	The entire body row collection, most like "tr" elements.
-	 */
-	public function buildBodyRows()
+	public function buildTableHeaderItem(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, Column $column)
 	{
-		$rows = array();
-		$provider = $this->provider;
-		$columns = $this->columns;
-		$i = 0;
+		$field = $column->getName();
+		$direction = null;
 		
-		foreach ($provider->getItems() as $item)
-		{			
-			$cells = array();
-			foreach ($columns as $index => $column)
-			{
-				$cells[] = $column->buildCell($provider, $item);
-			}
+		if (isset($sorter) && in_array($field, $sorter->getFields()))
+		{
+			$key = $this->getSorterKey();
 			
-			$tr = new HtmlElement('tr');
-			$tr->setClass(array('ui-gridwidget-item', ((++$i % 2 === 0) ? 'odd' : 'even')));
-			$tr->setContent($cells);
-			
-			$rows[] = $tr;
+			$direction = (isset($_GET[$key][$field]) && $_GET[$key][$field] === 'asc') ?
+				'desc' : 'asc';
 		}
+	
+		$a = $this->buildTableHeaderItemAnchor($provider, $paginator, $sorter, $column, $field, $direction);
 		
-		return $rows;
+		$th = new HtmlElement('th');
+		$th->setClass(array('lw-grid-header-cell'));
+		$th->setContent($a);
+		return $th;
 	}
 	
-	/**
-	 * Builds the entire body section of this grid widget.
-	 *
-	 * @return HtmlElement
-	 *	The entire body section of this widget.
-	 */
-	public function buildBody()
+	public function buildTableHeaderItemAnchor(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, Column $column, $field, $direction)
 	{
+		$a = new HtmlElement('a');
+		$a->setClass(array('lw-grid-sort', (isset($direction) ? ('lw-grid-sort-' . $direction) : 'lw-grid-sort-disabled')));
+		$a->setTextContent($provider->getFieldLabel($field));
+		
+		if (isset($direction))
+		{
+			$a->setAttribute('href', $this->buildSortingRuleUrl($field, $direction));
+		}
+		
+		return $a;
+	}
+	
+	public function buildTableBody(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
+	{
+		$rows[] = array();
+	
+		foreach ($provider->getIterator() as $item)
+		{
+			$rows[] = $this->buildTableBodyRow($provider, $paginator, $sorter, $item);
+		}
+		
 		$tbody = new HtmlElement('tbody');
-		$tbody->setClass('ui-gridwidget-body');
-		$tbody->setContent($this->buildBodyRows());
+		$tbody->setClass(array('lw-grid-body'));
+		$tbody->setContent($rows);
 		return $tbody;
 	}
 	
-	/**
-	 * Builds the entire table container section of this grid widget.
-	 *
-	 * @return HtmlElement
-	 *	The entire table container section of this widget.
-	 */
-	public function buildTable()
+	public function buildTableBodyRow(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, $item)
 	{
-		$table = new HtmlElement('table');
-		$table->setClass('ui-gridwidget-table');
+		$cells = array();
 		
-		$table->setContent(array(
-			$this->buildHeader(),
-			$this->buildBody()
-		));
+		foreach ($this->columns as $column)
+		{
+			$cells[] = $column->buildCell($provider, $item);
+		}
 		
-		return $table;
+		$tr = new HtmlElement('tr');
+		$tr->setClass(array('lw-grid-item'));
+		$tr->setContent($cells);
+		return $tr;
 	}
 	
-	/**
-	 * Builds and deploys the widget HTML elements.
-	 */
-	public function deploy()
+	public function buildContainer(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, PaginatorWidget $paginatorWidget = null)
 	{	
+		// Build the container with the table
 		$div = new HtmlElement('div');
-		$div->setClass('ui-gridwidget ui-gridwidget-container');
-		$div->set('id', $this->getId(true));
+		$div->setClass(array('lw-grid'));
+		$div->setContent(
+			$this->buildTable($provider, $paginator, $sorter)
+		);
+		
+		// Add the paginator widget element
+		if (isset($paginatorWidget))
+		{
+			$div->addContent($paginatorWidget->pack());
+		}
+		
+		return $div;
+	}
 	
-		// Build the paginator widget instance
-		$paginator = $this->provider->getPaginator();
+	protected function build()
+	{
+		$provider = $this->provider;
+		$paginator = $provider->getPaginator();
+		$sorter = $provider->getSorter();
+		
+		// Apply the pagination before the table is built
+		$paginatorWidget = null;
 		
 		if (isset($paginator))
 		{
-			$key = $this->getPaginatorKey();
-			
-			$widget = new PaginatorWidget($paginator);
-			$widget->setKey($key);
-			$widget->apply();
-			
-			$div->setContent(array(
-				$this->buildTable(),
-				$widget->build()
-			));
-		}
-		else
-		{
-			$div->setContent(array(
-				$this->buildTable()
-			));
+			$paginatorWidget = new PaginatorWidget($paginator);
+			$paginatorWidget->setKey($this->getPaginatorKey());
+			$paginatorWidget->bindRequest();
 		}
 		
-		$div->render();
+		// Sorter
+		$key = $this->getSorterKey();
+		
+		if (isset($_GET[$key]))
+		{
+			$sorter->bind((array) $_GET[$key]);
+		}
+		
+		return $this->buildContainer($provider, $paginator, $sorter, $paginatorWidget);
 	}
 }
 
