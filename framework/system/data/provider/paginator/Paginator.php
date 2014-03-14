@@ -92,6 +92,7 @@ abstract class Paginator extends Element
 		}
 	
 		$this->interval = $interval;
+		$this->provider->reset();
 	}
 	
 	/**
@@ -125,6 +126,7 @@ abstract class Paginator extends Element
 	 */
 	public function setProvider(Provider $provider)
 	{
+		$provider->reset();
 		$this->provider = $provider;
 		$this->activePage = 1;
 	}
@@ -176,6 +178,7 @@ abstract class Paginator extends Element
 		}
 		
 		$this->activePage = $activePage;
+		$this->provider->reset();
 	}
 	
 	/**

@@ -165,6 +165,18 @@ abstract class Provider extends Element implements \IteratorAggregate
 	public abstract function getItemFieldValue($item, $field);
 	
 	/**
+	 * Clears any currently cached items, forcing the 'fetchItems'
+	 * methods to be invoked again.
+	 *
+	 * This method needs to be called everytime changes are made to the
+	 * paginator or sorter handles.
+	 */
+	public function reset()
+	{
+		$this->items = null;
+	}
+	
+	/**
 	 * Returns the currently applicable items, fetching them
 	 * if necessary.
 	 *

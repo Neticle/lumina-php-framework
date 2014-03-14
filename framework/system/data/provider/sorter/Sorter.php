@@ -132,6 +132,7 @@ abstract class Sorter extends Element
 		}
 	
 		$this->rules = $rules;
+		$this->provider->reset();
 	}
 	
 	/**
@@ -144,6 +145,21 @@ abstract class Sorter extends Element
 	public function getRules()
 	{
 		return $this->rules;
+	}
+	
+	/**
+	 * Returns the rule defined for the specified field.
+	 *
+	 * @param string $field
+	 *	The field to get the sorting rule for.
+	 *
+	 * @return string
+	 *	Returns the sorting rule applied to this field, if any.
+	 */
+	public function getRule($field)
+	{
+		return isset($this->rules[$field]) ?
+			$this->rules[$field] : null;
 	}
 	
 	/**
@@ -212,10 +228,13 @@ abstract class Sorter extends Element
 			{
 				if (isset($rules[$field]))
 				{
-					$this->rules[$field] = $rules[$field];
+					$this->rules[$field] = (strtolower($rules[$field]) === 'asc') ?
+						'asc' : 'desc';
 				}
 			}
 		}
+		
+		$this->provider->reset();
 	}
 }
 
