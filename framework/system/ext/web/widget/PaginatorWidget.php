@@ -163,7 +163,7 @@ class PaginatorWidget extends Widget
 	 * @return HtmlElement
 	 *	The entire page list.
 	 */
-	public function buildList($from, $to, $active, $count)
+	protected function buildList($from, $to, $active, $count)
 	{
 		$items = array(
 			$this->buildFirstListItem(1, $active > 1),
@@ -198,7 +198,7 @@ class PaginatorWidget extends Widget
 	 * @return HtmlElement
 	 *	The pagination list item.
 	 */
-	public function buildFirstListItem($page, $enable)
+	protected function buildFirstListItem($page, $enable)
 	{
 		$a = new HtmlElement('a');
 		$a->setTextContent('<<<');
@@ -232,7 +232,7 @@ class PaginatorWidget extends Widget
 	 * @return HtmlElement
 	 *	The pagination list item.
 	 */
-	public function buildPreviousListItem($page, $enable)
+	protected function buildPreviousListItem($page, $enable)
 	{
 		$a = new HtmlElement('a');
 		$a->setTextContent('<');
@@ -266,7 +266,7 @@ class PaginatorWidget extends Widget
 	 * @return HtmlElement
 	 *	The pagination list item.
 	 */
-	public function buildLastListItem($page, $enable)
+	protected function buildLastListItem($page, $enable)
 	{
 		$a = new HtmlElement('a');
 		$a->setTextContent('>>>');
@@ -300,7 +300,7 @@ class PaginatorWidget extends Widget
 	 * @return HtmlElement
 	 *	The pagination list item.
 	 */
-	public function buildNextListItem($page, $enable)
+	protected function buildNextListItem($page, $enable)
 	{
 		$a = new HtmlElement('a');
 		$a->setTextContent('>');
@@ -333,7 +333,7 @@ class PaginatorWidget extends Widget
 	 * @return HtmlElement
 	 *	The page item element.
 	 */
-	public function buildPageListItem($page, $active)
+	protected function buildPageListItem($page, $active)
 	{	
 		$a = new HtmlElement('a');
 		$a->setTextContent($page);
