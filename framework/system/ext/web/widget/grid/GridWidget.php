@@ -134,11 +134,24 @@ class GridWidget extends Widget
 		return $this->columns;
 	}
 	
+	/**
+	 * Defines the paginator query string key.
+	 *
+	 * @param string $key
+	 *	The paginator query string key.
+	 */
 	public function setPaginatorKey($key)
 	{
 		$this->paginatorKey = $key;
 	}
 	
+	/**
+	 * Returns the paginator query string key, creating it if one isn't
+	 * defined already.
+	 *
+	 * @return string
+	 *	The paginator query string key.
+	 */
 	public function getPaginatorKey()
 	{
 		if (!isset($this->paginatorKey))
@@ -149,11 +162,24 @@ class GridWidget extends Widget
 		return $this->paginatorKey;
 	}
 	
+	/**
+	 * Defines the sorter query string key.
+	 *
+	 * @param string $key
+	 *	The sorter query string key.
+	 */
 	public function setSorterKey($key)
 	{
 		$this->sorterKey = $key;
 	}
 	
+	/**
+	 * Returns the sorter query string key, creating it if one isn't
+	 * defined already.
+	 *
+	 * @return string
+	 *	The sorter query string key.
+	 */
 	public function getSorterKey()
 	{
 		if (!isset($this->sorterKey))
@@ -164,7 +190,20 @@ class GridWidget extends Widget
 		return $this->sorterKey;
 	}
 	
-	public function buildSortingRuleUrl($field, $direction)
+	/**
+	 * Builds the sorting url rule based on a given field and intended
+	 * direction.
+	 *
+	 * @param string $field
+	 *	The field to build the url to.
+	 *
+	 * @param string $direction
+	 *	The sorting direction ("ask", "desc") to build the url to.
+	 *
+	 * @return string
+	 *	The absolute url.
+	 */
+	protected function buildSortingRuleUrl($field, $direction)
 	{
 		$key = $this->getSorterKey();
 		
@@ -178,7 +217,22 @@ class GridWidget extends Widget
 		return $router->createAbsoluteUrl($route[0], $route[1]);
 	}
 	
-	public function buildTable(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
+	/**
+	 * Builds the entire grid widget table element.
+	 *
+	 * @param Provider $provider
+	 *	The data provider to build the table from.
+	 *
+	 * @param Paginator $paginator
+	 *	The paginator linked with the given provider instance.
+	 *
+	 * @param Sorter $sorter
+	 *	The sorter linked with the given provider instance.
+	 *
+	 * @return HtmlElement
+	 *	The html element instance.
+	 */
+	protected function buildTable(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
 	{
 		$table = new HtmlElement('table');
 		$table->setClass(array('lw-grid-table'));
@@ -189,7 +243,22 @@ class GridWidget extends Widget
 		return $table;
 	}
 	
-	public function buildTableHeader(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
+	/**
+	 * Builds the entire grid widget table header element.
+	 *
+	 * @param Provider $provider
+	 *	The data provider to build the table from.
+	 *
+	 * @param Paginator $paginator
+	 *	The paginator linked with the given provider instance.
+	 *
+	 * @param Sorter $sorter
+	 *	The sorter linked with the given provider instance.
+	 *
+	 * @return HtmlElement
+	 *	The html element instance.
+	 */
+	protected function buildTableHeader(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
 	{
 		$fields = isset($sorter) ? 
 			$sorter->getFields() : null;
@@ -211,7 +280,25 @@ class GridWidget extends Widget
 		return $thead;
 	}
 	
-	public function buildTableHeaderItem(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, Column $column)
+	/**
+	 * Builds the entire grid widget table header item element.
+	 *
+	 * @param Provider $provider
+	 *	The data provider to build the table from.
+	 *
+	 * @param Paginator $paginator
+	 *	The paginator linked with the given provider instance.
+	 *
+	 * @param Sorter $sorter
+	 *	The sorter linked with the given provider instance.
+	 *
+	 * @param Column $column
+	 *	The column the header item is being built for.
+	 *
+	 * @return HtmlElement
+	 *	The html element instance.
+	 */
+	protected function buildTableHeaderItem(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, Column $column)
 	{
 		$field = $column->getName();
 		$direction = null;
@@ -232,7 +319,31 @@ class GridWidget extends Widget
 		return $th;
 	}
 	
-	public function buildTableHeaderItemAnchor(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, Column $column, $field, $direction)
+	/**
+	 * Builds the entire grid widget table header item element.
+	 *
+	 * @param Provider $provider
+	 *	The data provider to build the table from.
+	 *
+	 * @param Paginator $paginator
+	 *	The paginator linked with the given provider instance.
+	 *
+	 * @param Sorter $sorter
+	 *	The sorter linked with the given provider instance.
+	 *
+	 * @param Column $column
+	 *	The column the header item is being built for.
+	 *
+	 * @param string $field
+	 *	The field the anchor is being built for.
+	 *
+	 * @param string $direction
+	 *	The sorting direction the anchor is being built for.
+	 *
+	 * @return HtmlElement
+	 *	The html element instance.
+	 */
+	protected function buildTableHeaderItemAnchor(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, Column $column, $field, $direction)
 	{
 		$a = new HtmlElement('a');
 		$a->setClass(array('lw-grid-sort', (isset($direction) ? ('lw-grid-sort-' . $direction) : 'lw-grid-sort-disabled')));
@@ -246,7 +357,22 @@ class GridWidget extends Widget
 		return $a;
 	}
 	
-	public function buildTableBody(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
+	/**
+	 * Builds the entire table body.
+	 *
+	 * @param Provider $provider
+	 *	The data provider to build the table from.
+	 *
+	 * @param Paginator $paginator
+	 *	The paginator linked with the given provider instance.
+	 *
+	 * @param Sorter $sorter
+	 *	The sorter linked with the given provider instance.
+	 *
+	 * @return HtmlElement
+	 *	The html element instance.
+	 */
+	protected function buildTableBody(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
 	{
 		$rows[] = array();
 	
@@ -261,7 +387,25 @@ class GridWidget extends Widget
 		return $tbody;
 	}
 	
-	public function buildTableBodyRow(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, $item)
+	/**
+	 * Builds a row.
+	 *
+	 * @param Provider $provider
+	 *	The data provider to build the table from.
+	 *
+	 * @param Paginator $paginator
+	 *	The paginator linked with the given provider instance.
+	 *
+	 * @param Sorter $sorter
+	 *	The sorter linked with the given provider instance.
+	 *
+	 * @param mixed $item
+	 *	The item to build the row for.
+	 *
+	 * @return HtmlElement
+	 *	The html element instance.
+	 */
+	protected function buildTableBodyRow(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, $item)
 	{
 		$cells = array();
 		
@@ -276,7 +420,25 @@ class GridWidget extends Widget
 		return $tr;
 	}
 	
-	public function buildContainer(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, PaginatorWidget $paginatorWidget = null)
+	/**
+	 * Builds the widget container.
+	 *
+	 * @param Provider $provider
+	 *	The data provider to build the table from.
+	 *
+	 * @param Paginator $paginator
+	 *	The paginator linked with the given provider instance.
+	 *
+	 * @param Sorter $sorter
+	 *	The sorter linked with the given provider instance.
+	 *
+	 * @param PaginatorWidget $paginatorWidget
+	 *	The paginator widget to deploy after the table is built.
+	 *
+	 * @return HtmlElement
+	 *	The html element instance.
+	 */
+	protected function buildContainer(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, PaginatorWidget $paginatorWidget = null)
 	{	
 		// Build the container with the table
 		$div = new HtmlElement('div');
@@ -294,6 +456,12 @@ class GridWidget extends Widget
 		return $div;
 	}
 	
+	/**
+	 * Builds the widget HTML element and returns it.
+	 *
+	 * @return HtmlElement
+	 *	The packed HTML element instance.
+	 */
 	protected function build()
 	{
 		$provider = $this->provider;

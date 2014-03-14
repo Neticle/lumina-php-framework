@@ -82,21 +82,46 @@ class PaginatorWidget extends Widget
 		}
 	}
 	
+	/**
+	 * Defines the paginator query string key.
+	 *
+	 * @param string $key
+	 *	The paginator query string key.
+	 */
 	public function setKey($key)
 	{
 		$this->key = $key;
 	}
 	
+	/**
+	 * Returns the paginator query string key.
+	 *
+	 * @return string
+	 *	The paginator query string key.
+	 */
 	public function getKey()
 	{
 		return $this->key;
 	}
 	
+	/**
+	 * Defines the number of pagination items to display, excluding
+	 * the currently active page and first, previous, next and last items.
+	 *
+	 * @param int $size
+	 *	The number of pagination items to display.
+	 */
 	public function setSize($size)
 	{
 		$this->size = $size;
 	}
 	
+	/**
+	 * Returns the number of pagination items to display.
+	 *
+	 * @return int
+	 *	The number of pagination items to display.
+	 */
 	public function getSize()
 	{
 		return $this->size;
@@ -160,6 +185,19 @@ class PaginatorWidget extends Widget
 		return $ul;
 	}
 	
+	/**
+	 * Builds the 'to first' list item.
+	 *
+	 * @param int $page
+	 *	The number of the page the item should link to.
+	 *
+	 * @param bool $enable
+	 *	A flag indicating wether or not this pagination list item
+	 *	should be enabled.
+	 *
+	 * @return HtmlElement
+	 *	The pagination list item.
+	 */
 	public function buildFirstListItem($page, $enable)
 	{
 		$a = new HtmlElement('a');
@@ -181,6 +219,19 @@ class PaginatorWidget extends Widget
 		return $li;
 	}
 	
+	/**
+	 * Builds the 'to previous' list item.
+	 *
+	 * @param int $page
+	 *	The number of the page the item should link to.
+	 *
+	 * @param bool $enable
+	 *	A flag indicating wether or not this pagination list item
+	 *	should be enabled.
+	 *
+	 * @return HtmlElement
+	 *	The pagination list item.
+	 */
 	public function buildPreviousListItem($page, $enable)
 	{
 		$a = new HtmlElement('a');
@@ -202,6 +253,19 @@ class PaginatorWidget extends Widget
 		return $li;
 	}
 	
+	/**
+	 * Builds the 'to last' list item.
+	 *
+	 * @param int $page
+	 *	The number of the page the item should link to.
+	 *
+	 * @param bool $enable
+	 *	A flag indicating wether or not this pagination list item
+	 *	should be enabled.
+	 *
+	 * @return HtmlElement
+	 *	The pagination list item.
+	 */
 	public function buildLastListItem($page, $enable)
 	{
 		$a = new HtmlElement('a');
@@ -223,6 +287,19 @@ class PaginatorWidget extends Widget
 		return $li;
 	}
 	
+	/**
+	 * Builds the 'to next' list item.
+	 *
+	 * @param int $page
+	 *	The number of the page the item should link to.
+	 *
+	 * @param bool $enable
+	 *	A flag indicating wether or not this pagination list item
+	 *	should be enabled.
+	 *
+	 * @return HtmlElement
+	 *	The pagination list item.
+	 */
 	public function buildNextListItem($page, $enable)
 	{
 		$a = new HtmlElement('a');
@@ -300,6 +377,12 @@ class PaginatorWidget extends Widget
 		$this->paginator->setActivePage($page);
 	}
 	
+	/**
+	 * Builds the widget HTML element and returns it.
+	 *
+	 * @return HtmlElement
+	 *	The packed HTML element instance.
+	 */
 	protected function build()
 	{
 		$paginator = $this->paginator;
