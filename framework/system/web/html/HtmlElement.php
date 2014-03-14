@@ -231,7 +231,7 @@ class HtmlElement extends Element
 	 * @param mixed $value
 	 *	The value to define the attribute with.
 	 */
-	public function set($attribute, $value = null)
+	public function setAttribute($attribute, $value = null)
 	{
 		$this->attributes[$attribute] = $value;
 	}
@@ -256,7 +256,7 @@ class HtmlElement extends Element
 	 * @return mixed
 	 *	Returns the attribute value.
 	 */
-	public function get($attribute)
+	public function getAttribute($attribute)
 	{
 		$attributes = $this->attributes;
 		
@@ -274,7 +274,7 @@ class HtmlElement extends Element
 	 * @return bool
 	 *	Returns TRUE if the attribute is defined, FALSE otherwise.
 	 */
-	public function has($attribute)
+	public function hasAttribute($attribute)
 	{
 		return isset($this->attributes[$attribute]);
 	}
