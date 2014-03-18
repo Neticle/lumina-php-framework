@@ -45,7 +45,8 @@ abstract class Column extends Element
 	 * @type array
 	 */
 	private static $columnTypeClasses = array(
-		'text' => 'system\\ext\\web\\widget\\grid\\column\\TextColumn'
+		'text' => 'system\\ext\\web\\widget\\grid\\column\\TextColumn',
+		'enum' => 'system\\ext\\web\\widget\\grid\\column\\EnumColumn'
 	);
 
 	/**
@@ -126,7 +127,7 @@ abstract class Column extends Element
 	 * @param array $configuration
 	 *	Express configuration array.
 	 */
-	public function __construct(GridWidget $parent, $name, array $configuration = null)
+	public final function __construct(GridWidget $parent, $name, array $configuration = null)
 	{
 		parent::__construct(null);
 		$this->gridWidget = $parent;

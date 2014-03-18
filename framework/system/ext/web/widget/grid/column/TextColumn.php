@@ -24,13 +24,10 @@
 
 namespace system\ext\web\widget\grid\column;
 
-use \system\core\Element;
 use \system\core\exception\RuntimeException;
 use \system\data\provider\Provider;
-use \system\ext\web\widget\grid\GridWidget;
 use \system\ext\web\widget\grid\column\Column;
 use \system\web\html\Html;
-use \system\web\html\HtmlElement;
 
 /**
  * Based on .NET GridView control, this widget provides a grid with pre-defined
@@ -41,24 +38,7 @@ use \system\web\html\HtmlElement;
  * @since 0.2.0
  */
 class TextColumn extends Column
-{
-	/**
-	 * Constructor.
-	 *
-	 * @param GridWidget $parent
-	 *	The parent widget instance.
-	 *
-	 * @param string $name
-	 *	The column name, if applicable.
-	 *
-	 * @param array $configuration
-	 *	Express configuration array.
-	 */
-	public function __construct(GridWidget $parent, $name, array $configuration = null)
-	{
-		parent::__construct($parent, $name, $configuration);
-	}
-	
+{	
 	/**
 	 * Builds the content for a specific item cell.
 	 *
