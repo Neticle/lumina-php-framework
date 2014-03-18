@@ -395,10 +395,10 @@ class HtmlElement extends Element
 		
 			foreach ($this->children as $child)
 			{
-				if ($child)
-				{
-					$html .= is_string($child) ?
-						$child : $child->render(true);
+				if (isset($child))
+				{				
+					$html .= ($child instanceof HtmlElement) ?
+						$child->render(true) : $child;
 				}
 			}
 			
