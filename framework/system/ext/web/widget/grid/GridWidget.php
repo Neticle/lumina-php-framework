@@ -427,7 +427,7 @@ class GridWidget extends Widget
 	 */
 	protected function buildTableBody(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
 	{
-		$rows[] = array();
+		$rows = array();
 	
 		foreach ($provider->getIterator() as $item)
 		{
