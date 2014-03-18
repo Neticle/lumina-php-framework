@@ -27,6 +27,7 @@ namespace system\ext\web\widget\grid\column;
 use \system\core\Element;
 use \system\data\provider\Provider;
 use \system\ext\web\widget\grid\GridWidget;
+use \system\web\html\HtmlElement;
 
 /**
  * Based on .NET GridView control, this widget provides a grid with pre-defined
@@ -67,6 +68,13 @@ abstract class Column extends Element
 	 * @type string
 	 */
 	private $label;
+	
+	/**
+	 * The text to be displayed on otherwise empty cells.
+	 *
+	 * @type string
+	 */
+	private $emptyCellText;
 	
 	/**
 	 * Constructs and returns a new column instance based on the given
@@ -180,6 +188,30 @@ abstract class Column extends Element
 	}
 	
 	/**
+	 * Defines the text to be displayed on cells that would be
+	 * otherwise empty.
+	 *
+	 * @param string $text
+	 *	The text to display on empty cells.
+	 */
+	public function setEmptyCellText($text)
+	{
+		$this->emptyCellText = $text;
+	}
+	
+	/**
+	 * Returns the text to be displayed on cells that would be
+	 * otherwise empty.
+	 *
+	 * @param string $text
+	 *	The text to display on empty cells.
+	 */
+	public function getEmptyCellText()
+	{
+		return $this->emptyCellText;
+	}
+	
+	/**
 	 * Builds the cell for a specific item value.
 	 *
 	 * @param Provider $provider
@@ -191,6 +223,56 @@ abstract class Column extends Element
 	 * @return HtmlElement
 	 *	The resulting HTML element instance.
 	 */
-	public abstract function buildCell(Provider $provider, $item);
+	public function buildCell(Provider $provider, $item)
+	{	
+		$content = $this->buildCellContent($provider, $item);
+		
+		if (!isset($content) && isset($this->emptyCellText))
+		{
+			$content = $this->buildEmptyCellContent($provider, $item, $this->emptyCellText);
+		}	
+	
+		$td = new HtmlElement('td');
+		$td->setClass(array('lw-grid-item-cell'), false);
+		$td->setContent($content);
+		return $td;
+	}
+	
+	/**
+	 * Builds the content to be displayed on otherwise empty cells.
+	 *
+	 * @param Provider $provider
+	 *	The provider the item was retrieved from.
+	 *
+	 * @param mixed $item
+	 *	The item build the cell for.
+	 *
+	 * @param string $message
+	 *	The message to be displayed.
+	 *
+	 * @return HtmlElement
+	 *	The resulting HTML element instance.
+	 */
+	protected function buildEmptyCellContent(Provider $provider, $item, $message)
+	{
+		$span = new HtmlElement('span');
+		$span->setClass(array('lw-grid-item-cell-empty-message'));
+		$span->setTextContent($message);
+		return $span;
+	}
+	
+	/**
+	 * Builds the content for a specific item cell.
+	 *
+	 * @param Provider $provider
+	 *	The provider the item was retrieved from.
+	 *
+	 * @param mixed $item
+	 *	The item build the cell for.
+	 *
+	 * @return HtmlElement
+	 *	The resulting HTML element instance or NULL for an empty cell.
+	 */
+	protected abstract function buildCellContent(Provider $provider, $item);
 }
 

@@ -60,7 +60,7 @@ class TextColumn extends Column
 	}
 	
 	/**
-	 * Builds the cell for a specific item value.
+	 * Builds the content for a specific item cell.
 	 *
 	 * @param Provider $provider
 	 *	The provider the item was retrieved from.
@@ -69,11 +69,10 @@ class TextColumn extends Column
 	 *	The item build the cell for.
 	 *
 	 * @return HtmlElement
-	 *	The resulting HTML element instance.
+	 *	The resulting HTML element instance or NULL for an empty cell.
 	 */
-	public function buildCell(Provider $provider, $item)
+	public function buildCellContent(Provider $provider, $item)
 	{
-		// Get the matching item value
 		$name = $this->getName();
 		
 		if (!isset($name))
@@ -83,16 +82,12 @@ class TextColumn extends Column
 		
 		$value = $provider->getItemFieldValue($item, $name);
 		
-		// Build the html element
-		$html = new HtmlElement('td');
-		$html->setClass(array('lw-grid-item-cell', 'lw-grid-item-cell-text'), false);
-		
 		if (isset($value))
 		{
-			$html->setTextContent($value);
+			return Html::encode($value);
 		}
 		
-		return $html;
+		return null;
 	}
 }
 
