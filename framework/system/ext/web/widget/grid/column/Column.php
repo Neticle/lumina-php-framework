@@ -46,7 +46,8 @@ abstract class Column extends Element
 	 */
 	private static $columnTypeClasses = array(
 		'text' => 'system\\ext\\web\\widget\\grid\\column\\TextColumn',
-		'enum' => 'system\\ext\\web\\widget\\grid\\column\\EnumColumn'
+		'enum' => 'system\\ext\\web\\widget\\grid\\column\\EnumColumn',
+		'custom' => 'system\\ext\\web\\widget\\grid\\column\\CustomColumn'
 	);
 
 	/**

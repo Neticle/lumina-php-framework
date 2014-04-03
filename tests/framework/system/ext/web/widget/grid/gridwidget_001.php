@@ -105,7 +105,21 @@ $p = new RecordProvider(new TestTable2(), array(
 ));
 
 $widget = \system\base\Widget::create('web.grid', $p, array(
-	'columns' => 'id,column1,column2,column3'
+	'columns' => array(
+		array('name' => 'id'),
+		array('name' => 'column1'),
+		array('name' => 'column2'),
+		array('name' => 'column3'),
+		array('name' => 'column4'),
+		array(
+			'name' => 'custom1',
+			'type' => 'custom',
+			'callback' => function($source, $provider, $item) {
+				return (($item->id % 2) === 0) ?
+					'even' : 'odd';
+			}
+		)		
+	)
 ));
 
 $widget->deploy();
