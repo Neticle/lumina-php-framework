@@ -92,6 +92,17 @@ class GridWidget extends Widget
 	}
 	
 	/**
+	 * Returns the underlying data provider instance.
+	 *
+	 * @return Provider
+	 *	The data provider instance.
+	 */
+	public function getProvider()
+	{
+		return $this->provider;
+	}
+	
+	/**
 	 * Defines the columns to be displayed by this grid widget.
 	 *
 	 * @param array|string $columns
@@ -354,7 +365,7 @@ class GridWidget extends Widget
 	{
 		$a = new HtmlElement('a');
 		$a->setClass(array('lw-grid-sort', (isset($direction) ? ('lw-grid-sort-' . $direction) : 'lw-grid-sort-disabled')));
-		$a->setTextContent($provider->getFieldLabel($field));
+		$a->setTextContent($column->getLabel());
 		
 		if (isset($direction))
 		{

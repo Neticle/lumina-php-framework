@@ -183,7 +183,8 @@ abstract class Column extends Element
 	{
 		if (!isset($this->label) && isset($this->name))
 		{
-			$this->label = str_replace(array('-', '_', '.'), ' ', $this->name);
+			$this->label = $this->gridWidget
+				->getProvider()->getFieldLabel($this->name);
 		}
 		
 		return $this->label;
