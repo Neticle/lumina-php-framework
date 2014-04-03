@@ -229,16 +229,20 @@ class GridWidget extends Widget
 	 * @param Sorter $sorter
 	 *	The sorter linked with the given provider instance.
 	 *
+	 * @param PaginatorWidget $paginatorWidget
+	 *	The paginator widget instance.
+	 *
 	 * @return HtmlElement
 	 *	The html element instance.
 	 */
-	protected function buildTable(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
+	protected function buildTable(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, PaginatorWidget $paginatorWidget = null)
 	{
 		$table = new HtmlElement('table');
 		$table->setClass(array('lw-grid-table'));
 		$table->setContent(array(
-			$this->buildTableHeader($provider, $paginator, $sorter),
-			$this->buildTableBody($provider, $paginator, $sorter)
+			$this->buildTableHeader($provider, $paginator, $sorter, $paginatorWidget),
+			$this->buildTableBody($provider, $paginator, $sorter),
+			$this->buildTableFooter($provider, $paginator, $sorter, $paginatorWidget)
 		));
 		return $table;
 	}
@@ -255,10 +259,13 @@ class GridWidget extends Widget
 	 * @param Sorter $sorter
 	 *	The sorter linked with the given provider instance.
 	 *
+	 * @param PaginatorWidget $paginatorWidget
+	 *	The paginator widget instance.
+	 *
 	 * @return HtmlElement
 	 *	The html element instance.
 	 */
-	protected function buildTableHeader(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
+	protected function buildTableHeader(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, PaginatorWidget $paginatorWidget = null)
 	{
 		$fields = isset($sorter) ? 
 			$sorter->getFields() : null;
@@ -351,10 +358,56 @@ class GridWidget extends Widget
 		
 		if (isset($direction))
 		{
+			$rules = $sorter->getRules();
+		
+			if (isset($rules) && in_array($field, array_keys($rules))) {
+				$a->addClass('lw-grid-sort-active');
+			}
+			
 			$a->setAttribute('href', $this->buildSortingRuleUrl($field, $direction));
 		}
 		
 		return $a;
+	}
+	
+	/**
+	 * Builds the entire grid widget table footer element.
+	 *
+	 * @param Provider $provider
+	 *	The data provider to build the table from.
+	 *
+	 * @param Paginator $paginator
+	 *	The paginator linked with the given provider instance.
+	 *
+	 * @param Sorter $sorter
+	 *	The sorter linked with the given provider instance.
+	 *
+	 * @param PaginatorWidget $paginatorWidget
+	 *	The paginator widget instance.
+	 *
+	 * @return HtmlElement
+	 *	The html element instance.
+	 */
+	protected function buildTableFooter(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, PaginatorWidget $paginatorWidget = null)
+	{
+		if (isset($paginatorWidget))
+		{
+			$td = new HtmlElement('td');
+			$td->setClass(array('lw-grid-footer-cell', 'lw-paginator-container'));
+			$td->setAttribute('colspan', count($this->columns));
+			$td->setContent($paginatorWidget->pack());	
+		
+			$tr = new HtmlElement('tr');
+			$tr->setClass(array('lw-grid-footer'));
+			$tr->setContent($td);
+		
+			$tfoot = new HtmlElement('tfoot');
+			$tfoot->setClass(array('lw-grid-footer-container'));
+			$tfoot->setContent($tr);
+			return $tfoot;
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -374,7 +427,7 @@ class GridWidget extends Widget
 	 */
 	protected function buildTableBody(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
 	{
-		$rows[] = array();
+		$rows = array();
 	
 		foreach ($provider->getIterator() as $item)
 		{
@@ -444,14 +497,8 @@ class GridWidget extends Widget
 		$div = new HtmlElement('div');
 		$div->setClass(array('lw-grid'));
 		$div->setContent(
-			$this->buildTable($provider, $paginator, $sorter)
+			$this->buildTable($provider, $paginator, $sorter, $paginatorWidget)
 		);
-		
-		// Add the paginator widget element
-		if (isset($paginatorWidget))
-		{
-			$div->addContent($paginatorWidget->pack());
-		}
 		
 		return $div;
 	}
