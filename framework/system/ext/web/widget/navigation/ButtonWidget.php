@@ -38,26 +38,69 @@ use \system\web\html\HtmlElement;
  */
 class ButtonWidget extends Widget
 {
+	/**
+	 * The button label text.
+	 *
+	 * @type string
+	 */
 	private $label;
 	
+	/**
+	 * The URL the button is to link to.
+	 *
+	 * @type string
+	 */
 	private $url;
 	
+	/**
+	 * The URL linking to the button image (icon).
+	 *
+	 * @type string
+	 */
 	private $image;
 	
+	/**
+	 * The explicitly defined image width.
+	 *
+	 * @type int
+	 */
 	private $imageWidth;
 	
+	/**
+	 * The explicitly defined image height.
+	 *
+	 * @type int
+	 */
 	private $imageHeight;
 	
+	/**
+	 * Defines the button label text contents.
+	 *
+	 * @param string $label
+	 *	The button label text.
+	 */
 	public function setLabel($label)
 	{
 		$this->label = $label;
 	}
 	
+	/**
+	 * Returns the button label text contents.
+	 *
+	 * @return string
+	 *	The button label text.
+	 */
 	public function getLabel()
 	{
 		return $this->label;
 	}
 	
+	/**
+	 * Defines the URL the button is to link to.
+	 *
+	 * @param string|array $url
+	 *	The button link, either as a string or a route array.
+	 */
 	public function setUrl($url)
 	{
 		if (isset($url) && is_array($url))
@@ -69,36 +112,90 @@ class ButtonWidget extends Widget
 		$this->url = $url;
 	}
 	
+	/**
+	 * Defines the button image or icon.
+	 *
+	 * @param string $image
+	 *	An URL linking to the button image.
+	 */
 	public function setImage($image)
 	{	
 		$this->image = $image;
 	}
 	
+	/**
+	 * Returns the button image or icon.
+	 *
+	 * @return string
+	 *	An URL linking to the button image.
+	 */
 	public function getImage()
 	{
 		return $this->image;
 	}
 	
+	/**
+	 * Explicitly defines the button image width.
+	 *
+	 * @param int $width
+	 *	The button image width.
+	 */
 	public function setImageWidth($width)
 	{
 		$this->imageWidth = $width;
 	}
 	
+	/**
+	 * Returns the explicitly defined button image width.
+	 *
+	 * @return int
+	 *	The button image width.
+	 */
 	public function getImageWidth()
 	{
 		return $this->imageWidth;
 	}
 	
+	/**
+	 * Explicitly defines the button image height.
+	 *
+	 * @param int $height
+	 *	The button image height.
+	 */
 	public function setImageHeight($height)
 	{
 		$this->imageHeight = $height;
 	}
 	
+	/**
+	 * Returns the explicitly defined button image height.
+	 *
+	 * @return int
+	 *	The button image height.
+	 */
 	public function getImageHeight()
 	{
 		return $this->imageHeight;
 	}
 	
+	/**
+	 * Builds the entire image (img) element to be placed within
+	 * this button.
+	 *
+	 * @param string $image
+	 *	The URL linking to the button image or icon.
+	 *
+	 * @param int $width
+	 *	The explicitly defined width to be applied to the generated
+	 *	image element.
+	 *
+	 * @param int $height
+	 *	The explicitly defined height to be applied to the generated
+	 *	image element.
+	 *
+	 * @return HtmlElement
+	 *	Returns the generated html element instance.
+	 */
 	protected function buildImage($image, $width, $height)
 	{
 		$img = new HtmlElement('img');
@@ -123,6 +220,16 @@ class ButtonWidget extends Widget
 		return $img;		
 	}
 	
+	/**
+	 * Builds the entire label (span) element to be placed within
+	 * this button.
+	 *
+	 * @param string $label
+	 *	The label text contents.
+	 *
+	 * @return HtmlElement
+	 *	Returns the generated html element instance.
+	 */
 	protected function buildLabel($label)
 	{
 		$span = new HtmlElement('span');
@@ -131,6 +238,12 @@ class ButtonWidget extends Widget
 		return $span;
 	}
 	
+	/**
+	 * Builds the entire button element.
+	 *
+	 * @return HtmlElement
+	 *	Returns the generated html element instance.
+	 */
 	protected function build()
 	{
 		$a = new HtmlElement('a');
