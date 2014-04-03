@@ -125,7 +125,7 @@ abstract class Widget extends \system\base\Widget
 	 */
 	public function deploy($capture = false)
 	{
-		$this->pack()->render($capture);
+		return $this->pack()->render($capture);
 	}
 }
 

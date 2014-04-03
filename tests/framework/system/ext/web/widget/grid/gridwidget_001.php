@@ -104,7 +104,7 @@ $p = new RecordProvider(new TestTable2(), array(
 	)
 ));
 
-$widget = new GridWidget($p, array(
+$widget = \system\base\Widget::create('web.grid', $p, array(
 	'columns' => 'id,column1,column2,column3'
 ));
 

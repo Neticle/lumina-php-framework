@@ -484,11 +484,18 @@ class Document extends Component
 		}
 	}
 	
+	/**
+	 * Deploys the current document state through the "web.document"
+	 * widget.
+	 *
+	 * @param string $position
+	 *	The document position to deploy.
+	 */
 	public function deploy($position = 'head')
 	{
 		if (!isset($this->documentWidget))
 		{
-			$this->documentWidget = new DocumentWidget($this);
+			$this->documentWidget = Widget::create('web.document', $this);
 		}
 		
 		$this->documentWidget->deploy($position);

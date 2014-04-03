@@ -504,6 +504,18 @@ class GridWidget extends Widget
 	}
 	
 	/**
+	 * Builds the paginator widget linked to the given paginator
+	 * handle.
+	 *
+	 * @return PaginatorWidget
+	 *	The paginator widget instance.
+	 */
+	protected function buildPaginatorWidget(Paginator $paginator)
+	{
+		return Widget::create('web.paginator', $paginator);
+	}
+	
+	/**
 	 * Builds the widget HTML element and returns it.
 	 *
 	 * @return HtmlElement
@@ -520,7 +532,7 @@ class GridWidget extends Widget
 		
 		if (isset($paginator))
 		{
-			$paginatorWidget = new PaginatorWidget($paginator);
+			$paginatorWidget = $this->buildPaginatorWidget($paginator);
 			$paginatorWidget->setKey($this->getPaginatorKey());
 			$paginatorWidget->bindRequest();
 		}

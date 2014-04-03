@@ -25,6 +25,8 @@
 namespace system\base;
 
 use \system\core\Element;
+use \system\core\Lumina;
+use \system\core\exception\RuntimeException;
 
 /**
  * Widgets are intended to dinamically generate output and speed up
@@ -37,6 +39,76 @@ use \system\core\Element;
  */
 abstract class Widget extends Element
 {
+	/**
+	 * An associative array of currently registered widget classes, indexed
+	 * by name.
+	 *
+	 * @type array
+	 */
+	private static $widgetClasses = array(
+	
+		'web.grid' => 'system\\ext\\web\\widget\\grid\\GridWidget',
+		'web.paginator' => 'system\\ext\\web\\widget\\PaginatorWidget',
+		'web.document' => 'system\\ext\\web\\widget\\DocumentWidget'
+	);
+	
+	/**
+	 * Creates a new widget instance.
+	 *
+	 * This method provides a convenient way to quickly replace the behavior
+	 * of any widget by defining a new class for its name.
+	 *
+	 * @param string $name
+	 *	The name of the widget to create the instance of.
+	 *
+	 * @param mixed $...
+	 *	The widget constructor arguments.
+	 */
+	public static function create($name)
+	{
+		if (!isset(self::$widgetClasses[$name]))
+		{
+			throw new RuntimeException('Widget "' . $name . '" is not defined.');
+		}
+		
+		$class = self::$widgetClasses[$name];
+		$reflection = new \ReflectionClass($class);
+		
+		if (!$reflection->isSubclassOf(__CLASS__))
+		{
+			throw new RuntimeException('Widget "' . $name . '" (class "' . $class . '") does not map to a valid class.');
+		}
+		
+		return $reflection->newInstanceArgs(array_slice(func_get_args(), 1));
+	}
+	
+	/**
+	 * Defines the class for a specific widget, by name.
+	 *
+	 * @param string $name
+	 *	The name of the widget to define the class for.
+	 *
+	 * @param string $class
+	 *	The absolute name of the class to define the widget with.
+	 */
+	public static function setWidgetClass($name, $class)
+	{
+		self::$widgetClasses[$name] = $class;
+	}
+	
+	/**
+	 * Defines the class for a specific set of widgets, by name..
+	 *
+	 * @param string $classes
+	 *	The absolute name of the classes to define the widgets with,
+	 *	indexed by name.
+	 */
+	public static function setWidgetClasses(array $classes, $merge = true)
+	{
+		self::$widgetClasses = $merge ?
+			array_replace(self::$widgetClasses, $classes) : $classes;
+	}
+
 	/**
 	 * Constructor.
 	 *
@@ -64,10 +136,26 @@ abstract class Widget extends Element
 	 * @return string
 	 *	The captured contents, when applicable.
 	 */
-	public function render($view, array $variables = null, $capture = false)
+	protected function render($view, array $variables = null, $capture = false)
 	{
 		$file = Lumina::getAliasPath($view, 'php', null);
 		return View::getApplicationFileView($file, $variables)->run($capture);
+	}
+	
+	/**
+	 * Packs and renders this instance, optionally capturing any
+	 * generated contents.
+	 *
+	 * @param bool $capture
+	 *	When set to TRUE the rendered contents will be returned
+	 *	instead of sent to the currently active output buffer.
+	 *
+	 * @return string
+	 *	The rendered contents, if applicable.
+	 */
+	public function deploy($capture = false)
+	{
+		
 	}
 }
 
