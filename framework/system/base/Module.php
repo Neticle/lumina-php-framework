@@ -536,6 +536,12 @@ class Module extends Context
 			$token = (--$length < 0) ?
 				$this->defaultController : array_shift($tokens);
 			
+			// The token needs to be normalized before it's passed to a 
+			// controller or module as it's name.
+			$token = str_replace(' ', '', 
+				lcfirst(ucwords(str_replace(array('-', '_', '.'), ' ', $token)))
+			);
+			
 			if ($length < 2 && $module->hasController($token))
 			{
 				$action = $length > 0 ? 
@@ -578,8 +584,7 @@ class Module extends Context
 	 */
 	protected function getDefaultControllerClass($name)
 	{
-		$name = str_replace(' ', '', ucwords(str_replace(array('_', '-'), ' ', $name)));
-		return $this->namespace . '\\controller\\' . $name . 'Controller';
+		return $this->namespace . '\\controller\\' . ucfirst($name) . 'Controller';
 	}
 	
 	/**
