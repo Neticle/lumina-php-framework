@@ -49,7 +49,8 @@ abstract class Widget extends Element
 	
 		'web.grid' => 'system\\ext\\web\\widget\\grid\\GridWidget',
 		'web.paginator' => 'system\\ext\\web\\widget\\PaginatorWidget',
-		'web.document' => 'system\\ext\\web\\widget\\DocumentWidget'
+		'web.document' => 'system\\ext\\web\\widget\\DocumentWidget',
+		'web.navigation.button' => 'system\\ext\\web\\widget\\navigation\\ButtonWidget'
 	);
 	
 	/**

@@ -46,6 +46,7 @@ PRIMARY KEY (id)
 
 */
 
+use \system\base\Widget;
 use \system\core\Lumina;
 use \system\ext\web\widget\grid\GridWidget;
 use \system\sql\Expression;
@@ -115,8 +116,13 @@ $widget = \system\base\Widget::create('web.grid', $p, array(
 			'name' => 'custom1',
 			'type' => 'custom',
 			'callback' => function($source, $provider, $item) {
-				return (($item->id % 2) === 0) ?
-					'even' : 'odd';
+				
+				return Widget::create('web.navigation.button', array(
+					'image' => 'hello.jpg',
+					'url' => array('home/view', 'id' => $item->id),
+					'label' => 'View #' . $item->id
+				))->pack();
+				
 			}
 		)		
 	)
