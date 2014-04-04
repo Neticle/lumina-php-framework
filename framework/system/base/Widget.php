@@ -46,11 +46,11 @@ abstract class Widget extends Element
 	 * @type array
 	 */
 	private static $widgetClasses = array(
-	
 		'web.grid' => 'system\\ext\\web\\widget\\grid\\GridWidget',
 		'web.paginator' => 'system\\ext\\web\\widget\\PaginatorWidget',
 		'web.document' => 'system\\ext\\web\\widget\\DocumentWidget',
-		'web.navigation.button' => 'system\\ext\\web\\widget\\navigation\\ButtonWidget'
+		'web.navigation.button' => 'system\\ext\\web\\widget\\navigation\\ButtonWidget',
+		'web.navigation.dropDownButton' => 'system\\ext\\web\\widget\\navigation\\DropDownButtonWidget'
 	);
 	
 	/**
