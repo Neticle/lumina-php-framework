@@ -46,9 +46,8 @@ PRIMARY KEY (id)
 
 */
 
-use \system\base\Widget;
+use \system\web\Widget;
 use \system\core\Lumina;
-use \system\ext\web\widget\grid\GridWidget;
 use \system\sql\Expression;
 use \system\sql\data\Record;
 use \system\sql\data\provider\RecordProvider;
@@ -105,7 +104,7 @@ $p = new RecordProvider(new TestTable2(), array(
 	)
 ));
 
-$widget = \system\base\Widget::create('web.grid', $p, array(
+$widget = Widget::create('data.grid', $p, array(
 	'columns' => array(
 		array('name' => 'id'),
 		array('name' => 'column1'),
@@ -117,7 +116,7 @@ $widget = \system\base\Widget::create('web.grid', $p, array(
 			'type' => 'custom',
 			'callback' => function($source, $provider, $item) {
 				
-				return Widget::create('web.navigation.button', array(
+				return Widget::create('navigation.button', array(
 					'image' => 'hello.jpg',
 					'url' => array('home/view', 'id' => $item->id),
 					'label' => 'View #' . $item->id
