@@ -25,7 +25,7 @@
 namespace system\web\navigation;
 
 use \system\base\Component;
-use \system\ext\web\widget\navigation\BreadcrumbWidget;
+use \system\web\Widget;
 
 /**
  * The breadcrumb navigation component can be used by any element to register
@@ -43,13 +43,6 @@ class Breadcrumb extends Component
 	 * @type array
 	 */
 	private $items = array();
-	
-	/**
-	 * The breadcrumb widget to deploy this navigation with.
-	 *
-	 * @type BreadcrumbWidget
-	 */
-	private $breadcrumbWidget;
 	
 	/**
 	 * Adds a new breadcrumb navigation item.
@@ -77,17 +70,20 @@ class Breadcrumb extends Component
 	}
 	
 	/**
-	 * Deploys the state of this component through the
-	 * breadcrumb widget.
+	 * Deploys the state of this component through the "navigation.breadcrumb"
+	 * widget.
+	 *
+	 * @param bool $capture
+	 *	When set to TRUE the generated contents will be returned instead of
+	 *	being sent to the currently active output buffer.
+	 *
+	 * @return string
+	 *	The generated contents, if applicable.
 	 */
-	public function deploy()
+	public function deploy($capture = false)
 	{
-		if (!isset($this->breadcrumbWidget))
-		{
-			$this->breadcrumbWidget = new BreadcrumbWidget($this);
-		}
-		
-		$this->breadcrumbWidget->deploy();
+		return Widget::create('navigation.breadcrumb', $this)
+			->deploy($capture);
 	}
 }
 

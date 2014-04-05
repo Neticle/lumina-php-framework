@@ -22,11 +22,11 @@
 //
 // =============================================================================
 
-namespace system\ext\web\widget\grid\column;
+namespace system\web\widget\data\grid\column;
 
 use \system\core\Element;
 use \system\data\provider\Provider;
-use \system\ext\web\widget\grid\GridWidget;
+use \system\web\widget\data\grid\GridWidget;
 use \system\web\html\HtmlElement;
 
 /**
@@ -45,9 +45,9 @@ abstract class Column extends Element
 	 * @type array
 	 */
 	private static $columnTypeClasses = array(
-		'text' => 'system\\ext\\web\\widget\\grid\\column\\TextColumn',
-		'enum' => 'system\\ext\\web\\widget\\grid\\column\\EnumColumn',
-		'custom' => 'system\\ext\\web\\widget\\grid\\column\\CustomColumn'
+		'text' => 'system\\web\\widget\\data\\grid\\column\\TextColumn',
+		'enum' => 'system\\web\\widget\\data\\grid\\column\\EnumColumn',
+		'custom' => 'system\\web\\widget\\data\\grid\\column\\CustomColumn'
 	);
 
 	/**

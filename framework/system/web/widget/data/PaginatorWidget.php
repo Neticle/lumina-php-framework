@@ -22,7 +22,7 @@
 //
 // =============================================================================
 
-namespace system\ext\web\widget;
+namespace system\web\widget\data;
 
 use \system\data\provider\paginator\Paginator;
 use \system\web\Widget;

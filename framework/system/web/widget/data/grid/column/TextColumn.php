@@ -22,53 +22,23 @@
 //
 // =============================================================================
 
-namespace system\ext\web\widget\grid\column;
+namespace system\web\widget\data\grid\column;
 
 use \system\core\exception\RuntimeException;
 use \system\data\provider\Provider;
-use \system\ext\web\widget\grid\column\Column;
+use \system\web\widget\data\grid\column\Column;
 use \system\web\html\Html;
 
 /**
- * This column works similarly to the text column, with the exception
- * it will present a value label if available instead of the value
- * itself.
+ * Based on .NET GridView control, this widget provides a grid with pre-defined
+ * columns, pagination and data sorting based on the data from a given provider.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
  * @package system.web.extension.widget.grid
  * @since 0.2.0
  */
-class EnumColumn extends Column
-{
-	/**
-	 * The value lables, indexed by value.
-	 *
-	 * @type array
-	 */
-	private $labels = array();
-	
-	/**
-	 * Defines the value labels, indexed by value.
-	 *
-	 * @param array $labels
-	 *	The labels to define.
-	 */
-	public function setLabels(array $labels)
-	{
-		$this->labels = $labels;
-	}
-	
-	/**
-	 * Returns the value labels, indexed by value.
-	 *
-	 * @param array $labels
-	 *	The defined labels.
-	 */
-	public function getLabels()
-	{
-		return $this->labels;
-	}
-	
+class TextColumn extends Column
+{	
 	/**
 	 * Builds the content for a specific item cell.
 	 *
@@ -94,11 +64,6 @@ class EnumColumn extends Column
 		
 		if (isset($value))
 		{
-			if (isset($this->labels[$value]))
-			{
-				$value = $this->labels[$value];
-			}
-		
 			return Html::encode($value);
 		}
 		

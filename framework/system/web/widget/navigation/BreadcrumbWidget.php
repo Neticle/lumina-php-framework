@@ -22,7 +22,7 @@
 //
 // =============================================================================
 
-namespace system\ext\web\widget\navigation;
+namespace system\web\widget\navigation;
 
 use \system\web\Widget;
 use \system\web\html\HtmlElement;

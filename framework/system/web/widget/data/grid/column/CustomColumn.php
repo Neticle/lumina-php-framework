@@ -22,11 +22,11 @@
 //
 // =============================================================================
 
-namespace system\ext\web\widget\grid\column;
+namespace system\web\widget\data\grid\column;
 
 use \system\core\exception\RuntimeException;
 use \system\data\provider\Provider;
-use \system\ext\web\widget\grid\column\Column;
+use \system\web\widget\data\grid\column\Column;
 use \system\web\html\Html;
 
 /**

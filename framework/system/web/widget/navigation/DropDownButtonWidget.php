@@ -22,10 +22,10 @@
 //
 // =============================================================================
 
-namespace system\ext\web\widget\navigation;
+namespace system\web\widget\navigation;
 
 use \system\base\Widget;
-use \system\ext\web\widget\navigation\ButtonWidget;
+use \system\web\widget\navigation\ButtonWidget;
 use \system\web\html\Html;
 use \system\web\html\HtmlElement;
 

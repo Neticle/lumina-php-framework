@@ -22,7 +22,7 @@
 //
 // =============================================================================
 
-namespace system\ext\web\widget;
+namespace system\web\widget;
 
 use \system\base\Widget;
 use \system\web\Document;
@@ -69,63 +69,7 @@ class DocumentWidget extends Widget
 	 */
 	public function deploy($position = 'head')
 	{
-		$document = $this->document;
 		
-		if ($position === 'head')
-		{
-			// Base url
-			echo '<base href="', Html::encode($this->getComponent('router')->getBaseUrl()), '" />';
-		
-			// Meta data
-			foreach ($document->getMeta() as $meta)
-			{
-				echo '<meta ', Html::encode($meta[0]), '="', Html::encode($meta[1]), '" content="',
-					Html::encode($meta[2]), '" />';
-			}
-			
-			// Document title
-			echo '<title>', Html::encode($document->getTitle()), '</title>';
-		}
-		
-		// Styles
-		foreach ($document->getStyles() as $id => $style)
-		{
-			if ($style[1] === $position)
-			{
-				echo '<link id="', Html::encode($id), '" rel="stylesheet" type="text/css" ',
-					'href="', Html::encode($style[0]), '" />';
-			}
-		}
-		
-		// Inline styles
-		foreach ($document->getInlineStyles() as $id => $style)
-		{
-			if ($style[1] === $position)
-			{
-				echo '<style id="', Html::encode($id), '" type="text/css">',
-					$style[0], '</style>';
-			}
-		}
-		
-		// Scripts
-		foreach ($document->getScripts() as $id => $script)
-		{
-			if ($script[1] === $position)
-			{
-				echo '<script type="text/javascript" id="', Html::encode($id), '" src="',
-					Html::encode($script[0]), '"></script>';
-			}
-		}
-		
-		// Inline scripts
-		foreach ($document->getInlineScripts() as $id => $script)
-		{
-			if ($script[1] === $position)
-			{
-				echo '<script type="text/javascript" id="', Html::encode($id), '">',
-					$script[0], '</script>';
-			}
-		}
 	}
 }
 

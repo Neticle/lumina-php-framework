@@ -22,14 +22,14 @@
 //
 // =============================================================================
 
-namespace system\ext\web\widget\grid;
+namespace system\web\widget\data\grid;
 
 use \system\data\provider\Provider;
 use \system\data\provider\paginator\Paginator;
 use \system\data\provider\sorter\Sorter;
-use \system\ext\web\widget\PaginatorWidget;
-use \system\ext\web\widget\grid\column\Column;
-use \system\ext\web\widget\grid\column\TextColumn;
+use \system\web\widget\data\PaginatorWidget;
+use \system\web\widget\data\grid\column\Column;
+use \system\web\widget\data\grid\column\TextColumn;
 use \system\web\Widget;
 use \system\web\html\HtmlElement;
 
@@ -523,7 +523,7 @@ class GridWidget extends Widget
 	 */
 	protected function buildPaginatorWidget(Paginator $paginator)
 	{
-		return Widget::create('web.paginator', $paginator);
+		return Widget::create('data.paginator', $paginator);
 	}
 	
 	/**
