@@ -26,7 +26,7 @@ namespace system\web;
 
 use \system\base\Component;
 use \system\core\exception\RuntimeException;
-use \system\ext\web\widget\DocumentWidget;
+use \system\web\html\Html;
 
 /**
  * The Document component acts as a repository for the HTML document
@@ -125,13 +125,6 @@ class Document extends Component
 	 * @type string
 	 */
 	private $title = 'Untitled Document';
-	
-	/**
-	 * The document widget.
-	 *
-	 * @type DocumentWidget
-	 */
-	private $documentWidget;
 	
 	/**
 	 * Adds a new script to the document head.
@@ -485,20 +478,84 @@ class Document extends Component
 	}
 	
 	/**
-	 * Deploys the current document state through the "web.document"
-	 * widget.
+	 * Deploys the current document state.
 	 *
 	 * @param string $position
 	 *	The document position to deploy.
+	 *
+	 * @param bool $capture
+	 *	When set to TRUE any generated output will be returned instead
+	 *	of being dumped into the currently active output buffer.
+	 *
+	 * @return string
+	 *	The generated output, if applicable.
 	 */
-	public function deploy($position = 'head')
+	public function deploy($position = 'head', $capture = false)
 	{
-		if (!isset($this->documentWidget))
+		$html = '';
+	
+		if ($position === 'head')
 		{
-			$this->documentWidget = Widget::create('web.document', $this);
+			// Base url
+			$html .= '<base href="' . Html::encode($this->getComponent('router')->getBaseUrl()) . '" />';
+		
+			// Meta data
+			foreach ($this->getMeta() as $meta)
+			{
+				$html .= '<meta ' . Html::encode($meta[0]) . '="' . Html::encode($meta[1]) . '" content="' .
+					Html::encode($meta[2]) . '" />';
+			}
+			
+			// Document title
+			$html .= '<title>' . Html::encode($this->title) . '</title>';
 		}
 		
-		$this->documentWidget->deploy($position);
+		// Styles
+		foreach ($this->styles as $id => $style)
+		{
+			if ($style[1] === $position)
+			{
+				$html .= '<link id="' . Html::encode($id) . '" rel="stylesheet" type="text/css" ' .
+					'href="' . Html::encode($style[0]) . '" />';
+			}
+		}
+		
+		// Inline styles
+		foreach ($this->inlineStyles as $id => $style)
+		{
+			if ($style[1] === $position)
+			{
+				$html .= '<style id="' . Html::encode($id) . '" type="text/css">' .
+					$style[0] . '</style>';
+			}
+		}
+		
+		// Scripts
+		foreach ($this->scripts as $id => $script)
+		{
+			if ($script[1] === $position)
+			{
+				$html .= '<script type="text/javascript" id="' . Html::encode($id) . '" src="' .
+					Html::encode($script[0]) . '"></script>';
+			}
+		}
+		
+		// Inline scripts
+		foreach ($this->inlineScripts as $id => $script)
+		{
+			if ($script[1] === $position)
+			{
+				$html .= '<script type="text/javascript" id="' . Html::encode($id) . '">' .
+					$script[0] . '</script>';
+			}
+		}
+		
+		if ($capture)
+		{
+			return $html;
+		}
+		
+		echo $html;
 	}
 		
 }
