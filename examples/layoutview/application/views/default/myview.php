@@ -22,7 +22,7 @@
 //
 // =============================================================================
 
-$document = $self->getComponent('document');
+$document = $this->getComponent('document');
 
 // You can define custom styles and scripts from the view
 $document->addInlineStyle(
@@ -34,9 +34,6 @@ $document->addInlineStyle(
 
 CSS
 );
-
-// And you can also require bundles
-$document->requireBundle('jquery');
 
 ?>
 <h2>Behold, the MESSAGE!</h2>

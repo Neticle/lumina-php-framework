@@ -22,7 +22,7 @@
 //
 // =============================================================================
 
-$document = $self->getComponent('document');
+$document = $this->getComponent('document');
 
 ?>
 
