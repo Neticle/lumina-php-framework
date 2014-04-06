@@ -39,7 +39,14 @@ use \system\web\html\HtmlElement;
  * @since 0.2.0
  */
 class Form extends Element
-{	
+{
+	/**
+	 * The unique form identifier.
+	 *
+	 * @type string
+	 */
+	private $id = 'form';
+
 	/**
 	 * Constructor.
 	 *
@@ -49,6 +56,20 @@ class Form extends Element
 	public function __construct(array $configuration = null)
 	{
 		parent::__construct($configuration);
+	}
+	
+	/**
+	 * Returns the default id for an input given it name.
+	 *
+	 * @param string $name
+	 *	The name of the input to get the default id for.
+	 *
+	 * @return string
+	 *	The default input id.
+	 */
+	protected function getDefaultInputId($name)
+	{
+		return strtolower($this->id . '-input-' . trim(str_replace(array('][', '[', '_', '.'), '-', $name), " \t\n\r\0\x0B]["));
 	}
 	
 	/**
@@ -69,9 +90,10 @@ class Form extends Element
 	 */
 	protected function buildTextField($name, $value, array $configuration = null)
 	{
-		$input = new HtmlElement('input');
-		$input->setClass(array('lh-form-input', 'lh-form-input-textfield'));
-		$input->setAttributes(array(
+		$element = new HtmlElement('input');
+		$element->setClass(array('lh-form-input', 'lh-form-input-textfield'));
+		$element->setAttributes(array(
+			'id' => $this->getDefaultInputId($name),
 			'name' => $name,
 			'type' => 'text',
 			'value' => $value
@@ -79,10 +101,10 @@ class Form extends Element
 		
 		if (isset($configuration))
 		{
-			$input->configure($configuration);
+			$element->configure($configuration);
 		}
 		
-		return $input;
+		return $element;
 	}
 	
 	/**
@@ -103,21 +125,24 @@ class Form extends Element
 	 */
 	protected function buildTextArea($name, $value, array $configuration = null)
 	{
-		$textarea = new HtmlElement('input');
-		$textarea->setClass(array('lh-form-input', 'lh-form-input-textarea'));
-		$textarea->setAttribute('name', $name);
+		$element = new HtmlElement('input');
+		$element->setClass(array('lh-form-input', 'lh-form-input-textarea'));
+		$element->setAttributes(array(
+			'id' => $this->getDefaultInputId($name),
+			'name' => $name
+		));
 		
 		if (isset($value))
 		{
-			$textarea->setTextContent($value);
+			$element->setTextContent($value);
 		}
 		
 		if (isset($configuration))
 		{
-			$textarea->configure($configuration);
+			$element->configure($configuration);
 		}
 		
-		return $textarea;
+		return $element;
 	}
 	
 	/**
@@ -138,9 +163,10 @@ class Form extends Element
 	 */
 	protected function buildHiddenField($name, $value, array $configuration = null)
 	{
-		$hidden = new HtmlElement('input');
-		$hidden->setClass(array('lh-form-input', 'lh-form-input-hidden'));
-		$hidden->setAttributes(array(
+		$element = new HtmlElement('input');
+		$element->setClass(array('lh-form-input', 'lh-form-input-hidden'));
+		$element->setAttributes(array(
+			'id' => $this->getDefaultInputId($name),
 			'name' => $name,
 			'type' => 'hidden',
 			'value' => $value
@@ -148,10 +174,41 @@ class Form extends Element
 		
 		if (isset($configuration))
 		{
-			$hidden->configure($configuration);
+			$element->configure($configuration);
 		}
 		
-		return $hidden;
+		return $element;
+	}
+	
+	/**
+	 * Builds a label for a specific input field.
+	 *
+	 * @param string $for
+	 *	The ID of the field the label is meant to.
+	 *
+	 * @param string $label
+	 *	The label text contents.
+	 *
+	 * @param array $configuration
+	 *	An array of additional express configuration settings to be
+	 *	applied to the input field element, after it's construction.
+	 *
+	 * @return HtmlElement
+	 *	The created input field element.
+	 */
+	protected function buildLabel($for, $label, array $configuration = null)
+	{
+		$element = new HtmlElement('label');
+		$element->setClass(array('lh-form-label'));
+		$element->setAttribute('for', $for);
+		$element->setTextContent($label);
+		
+		if (isset($configuration))
+		{
+			$element->configure($configuration);
+		}
+		
+		return $element;
 	}
 	
 	/**
@@ -412,6 +469,46 @@ class Form extends Element
 		}
 		
 		return $input->render();
+	}
+	
+	/**
+	 * Builds and deploys a label for a specific input field.
+	 *
+	 * @param string $for
+	 *	The ID of the field the label is meant to.
+	 *
+	 * @param string $label
+	 *	The label text contents.
+	 *
+	 * @param array $configuration
+	 *	An array of additional express configuration settings to be
+	 *	applied to the input field element, after it's construction.
+	 */
+	public function label($for, $message, array $configuration = null)
+	{
+		return $this->buildLabel($for, $message, $configuration)->render();
+	}
+	
+	/**
+	 * Builds and deploys a label for a specific input field.
+	 *
+	 * @param Model $model
+	 *	The model to build the label for.
+	 *
+	 * @param string $attribute
+	 *	The model attribute to label the input for.
+	 *
+	 * @param array $configuration
+	 *	An array of additional express configuration settings to be
+	 *	applied to the input field element, after it's construction.
+	 */
+	public function activeLabel(Model $model, $attribute, array $configuration = null)
+	{	
+		return $this->buildLabel(
+			$this->getDefaultInputId($model->getAttributeName($attribute)),
+			$model->getAttributeLabel($attribute),
+			$configuration
+		)->render();
 	}
 	
 	/**
