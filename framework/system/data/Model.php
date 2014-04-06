@@ -476,16 +476,21 @@ abstract class Model extends Element
 	 * Returns all attribute validation errors, optionally filtered
 	 * by attribute names.
 	 *
-	 * @param string[] $attributes
+	 * @param string[]|string $attributes
 	 *	The name(s) of the attribute(s) to get the error messages for.
 	 *
 	 * @return array
 	 *	The attribute error messages, indexed by name.
 	 */
-	public function getAttributeErrors(array $attributes = null)
+	public function getAttributeErrors($attributes = null)
 	{
 		if (isset($attributes))
 		{
+			if (is_string($attributes))
+			{
+				$attributes = preg_split('/(\s*\,\s*)/', $attributes, -1, PREG_SPLIT_NO_EMPTY);
+			}
+		
 			return array_intersect_key($this->attributeErrors, array_flip($attributes));
 		}
 		
@@ -498,16 +503,21 @@ abstract class Model extends Element
 	 *
 	 * Unlike 'getAttributeErrors', only the error messages will be returned.
 	 *
-	 * @param string[] $attributes
+	 * @param string[]|string $attributes
 	 *	The name(s) of the attribute(s) to get the error messages for.
 	 *
 	 * @return string[]
 	 *	The attribute error messages.
 	 */
-	public function getAttributeErrorMessages(array $attributes = null)
+	public function getAttributeErrorMessages($attributes = null)
 	{
 		if (isset($attributes))
-		{			
+		{
+			if (is_string($attributes))
+			{
+				$attributes = preg_split('/(\s*\,\s*)/', $attributes, -1, PREG_SPLIT_NO_EMPTY);
+			}
+		
 			$errors = array_intersect_key($this->attributeErrors, array_flip($attributes));
 		}
 		else
@@ -528,17 +538,22 @@ abstract class Model extends Element
 	/**
 	 * Checks if an attribute has validation errors reported for it.
 	 *
-	 * @param string $attributes
+	 * @param string[]|string $attributes
 	 *	The name(s) of the attribute(s) to  to verify.
 	 *
 	 * @return bool
 	 *	Returns TRUE if the attribute has reported validation errors,
 	 *	FALSE otherwise.
 	 */
-	public function hasAttributeErrors(array $attributes = null)
+	public function hasAttributeErrors($attributes = null)
 	{
 		if (isset($attributes))
-		{			
+		{
+			if (is_string($attributes))
+			{
+				$attributes = preg_split('/(\s*\,\s*)/', $attributes, -1, PREG_SPLIT_NO_EMPTY);
+			}
+		
 			$errors = array_intersect_key($this->attributeErrors, array_flip($attributes));
 		}
 		else
