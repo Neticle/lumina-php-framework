@@ -82,6 +82,15 @@ abstract class Model extends Element
 	private $rules;
 	
 	/**
+	 * The name of this model instance, as used by several widgets and
+	 * helper classes when generating input fields to collect data based
+	 * on this model.
+	 *
+	 * @type string
+	 */
+	private $name;
+	
+	/**
 	 * Returns base instance of a model of the specified class after
 	 * resetting it to the given context.
 	 *
@@ -562,6 +571,60 @@ abstract class Model extends Element
 		}
 		
 		return !empty($errors);
+	}
+	
+	/**
+	 * Defines the name of this model instance, as used by several widgets and
+	 * helper classes when generating input fields to collect data based
+	 * on this model.
+	 *
+	 * @param string $name
+	 *	The model instance name.
+	 */
+	public final function setName($name)
+	{
+		if (isset($this->name))
+		{
+			throw new RuntimeException('Model instance name has already been defined.');
+		}
+		
+		$this->name = $name;
+	}
+	
+	/**
+	 * Returns the name of this model instance, as used by several widgets and
+	 * helper classes when generating input fields to collect data based
+	 * on this model.
+	 *
+	 * If a name isn't already defined, it will be set based on the model
+	 * class.
+	 *
+	 * @return string
+	 *	The model instance name.
+	 */
+	public final function getName()
+	{
+		if (!isset($this->name))
+		{
+			$this->name = $this->getClass(false);
+		}
+		
+		return $this->name;
+	}
+	
+	/**
+	 * Returns the name of an attribute for this instance, , as used by several
+	 * widgets and helper classes when generating input fields to collect.
+	 *
+	 * @param string $attribute
+	 *	The attribute to get the name of.
+	 *
+	 * @return string
+	 *	The attribute name.
+	 */
+	public final function getAttributeName($attribute)
+	{
+		return $this->getName() . '[' . $attribute . ']';
 	}
 	
 	/**
