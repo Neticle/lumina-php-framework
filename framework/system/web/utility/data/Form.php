@@ -73,6 +73,7 @@ class Form extends Element
 		$input->setClass(array('lh-form-input', 'lh-form-input-textfield'));
 		$input->setAttributes(array(
 			'name' => $name,
+			'type' => 'text',
 			'value' => $value
 		));
 		
@@ -117,6 +118,40 @@ class Form extends Element
 		}
 		
 		return $textarea;
+	}
+	
+	/**
+	 * Builds a simple hidden field element.
+	 *
+	 * @param string $name
+	 *	The name of the input field to build.
+	 *
+	 * @param string $value
+	 *	The initial value for this input field.
+	 *
+	 * @param array $configuration
+	 *	An array of additional express configuration settings to be
+	 *	applied to the input field element, after it's construction.
+	 *
+	 * @return HtmlElement
+	 *	The created input field element.
+	 */
+	protected function buildHiddenField($name, $value, array $configuration = null)
+	{
+		$hidden = new HtmlElement('input');
+		$hidden->setClass(array('lh-form-input', 'lh-form-input-hidden'));
+		$hidden->setAttributes(array(
+			'name' => $name,
+			'type' => 'hidden',
+			'value' => $value
+		));
+		
+		if (isset($configuration))
+		{
+			$hidden->configure($configuration);
+		}
+		
+		return $hidden;
 	}
 	
 	/**
@@ -167,6 +202,75 @@ class Form extends Element
 		$ul->setClass(array('lh-form-errors'));
 		$ul->setContent($content);
 		return $ul;
+	}
+	
+	/**
+	 * A generic button builder that creates submit and reset buttons.
+	 *
+	 * @param string $type
+	 *	The type of button to build (options: "submit", "reset").
+	 *
+	 * @param string $label
+	 *	The button label.
+	 *
+	 * @param array $configuration
+	 *	An additional express configuration array to configure the input
+	 *	html element with.
+	 *
+	 * @return HtmlElement
+	 *	The generated html element instance.
+	 */
+	private function buildGenericButton($type, $label, $configuration)
+	{
+		$input = new HtmlElement('input');
+		$input->setClass(array('lh-form-input', 'lh-form-input-' . $type));
+		$input->setAttributes(array(
+			'type' => $type,
+			'value' => $label
+		));
+				
+		if (isset($configuration))
+		{
+			$input->configure($configuration);
+		}
+		
+		return $input;
+	}
+	
+	/**
+	 * Builds a submit button.
+	 *
+	 * @param string $label
+	 *	The button label.
+	 *
+	 * @param array $configuration
+	 *	An additional express configuration array to configure the input
+	 *	html element with.
+	 *
+	 * @return HtmlElement
+	 *	The generated html element instance.
+	 */
+	protected function buildSubmitButton($label, array $configuration = null)
+	{
+		return $this->buildGenericButton('submit', $label, $configuration);
+	}
+	
+	/**
+	 * Builds a reset button.
+	 *
+	 * @param string $label
+	 *	The button label.
+	 *
+	 * @param array $configuration
+	 *	An additional express configuration array to configure the input
+	 *	html element with.
+	 *
+	 * @return HtmlElement
+	 *	The generated html element instance.
+	 */
+	protected function buildResetButton($label, array $configuration = null)
+	{
+		return $this->buildGenericButton('reset', $label, $configuration);
 	}
 	
 	/**
@@ -264,6 +368,53 @@ class Form extends Element
 	}
 	
 	/**
+	 * Builds and deploys a hidden input field.
+	 *
+	 * @param string $name
+	 *	The name of the field to deploy.
+	 *
+	 * @param string $value
+	 *	The initial value for this input field.
+	 *
+	 * @param array $configuration
+	 *	An additional express configuration array to configure the input
+	 *	html element with.
+	 */
+	public function hiddenField($name, $value, array $configuration = null)
+	{
+		return $this->buildHiddenField($name, $value, $configuration)->render();
+	}
+	
+	/**
+	 * Builds and deploys a hidden input field.
+	 *
+	 * @param Model $model
+	 *	The model to build the input for.
+	 *
+	 * @param string $attribute
+	 *	The model attribute to build the input for.
+	 *
+	 * @param array $configuration
+	 *	An additional express configuration array to configure the input
+	 *	html element with.
+	 */
+	public function activeHiddenField(Model $model, $attribute, array $configuration = null)
+	{
+		$input = $this->buildHiddenField(
+			$model->getAttributeName($attribute),
+			$model->getAttribute($attribute),
+			$configuration
+		);
+	
+		if ($model->hasAttributeErrors($attribute))
+		{
+			$input->setClass('lh-form-input-error');
+		}
+		
+		return $input->render();
+	}
+	
+	/**
 	 * Builds and deploys a validation error report for a specific
 	 * input.
 	 *
@@ -346,6 +497,36 @@ class Form extends Element
 		}
 		
 		$this->formErrors(array_unique($messages));
+	}
+	
+	/**
+	 * Builds and deploys a submit button.
+	 *
+	 * @param string $label
+	 *	The button label.
+	 *
+	 * @param array $configuration
+	 *	An additional express configuration array to configure the input
+	 *	html element with.
+	 */
+	public function submitButton($label = 'Submit', array $configuration = null)
+	{
+		$this->buildSubmitButton($label, $configuration)->render();
+	}
+	
+	/**
+	 * Builds and deploys a reset button.
+	 *
+	 * @param string $label
+	 *	The button label.
+	 *
+	 * @param array $configuration
+	 *	An additional express configuration array to configure the input
+	 *	html element with.
+	 */
+	public function resetButton($label = 'Reset', array $configuration = null)
+	{
+		$this->buildResetButton($label, $configuration)->render();
 	}
 	
 }
