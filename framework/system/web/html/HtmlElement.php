@@ -337,6 +337,103 @@ class HtmlElement extends Element
 	}
 	
 	/**
+	 * Renders the element opening tag, for applicable elements.
+	 *
+	 * @param bool $capture
+	 *	When set to TRUE the element contents will be returned instead of
+	 *	flushed into the currently active output buffer.
+	 *
+	 * @return string
+	 *	The rendered contents, if applicable.
+	 */
+	public function renderOpenTag($capture = false)
+	{	
+		$html = '<' . $this->tag;
+		
+		// Add all element attributes
+		$attributes = $this->attributes;
+		
+		if (isset($attributes['class']))
+		{
+			$this->setClass($attributes['class']);
+		}
+		
+		$class = $this->classes;
+		
+		if (isset($class[0]))
+		{
+			$attributes['class'] = implode(' ', $class);
+		}
+
+		foreach ($attributes as $name => $value)
+		{
+			$html .= ' ' . Html::encode($name) . '="' . Html::encode($value) . '"';
+		}
+		
+		$html .= '>';
+		
+		if ($capture)
+		{
+			return $html;
+		}
+		
+		echo $html;
+	}
+	
+	/**
+	 * Renders the element closing tag, for applicable elements.
+	 *
+	 * @param bool $capture
+	 *	When set to TRUE the element contents will be returned instead of
+	 *	flushed into the currently active output buffer.
+	 *
+	 * @return string
+	 *	The rendered contents, if applicable.
+	 */
+	public function renderCloseTag($capture = false)
+	{		
+		$html = '</' . $this->tag . '>';
+		
+		if ($capture)
+		{
+			return $html;
+		}
+		
+		echo $html;
+	}
+	
+	/**
+	 * Renders the element child contents, for applicable elements.
+	 *
+	 * @param bool $capture
+	 *	When set to TRUE the element contents will be returned instead of
+	 *	flushed into the currently active output buffer.
+	 *
+	 * @return string
+	 *	The rendered contents, if applicable.
+	 */
+	public function renderChildren($capture = false)
+	{
+		$html = '';
+	
+		foreach ($this->children as $child)
+		{
+			if (isset($child))
+			{				
+				$html .= ($child instanceof HtmlElement) ?
+					$child->render(true) : $child;
+			}
+		}
+		
+		if ($capture)
+		{
+			return $html;
+		}
+		
+		echo $html;	
+	}
+	
+	/**
 	 * Renders the element contents, recursively, optionally capturing and
 	 * returning instead of sending them to the output buffer.
 	 *
