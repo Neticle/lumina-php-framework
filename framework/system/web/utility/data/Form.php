@@ -181,6 +181,55 @@ class Form extends Element
 	}
 	
 	/**
+	 * Builds a drop down list.
+	 *
+	 * @param string $name
+	 *	The name of the input field to build.
+	 *
+	 * @param string $selected
+	 *	The initial value for this input field.
+	 *
+	 * @param array $options
+	 *	An associative array defining the option labels, indexed by value.
+	 *
+	 * @param array $configuration
+	 *	An array of additional express configuration settings to be
+	 *	applied to the input field element, after it's construction.
+	 *
+	 * @return HtmlElement
+	 *	The created input field element.
+	 */
+	protected function buildDropDownList($name, $selected, array $options, array $configuration = null)
+	{
+		$element = new HtmlElement('select');
+		$element->setClass(array('lh-form-input', 'lh-form-input-dropdownlist'));
+		$element->setAttributes(array(
+			'id' => $this->getDefaultInputId($name),
+			'name' => $name
+		));
+		
+		$selected = (string) $selected;
+		
+		foreach ($options as $value => $label)
+		{
+			$value = (string) $value;
+		
+			$option = new HtmlElement('option');
+			$option->setAttribute('value', $value);
+			$option->setTextContent($label);
+			
+			if ($value === $selected)
+			{
+				$option->setAttribute('selected');
+			}
+			
+			$element->addContent($option);
+		}
+		
+		return $element;
+	}
+	
+	/**
 	 * Builds a label for a specific input field.
 	 *
 	 * @param string $for
@@ -345,7 +394,7 @@ class Form extends Element
 	 */
 	public function textField($name, $value, array $configuration = null)
 	{
-		return $this->buildTextField($name, $value, $configuration)->render();
+		$this->buildTextField($name, $value, $configuration)->render();
 	}
 	
 	/**
@@ -374,7 +423,7 @@ class Form extends Element
 			$input->setClass('lh-form-input-error');
 		}
 		
-		return $input->render();
+		$input->render();
 	}
 	
 	/**
@@ -392,7 +441,7 @@ class Form extends Element
 	 */
 	public function textArea($name, $value, array $configuration = null)
 	{
-		return $this->buildTextArea($name, $value, $configuration)->render();
+		$this->buildTextArea($name, $value, $configuration)->render();
 	}
 	
 	/**
@@ -410,18 +459,19 @@ class Form extends Element
 	 */
 	public function activeTextArea(Model $model, $attribute, array $configuration = null)
 	{
-		$input = $this->buildTextArea(
-			$model->getAttributeName($model, $attribute),
-			$model->getAttribute($attribute),
-			$configuration
-		);
+		$input = $this->buildTextArea
+			(
+				$model->getAttributeName($model, $attribute),
+				$model->getAttribute($attribute),
+				$configuration
+			);
 		
 		if ($model->hasAttributeErrors($attribute))
 		{
 			$input->setClass('lh-form-input-error');
 		}
 		
-		return $input;
+		$input->render();
 	}
 	
 	/**
@@ -439,7 +489,7 @@ class Form extends Element
 	 */
 	public function hiddenField($name, $value, array $configuration = null)
 	{
-		return $this->buildHiddenField($name, $value, $configuration)->render();
+		$this->buildHiddenField($name, $value, $configuration)->render();
 	}
 	
 	/**
@@ -457,18 +507,74 @@ class Form extends Element
 	 */
 	public function activeHiddenField(Model $model, $attribute, array $configuration = null)
 	{
-		$input = $this->buildHiddenField(
-			$model->getAttributeName($attribute),
-			$model->getAttribute($attribute),
-			$configuration
-		);
+		$input = $this->buildHiddenField
+			(
+				$model->getAttributeName($attribute),
+				$model->getAttribute($attribute),
+				$configuration
+			);
 	
 		if ($model->hasAttributeErrors($attribute))
 		{
 			$input->setClass('lh-form-input-error');
 		}
 		
-		return $input->render();
+		$input->render();
+	}
+	
+	/**
+	 * Builds and deploys a drop down list element.
+	 *
+	 * @param Model $model
+	 *	The model to build the input for.
+	 *
+	 * @param string $attribute
+	 *	The model attribute to build the input for.
+	 *
+	 * @param array $options
+	 *	An associative array defining the option labels, indexed by value.
+	 *
+	 * @param array $configuration
+	 *	An array of additional express configuration settings to be
+	 *	applied to the input field element, after it's construction.
+	 *
+	 * @return HtmlElement
+	 *	The created input field element.
+	 */
+	public function dropDownList($name, $selected, array $options, array $configuration = null)
+	{
+		$this->buildDropDownList($name, $selected, $options, $configuration)->render();
+	}
+	
+	/**
+	 * Builds and deploys a drop down list element.
+	 *
+	 * @param Model $model
+	 *	The name of the input field to build.
+	 *
+	 * @param string $attribute
+	 *	The initial value for this input field.
+	 *
+	 * @param array $options
+	 *	An associative array defining the option labels, indexed by value.
+	 *
+	 * @param array $configuration
+	 *	An array of additional express configuration settings to be
+	 *	applied to the input field element, after it's construction.
+	 *
+	 * @return HtmlElement
+	 *	The created input field element.
+	 */
+	public function activeDropDownList(Model $model, $attribute, array $options, array $configuration = null)
+	{
+		$this->buildDropDownList
+			(
+				$model->getAttributeName($attribute),
+				$model->getAttribute($attribute),
+				$options,
+				$configuration
+			)
+			->render();
 	}
 	
 	/**
@@ -486,7 +592,7 @@ class Form extends Element
 	 */
 	public function label($for, $message, array $configuration = null)
 	{
-		return $this->buildLabel($for, $message, $configuration)->render();
+		$this->buildLabel($for, $message, $configuration)->render();
 	}
 	
 	/**
@@ -504,11 +610,13 @@ class Form extends Element
 	 */
 	public function activeLabel(Model $model, $attribute, array $configuration = null)
 	{	
-		return $this->buildLabel(
-			$this->getDefaultInputId($model->getAttributeName($attribute)),
-			$model->getAttributeLabel($attribute),
-			$configuration
-		)->render();
+		$this->buildLabel
+			(
+				$this->getDefaultInputId($model->getAttributeName($attribute)),
+				$model->getAttributeLabel($attribute),
+				$configuration
+			)
+			->render();
 	}
 	
 	/**
