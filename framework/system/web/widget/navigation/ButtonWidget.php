@@ -208,7 +208,7 @@ class ButtonWidget extends Widget
 			
 			if ($width === $height)
 			{
-				$img->addClass(array('lw-button-image-' . $height));
+				$img->setClass(array('lw-button-image-' . $height));
 			}
 		}
 		

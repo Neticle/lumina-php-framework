@@ -49,7 +49,7 @@ class HtmlElement extends Element
 	 *
 	 * @type string[]
 	 */
-	private $class = array();
+	private $classes = array();
 	
 	/**
 	 * The element attribute values, indexed by name.
@@ -110,36 +110,24 @@ class HtmlElement extends Element
 	}
 	
 	/**
-	 * Defines the classes to be applied to this html element, overwritting
-	 * any previously defined ones.
+	 * Defines the classes to be applied to this html element.
 	 *
 	 * @param string|string[] $class
 	 *	The element class as string or array.
+	 *
+	 * @param bool $merge
+	 *	When set to TRUE the given classes will be merged with the
+	 *	ones already defined.
 	 */
-	public function setClass($class)
+	public function setClass($class, $merge = true)
 	{
 		if (is_string($class)) 
 		{
 			$class = preg_split('/(\s+)/', $class, -1, PREG_SPLIT_NO_EMPTY);
 		}
 		
-		$this->class = $class;
-	}
-	
-	/**
-	 * Applies the given classes to this html element.
-	 *
-	 * @param string|string[] $class
-	 *	The class(es) to be added as a string or an array of strings.
-	 */
-	public function addClass($class)
-	{
-		if (is_string($class))
-		{
-			$class = preg_split('/(\s+)/', $class, -1, PREG_SPLIT_NO_EMPTY);
-		}
-		
-		$this->class = array_unique(array_merge($this->class, $class));
+		$this->classes = ($merge && isset($this->classes[0])) ?
+			array_unique(array_merge($this->classes, $class)) : $class;
 	}
 	
 	/**
@@ -155,7 +143,7 @@ class HtmlElement extends Element
 			$class = preg_split('/(\s+)/', $class, -1, PREG_SPLIT_NO_EMPTY);
 		}
 		
-		$this->class = array_diff($this->class, $class);
+		$this->classes = array_diff($this->classes, $class);
 	}
 	
 	/**
@@ -179,7 +167,7 @@ class HtmlElement extends Element
 			$class = preg_split('/(\s+)/', $class, -1, PREG_SPLIT_NO_EMPTY);
 		}
 		
-		$intersect = array_intersect($class, $this->class);
+		$intersect = array_intersect($class, $this->classes);
 		
 		return $exact ?
 			(count($intersect) === count($class)) : isset($intersect[0]);
@@ -212,7 +200,7 @@ class HtmlElement extends Element
 		
 		if ($present)
 		{
-			$this->addClass($class);
+			$this->setClass($class);
 		} 
 		else 
 		{
@@ -368,11 +356,11 @@ class HtmlElement extends Element
 		
 		if (isset($attributes['class']))
 		{
-			$this->addClass($attributes['class']);
+			$this->setClass($attributes['class']);
 		}
 		
 		
-		$class = $this->class;
+		$class = $this->classes;
 		
 		if (isset($class[0]))
 		{

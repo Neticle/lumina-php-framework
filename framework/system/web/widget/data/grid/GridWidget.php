@@ -372,7 +372,7 @@ class GridWidget extends Widget
 			$rules = $sorter->getRules();
 		
 			if (isset($rules) && in_array($field, array_keys($rules))) {
-				$a->addClass('lw-grid-sort-active');
+				$a->setClass('lw-grid-sort-active');
 			}
 			
 			$a->setAttribute('href', $this->buildSortingRuleUrl($field, $direction));
