@@ -41,11 +41,11 @@ use \system\web\html\HtmlElement;
 class Form extends Element
 {
 	/**
-	 * The unique form identifier.
+	 * The html element form.
 	 *
-	 * @type string
+	 * @type HtmlElement
 	 */
-	private $id = 'form';
+	private $form;
 
 	/**
 	 * Constructor.
@@ -55,7 +55,31 @@ class Form extends Element
 	 */
 	public function __construct(array $configuration = null)
 	{
-		parent::__construct($configuration);
+		parent::__construct(null);
+		
+		$this->form = new HtmlElement('form');
+		$this->form->setClass(array('lh-form'));
+		$this->form->setAttributes(array(
+			'id' => 'form',
+			'method' => 'POST',
+			'action' => $_SERVER['REQUEST_URI']
+		));
+		
+		if (isset($configuration))
+		{
+			$this->configure($configuration);
+		}
+	}
+	
+	/**
+	 * Returns the form as an HtmlElement instance.
+	 *
+	 * @return HtmlElement
+	 *	The form html element.
+	 */
+	public function getForm()
+	{
+		return $this->form;
 	}
 	
 	/**
@@ -69,7 +93,7 @@ class Form extends Element
 	 */
 	protected function getDefaultInputId($name)
 	{
-		return strtolower($this->id . '-input-' . trim(str_replace(array('][', '[', '_', '.'), '-', $name), " \t\n\r\0\x0B]["));
+		return strtolower($this->form->getAttribute('id') . '-input-' . trim(str_replace(array('][', '[', '_', '.'), '-', $name), " \t\n\r\0\x0B]["));
 	}
 	
 	/**
@@ -732,6 +756,24 @@ class Form extends Element
 	public function resetButton($label = 'Reset', array $configuration = null)
 	{
 		$this->buildResetButton($label, $configuration)->render();
+	}
+	
+	/**
+	 * Renders the form element opening tag and its programatically defined 
+	 * children.
+	 */
+	public function start()
+	{
+		$this->form->renderOpenTag();
+		$this->form->renderChildren();
+	}
+	
+	/**
+	 * Renders the form element closing tag.
+	 */
+	public function end()
+	{
+		$this->form->renderCloseTag();
 	}
 	
 }
