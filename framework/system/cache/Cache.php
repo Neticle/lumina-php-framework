@@ -137,5 +137,14 @@ abstract class Cache extends Component
 	 *	Thrown when the clear operation fails.
 	 */
 	public abstract function clear($key);
+	
+	/**
+	 * Returns the total size of all cache entries which key starts with
+	 * the prefix defined for this component, if any.
+	 *
+	 * @return int
+	 *	The total size of all entries, in bytes.
+	 */
+	public abstract function getSize();
 }
 

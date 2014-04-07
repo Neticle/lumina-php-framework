@@ -132,5 +132,17 @@ class DefaultCache extends Cache
 	{
 		/* not implemented */ 
 	}
+	
+	/**
+	 * Returns the total size of all cache entries which key starts with
+	 * the prefix defined for this component, if any.
+	 *
+	 * @return int
+	 *	The total size of all entries, in bytes.
+	 */
+	public function getSize()
+	{
+		return 0;
+	}
 }
 

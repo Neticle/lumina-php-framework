@@ -196,11 +196,34 @@ class ApcCache extends Cache
 			
 			$pattern .= preg_quote(substr($key, $offset), '/') . '$/';
 			
-			foreach(new \APCIterator('user', $pattern, APC_ITER_KEY, APC_LIST_ACTIVE) as $key)
+			foreach(new \APCIterator('user', $pattern, APC_ITER_KEY, 100, APC_LIST_ACTIVE) as $key)
 			{
 				apc_delete($key['key']);
 			}
 		}
+	}
+	
+	/**
+	 * Returns the total size of all cache entries which key starts with
+	 * the prefix defined for this component, if any.
+	 *
+	 * @return int
+	 *	The total size of all entries, in bytes.
+	 */
+	public function getSize()
+	{
+		$pattern = isset($this->prefix) ?
+			('/^' . preg_quote($this->prefix, '/') . '.*$/i') : null;
+		
+		return (new \APCIterator
+			(
+				'user',
+				$pattern, 
+				APC_ITER_NONE,
+				100, 
+				APC_LIST_ACTIVE
+			)
+		)->getTotalSize();
 	}
 }
 
