@@ -39,6 +39,13 @@ use \system\web\session\ISessionHandler;
 abstract class Session extends Component
 {
 	/**
+	 * The total number of initialized session handlers.
+	 *
+	 * @type int
+	 */
+	private static $instanceCount = 0;
+
+	/**
 	 * The session name.
 	 *
 	 * @type string
@@ -78,9 +85,17 @@ abstract class Session extends Component
 	{
 		if (parent::onInitialize())
 		{
-			if ($this->register && $this instanceof ISessionHandler)
+			if (self::$instanceCount > 0)
 			{
-				session_set_save_handler(
+				throw new RuntimeException('Another session component has already been initialized.');
+			}
+			
+			++self::$instanceCount;
+		
+			if ($this instanceof ISessionHandler)
+			{
+				session_set_save_handler
+				(
 					array($this, 'openSessionStore'),
 					array($this, 'closeSessionStore'),
 					array($this, 'readSessionData'),
@@ -194,127 +209,133 @@ abstract class Session extends Component
 	}
 	
 	/**
-	 * Returns a value from the session.
+	 * Reads a value from persistent storage.
 	 *
-	 * @param string $attribute
-	 *	The attribute to return.
+	 * @param string $key
+	 *	The unique value identifier.
 	 *
 	 * @param mixed $default
-	 *	The value to be returned by default.
+	 *	A value to be returned by default, when the specified
+	 *	key is not definined within the persistent storage.
 	 *
 	 * @return mixed
-	 *	The matching value, or 'default' if it's not defined.
+	 *	The stored value if available, or '$default' otherwise.
 	 */
-	public function getAttribute($attribute, $default = null)
+	public function read($key, $default = null)
 	{
-		return isset($_SESSION[$attribute]) ?
-			$_SESSION[$attribute] : $default;
+		return isset($_SESSION[$key]) ?
+			$_SESSION[$key] : $default;
 	}
 	
 	/**
-	 * Defines a session attribute.
+	 * Write a value to persistent storage.
 	 *
-	 * @param string $attribute
-	 *	The attribute name.
+	 * @param string $key
+	 *	The unique identifier of the value to define or update.
 	 *
 	 * @param mixed $value
-	 *	The value to define.
+	 *	The value to define the given key with.
 	 */
-	public function setAttribute($attribute, $value)
+	public function write($key, $value)
 	{
-		$_SESSION[$attribute] = $value;
+		$_SESSION[$key] = $value;
 	}
 	
 	/**
-	 * Pushes a value to a session array attribute.
+	 * Pushes a value to an array stored in session, by key.
 	 *
-	 * @param string $attribute
-	 *	The session attribute, which must be defined as an array.
+	 * @param string $key
+	 *	The unique identifier of the value being modified.
 	 *
 	 * @param mixed $value
 	 *	The value to push.
 	 */
-	public function pushAttribute($attribute, $value)
+	public function push($key, $value)
 	{
-		$_SESSION[$attribute][] = $value;
+		if (isset($_SESSION[$key]) && !is_array($_SESSION[$key]))
+		{
+			throw new RuntimeException('The specified key "' . $key . '" is not defined as an array.');
+		}
+		
+		$_SESSION[$key][] = $value;
 	}
 	
 	/**
-	 * Checks wether or not the specified attribute is defined.
+	 * Checks wether or not the specified key is defined.
 	 *
-	 * @param string $attribute
-	 *	The attribute to be verified.
+	 * @param string $key
+	 *	The key to be verified.
 	 *
 	 * @return bool
 	 *	Returns TRUE if the key is defined, FALSE otherwise.
 	 */
-	public function hasAttribute($attribute)
+	public function contains($key)
 	{
-		return isset($_SESSION[$attribute]);
+		return isset($_SESSION[$key]);
 	}
 	
 	/**
 	 * Clears a session attribute.
 	 *
-	 * @param string $attribute
-	 *	The attribute to clear from the session.
+	 * @param string $key
+	 *	The key to clear from the session.
 	 */
-	public function clearAttribute($attribute)
+	public function clear($key)
 	{
-		unset($_SESSION[$attribute]);
+		unset($_SESSION[$key]);
 	}
 	
 	/**
-	 * Returns an attribute value from the session.
+	 * Returns an key value from the session.
 	 *
-	 * @param string $attribute
-	 *	The attribute name.
+	 * @param string $key
+	 *	The key name.
 	 *
 	 * @return mixed
-	 *	The attribute value, or 'default' if it's not defined.
+	 *	The key value, or NULL if it's not defined.
 	 */
-	public function __get($attribute)
+	public function __get($key)
 	{
-		return $this->getAttribute($attribute);
+		return $this->read($key);
 	}
 	
 	/**
-	 * Defines a session attribute value.
+	 * Defines a session key value.
 	 *
-	 * @param string $attribute
-	 *	The attribute name.
+	 * @param string $key
+	 *	The key name.
 	 *
 	 * @param mixed $value
 	 *	The value to define.
 	 */
-	public function __set($attribute, $value)
+	public function __set($key, $value)
 	{
-		$this->setAttribute($attribute, $value);
+		$this->write($key, $value);
 	}
 	
 	/**
-	 * Checks wether or not the specified attribute is defined.
+	 * Checks wether or not the specified key is defined.
 	 *
-	 * @param string $attribute
-	 *	The attribute to be verified.
+	 * @param string $key
+	 *	The key to be verified.
 	 *
 	 * @return bool
-	 *	Returns TRUE if the attribute is defined, FALSE otherwise.
+	 *	Returns TRUE if the key is defined, FALSE otherwise.
 	 */
-	public function __isset($attribute)
+	public function __isset($key)
 	{
-		return $this->hasAttribute($attribute);
+		return $this->contains($key);
 	}
 	
 	/**
 	 * Clears a session attribute.
 	 *
-	 * @param string $attribute
-	 *	The attribute to be cleared from the session.
+	 * @param string $key
+	 *	The key to be cleared from the session.
 	 */
-	public function __unset($attribute)
+	public function __unset($key)
 	{
-		return $this->clearAttribute($attribute);
+		return $this->clear($key);
 	}
 	
 }
