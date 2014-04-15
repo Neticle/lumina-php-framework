@@ -26,7 +26,7 @@ namespace system\web\session;
 
 use \system\base\Component;
 use \system\core\exception\RuntimeException;
-use \system\web\session\ISessionHandler;
+use \system\web\session\ISessionSaveHandler;
 
 /**
  * The session component allows you to keep track of the user state
@@ -92,7 +92,7 @@ abstract class Session extends Component
 			
 			++self::$instanceCount;
 		
-			if ($this instanceof ISessionHandler)
+			if ($this instanceof ISessionSaveHandler)
 			{
 				session_set_save_handler
 				(

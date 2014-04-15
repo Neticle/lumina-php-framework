@@ -25,7 +25,7 @@
 namespace system\web\session;
 
 use \system\web\session\Session;
-use \system\web\session\ISessionHandler;
+use \system\web\session\ISessionSaveHandler;
 use \system\core\exception\RuntimeException;
 use \system\sql\Criteria;
 use \system\sql\Expression;
@@ -43,7 +43,7 @@ use \system\sql\driver\Driver;
  * @package system.web.session
  * @since 0.2.0
  */
-class DatabaseSession extends Session implements ISessionHandler
+class DatabaseSession extends Session implements ISessionSaveHandler
 {
 	/**
 	 * The underlying database connection component.

@@ -32,7 +32,7 @@ namespace system\web\session;
  * @package system.web.session
  * @since 0.2.0
  */
-interface ISessionHandler
+interface ISessionSaveHandler
 {
 	/**
 	 * Creates or re-initializes the session store.
