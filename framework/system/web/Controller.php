@@ -120,5 +120,54 @@ class Controller extends \system\base\Controller
 			exit;
 		}
 	}
+	
+	/**
+	 * Sets the response status code and message.
+	 *
+	 * @param int $status
+	 *	The HTTP status code
+	 *
+	 * @param string $message
+	 *	The HTTP status message. If none provided the default message for the
+	 *	given code will be used.
+	 */
+	protected function setHttpStatus($status, $message = null) {
+		Response::setStatus($status, $message);
+	}
+	
+	/**
+	 * Sends a text response with the given status code and proper mime-type.
+	 *
+	 * @param int $status
+	 *	The HTTP status code
+	 *
+	 * @param sring $text
+	 *	A string containing the text to be sent.
+	 */
+	protected function sendText($status, $text) {
+		$this->setHttpStatus($status);
+		
+		Response::setHeader('Content-Type', 'text/plain', true);
+		
+		echo $text;
+	}
+	
+	/**
+	 * Sends a JSON response with the given status code and proper mime-type.
+	 *
+	 * @param int $status
+	 *	The HTTP status code
+	 *
+	 * @param array $data
+	 *	An array to be encoded and sent as JSON.
+	 */
+	protected function sendJson($status, $data) {
+		$this->setHttpStatus($status);
+		
+		Response::setHeader('Content-Type', 'application/json', true);
+		
+		echo json_encode($data);
+	}
+
 }
 
