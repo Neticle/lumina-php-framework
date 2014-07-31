@@ -143,7 +143,6 @@ class DatabaseSession extends Session implements ISessionSaveHandler
 	{
 		$criteria = new Criteria();
 		$criteria->setAlias('session');
-		$criteria->addComparison('session.' . $this->keyColumn, $id);
 		$criteria->addCondition('session.' . $this->timestampColumn . ' < (CURRENT_TIMESTAMP - :expiry)');
 		$criteria->setParameter(':expiry', $expiry);
 		
