@@ -131,7 +131,8 @@ class Controller extends \system\base\Controller
 	 *	The HTTP status message. If none provided the default message for the
 	 *	given code will be used.
 	 */
-	protected function setHttpStatus($status, $message = null) {
+	protected function setHttpStatus($status, $message = null) 
+	{
 		Response::setStatus($status, $message);
 	}
 	
@@ -144,7 +145,8 @@ class Controller extends \system\base\Controller
 	 * @param sring $text
 	 *	A string containing the text to be sent.
 	 */
-	protected function sendText($status, $text) {
+	protected function sendText($status, $text) 
+	{
 		$this->setHttpStatus($status);
 		
 		Response::setHeader('Content-Type', 'text/plain', true);
@@ -161,7 +163,8 @@ class Controller extends \system\base\Controller
 	 * @param array $data
 	 *	An array to be encoded and sent as JSON.
 	 */
-	protected function sendJson($status, $data) {
+	protected function sendJson($status, $data) 
+	{
 		$this->setHttpStatus($status);
 		
 		Response::setHeader('Content-Type', 'application/json', true);
