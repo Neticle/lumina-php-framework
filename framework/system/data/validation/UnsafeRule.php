@@ -34,7 +34,7 @@ use \system\data\validation\Rule;
  * @package system.data.validation
  * @since 0.2.0
  */
-class SafeRule extends Rule 
+class UnsafeRule extends Rule 
 {
 	/**
 	 * A flag indicating wether or not the attribute value is safe for
