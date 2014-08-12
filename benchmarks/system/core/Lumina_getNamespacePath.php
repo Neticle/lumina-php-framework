@@ -25,18 +25,13 @@
 /*
 
 Estimated number of calls per request:
-2 ~ 50
+1 ~ 5
 
 Results:
 	
-	2		3.0994415283203E-5
-	50		0.00023603439331055
-	200		0.0008690357208252
-	1000	0.0042212009429932
-	5000	0.021378993988037
-	10000	0.044900178909302
-	50000	0.21401619911194
-	75.000	0.31712102890015
+	1		2.0980834960938E-5
+	50		0.00012493133544922
+	1000	0.0021021366119385
 
 */
 
@@ -49,10 +44,9 @@ Lumina::setPackagePath('application', '/var/www');
 
 $start = microtime(true);
 
-for ($i = 0; $i < 50000; ++$i)
+for ($i = 0; $i < 1000; ++$i)
 {
-	Lumina::getAliasPath('this.is.a.relative.alias.right.here', 'layout.php', '/some/long/base/path');
+	Lumina::getNamespacePath('application\\modules\\user\\controllers');
 }
 
 echo microtime(true) - $start;
-
