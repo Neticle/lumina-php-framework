@@ -242,7 +242,7 @@ abstract class Context extends LazyExtension
 		{
 			if ($route[0] === '/')
 			{
-				return substr($route, 1);
+				return trim($route, '/');
 			}
 			
 			$context = ($this instanceof Module) || !strpos($route, '/') ?
