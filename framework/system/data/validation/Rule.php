@@ -231,8 +231,7 @@ abstract class Rule extends Element
 	
 	/**
 	 * Defines the message to be reported back to the model when one of the 
-	 * attributes fails validation due to it being empty when a value 
-	 * is required.
+	 * attributes fails validation due to a rule-specific validation.
 	 *
 	 * @param string $message
 	 *	The message to be reported back to the model if a validation
@@ -245,8 +244,7 @@ abstract class Rule extends Element
 	
 	/**
 	 * Returns the message to be reported back to the model when one of the 
-	 * attributes fails validation due to it being empty when a value 
-	 * is required.
+	 * attributes fails validation due to a rule-specific validation.
 	 *
 	 * @return string
 	 *	The message to be reported back to the model if a validation
@@ -255,6 +253,34 @@ abstract class Rule extends Element
 	public final function getMessage()
 	{
 		return $this->message;
+	}
+	
+	/**
+	 * Defines the message to be reported back to the model when one of the 
+	 * attributes fails validation due to it being empty when a value 
+	 * is required.
+	 *
+	 * @param string $message
+	 *	The message to be reported back to the model if a validation
+	 *	error is encountered.
+	 */
+	public final function setEmptyMessage($emptyMessage)
+	{
+		$this->emptyMessage = $emptyMessage;
+	}
+	
+	/**
+	 * Returns the message to be reported back to the model when one of the 
+	 * attributes fails validation due to it being empty when a value 
+	 * is required.
+	 *
+	 * @return string
+	 *	The message to be reported back to the model if a validation
+	 *	error is encountered.
+	 */
+	public final function getEmptyMessage()
+	{
+		return $this->emptyMessage;
 	}
 	
 	/**
