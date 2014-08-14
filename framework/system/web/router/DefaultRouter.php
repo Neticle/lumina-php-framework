@@ -32,7 +32,6 @@ use \system\web\router\Router;
  * controller action.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web.router
  * @since 0.2.0
  */
 class DefaultRouter extends Router

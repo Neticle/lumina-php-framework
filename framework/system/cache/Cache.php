@@ -30,7 +30,6 @@ use \system\base\Component;
  * Defines an abstract Cache component.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.cache
  * @since 0.2.0
  */
 abstract class Cache extends Component

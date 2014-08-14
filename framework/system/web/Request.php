@@ -32,7 +32,6 @@ use \system\web\exception\HttpException;
  * to easily pull information passed through it.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web
  * @since 0.2.0
  */
 class Request 
@@ -65,50 +64,37 @@ class Request
 	 */
 	private static function extract($value, &$result, $regex = null, $required = true) 
 	{
-	
 		if (isset($value) && $value !== '') 
 		{
-		
 			if ($regex) 
 			{
-		
 				// Run the regular expression validation
 				$matches = preg_match($regex, $value);
 			
 				if ($matches === false) 
-				{
-				
+				{	
 					// An error ocurred while compiling the regular expression
 					throw new RuntimeException('Invalid regular expression "' . $regex . '" specified.');
-				
 				}
 				
 				if ($matches < 1) 
 				{
-				
 					// Invalid value format
 					throw new HttpException(400, 'Bad Request');
-				
 				}
-			
-		
 			}
 			
 			$result = $value;
 			return true;
-		
 		}
 		
 		if ($required) 
 		{
-		
 			// The variable is required but was empty
-			throw new HttpException(400, 'Bad Request');
-			
+			throw new HttpException(400, 'Bad Request');	
 		}
 		
 		return false;
-	
 	}
 	
 	/**
@@ -141,8 +127,7 @@ class Request
 	 *	Returns TRUE on success, FALSE otherwise.
 	 */
 	private static function get($key, &$result, $regex = null, $source = null, $required = true) 
-	{
-		
+	{	
 		if (!isset($source)) 
 		{
 			$source = $_GET;
@@ -150,22 +135,15 @@ class Request
 		
 		if (isset($source[$key])) 
 		{
-		
-			// Extract the value from the source array
-			return self::extract($source[$key], $result, $regex, $required);
-			
+			return self::extract($source[$key], $result, $regex, $required);	
 		}
 		
 		if ($required) 
 		{
-		
-			// The variable is required but was empty
-			throw new HttpException(400, 'Bad Request');
-			
+			throw new HttpException(400, 'Bad Request');	
 		}
 		
 		return false;
-		
 	}
 	
 	/**
@@ -194,7 +172,6 @@ class Request
 	 */
 	public static function getObject($key, $source = null, $required = true, $default = null) 
 	{
-	
 		if (!isset($source)) 
 		{
 			$source = $_GET;
@@ -202,15 +179,11 @@ class Request
 		
 		if (isset($source[$key]) && $source[$key] !== '') 
 		{
-		
 			$value = $source[$key];
 			
 			if (!is_array($value)) 
 			{
-			
-				// Invalid format for this value
 				throw new HttpException(400, 'Bad Request');
-			
 			}
 			
 			return $value;
@@ -219,10 +192,7 @@ class Request
 		
 		if ($required) 
 		{
-		
-			// The variable is required but was empty
 			throw new HttpException(400, 'Bad Request');
-			
 		}
 		
 		return $default;
@@ -255,10 +225,8 @@ class Request
 	 */
 	public static function getInt($key, $source = null, $required = true, $default = 0) 
 	{
-		
 		return self::get($key, $result, '/^\d+$/', $source, $required) ? 
 			intval($result) : $default;
-			
 	}
 	
 	/**
@@ -287,10 +255,8 @@ class Request
 	 */
 	public static function getDouble($key, $source = null, $required = true, $default = 0) 
 	{
-		
 		return self::get($key, $result, '/^((\d+)|((\d+)?\.\d+))$/', $source, $required) ? 
 			floatval($result) : $default;
-			
 	}
 	
 	/**
@@ -319,10 +285,8 @@ class Request
 	 */
 	public static function getBool($key, $source = null, $required = true, $default = false) 
 	{
-		
 		return self::get($key, $result, '/^(true|false|1|0)$/', $source, $required) ? 
 			($result === 'true' || $result === '1') : $default;
-			
 	}
 	
 	/**
@@ -351,10 +315,8 @@ class Request
 	 */
 	public static function getString($key, $source = null, $required = true, $default = null) 
 	{
-		
 		return self::get($key, $result, null, $source, $required) ? 
 			$result : $default;
-			
 	}
 		
 	/**
@@ -378,10 +340,8 @@ class Request
 	 */
 	public static function filterInt($value, $required = true, $default = 0) 
 	{
-	
 		return self::extract($value, $result, '/^\d+$/', $required) ?
 			intval($result) : $default;
-	
 	}
 	
 	/**
@@ -405,10 +365,8 @@ class Request
 	 */
 	public static function filterDouble($value, $required = true, $default = 0) 
 	{
-	
 		return self::extract($value, $result, '/^((\d+)|((\d+)?\.\d+))$/', $required) ?
 			floatval($result) : $default;
-	
 	}
 	
 	/**
@@ -432,10 +390,8 @@ class Request
 	 */
 	public static function filterBool($value, $required = true, $default = false) 
 	{
-	
 		return self::extract($value, $result, '/^(true|false|1|0)$/', $required) ?
 			($result === 'true' || $result === '1') : $default;
-	
 	}
 	
 	/**
@@ -459,10 +415,8 @@ class Request
 	 */
 	public static function filterString($value, $required = true, $default = null) 
 	{
-	
 		return self::extract($value, $result, null, $required) ?
 			$result : $default;
-	
 	}
 	
 	/**
@@ -478,15 +432,16 @@ class Request
 	 */
 	public static function isAjax($allowEmulation = true) 
 	{
-
-		return (
+		return 
+		(
 			$allowEmulation && isset($_GET['ajax']) && 
 			strtolower($_GET['ajax']) === 'true'
-		) || (
+		) 
+		|| 
+		(
 			isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
 			strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
 		);
-
 	}
 
 	/**

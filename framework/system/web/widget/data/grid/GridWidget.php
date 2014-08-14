@@ -38,7 +38,6 @@ use \system\web\html\HtmlElement;
  * columns, pagination and data sorting based on the data from a given provider.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web.extension.widget.grid
  * @since 0.2.0
  */
 class GridWidget extends Widget

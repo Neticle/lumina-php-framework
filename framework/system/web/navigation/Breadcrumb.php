@@ -32,7 +32,6 @@ use \system\web\Widget;
  * nodes, which can then be deployed through the 'BreadcrumbWidget' widget.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web.navigation
  * @since 0.2.0
  */
 class Breadcrumb extends Component

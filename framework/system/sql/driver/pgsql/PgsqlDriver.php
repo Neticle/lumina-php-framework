@@ -33,7 +33,6 @@ use \system\sql\driver\pgsql\PgsqlStatementFactory;
  * database schema and statement factory instances.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.sql.driver.pgsql
  * @since 0.2.0
  */
 class PgsqlDriver extends Driver

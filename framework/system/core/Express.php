@@ -24,8 +24,6 @@
 
 namespace system\core;
 
-use \ReflectionClass as PHPReflectionClass;
-
 use \system\core\exception\RuntimeException;
 
 /**
@@ -33,7 +31,6 @@ use \system\core\exception\RuntimeException;
  * configuration of instances of classes extending it.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
  * @since 0.2.0
  */
 abstract class Express
@@ -67,7 +64,7 @@ abstract class Express
 	 */
 	public function configure(array $configuration)
 	{
-		$class = new PHPReflectionClass($this);
+		$class = new \ReflectionClass($this);
 		
 		foreach ($configuration as $property => $value)
 		{

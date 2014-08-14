@@ -32,7 +32,6 @@ use \system\core\exception\Exception;
  * to the application specific implementation.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core.exception
  * @since 0.2.0
  */
 class RuntimeException extends Exception

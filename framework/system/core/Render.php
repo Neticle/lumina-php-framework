@@ -32,7 +32,6 @@ use \system\core\Lumina;
  * access or modify private members.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
  * @since 0.2.0
  */
 class Render extends Extension
@@ -80,21 +79,21 @@ class Render extends Extension
 	 * Make sure you can not render the view file from a controller before
 	 * using this function.
 	 *
-	 * @param string $file
+	 * @param string $__FILE__
 	 *	The absolute path to the file being rendered.
 	 *
-	 * @param array $variables
+	 * @param array $__DATA__
 	 *	The variables to be extracted into the script context.
 	 *
-	 * @param bool $capture
+	 * @param bool $__CAPTURE__
 	 *	When set to TRUE the rendered contents will be captured instead
 	 *	of sent to the currently active output buffer.
 	 */
-	protected function renderFile($__FILE__, array $__VARIABLES__ = null, $__CAPTURE__ = true)
+	protected function renderFile($__FILE__, array $__DATA__ = null, $__CAPTURE__ = true)
 	{
-		if (isset($__VARIABLES__))
+		if (isset($__DATA__))
 		{
-			extract($__VARIABLES__);
+			extract($__DATA__);
 		}
 		
 		if ($__CAPTURE__)

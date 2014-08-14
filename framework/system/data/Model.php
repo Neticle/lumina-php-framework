@@ -33,7 +33,6 @@ use \system\data\validation\Rule;
  * structure and format.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.base
  * @since 0.2.0
  */
 abstract class Model extends Element

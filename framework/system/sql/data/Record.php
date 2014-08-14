@@ -35,7 +35,6 @@ use \system\sql\Reader;
  * on the database.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.sql.data
  * @since 0.2.0
  */
 abstract class Record extends Model

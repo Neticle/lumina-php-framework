@@ -31,7 +31,6 @@ use \system\core\Lumina;
  * Element.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
  * @since 0.2.0
  */
 abstract class Element extends Express

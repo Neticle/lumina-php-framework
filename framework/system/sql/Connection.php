@@ -31,7 +31,6 @@ use \system\sql\driver\Driver;
  * Connection.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.sql
  * @since 0.2.0
  */
 class Connection extends Component
@@ -42,7 +41,8 @@ class Connection extends Component
 	 *
 	 * @type array
 	 */
-	private static $driverClasses = array(
+	private static $driverClasses = array
+	(
 		'mysql' => 'system\\sql\\driver\\mysql\\MysqlDriver',
 		'pgsql' => 'system\\sql\\driver\\pgsql\\PgsqlDriver'
 	);

@@ -30,7 +30,6 @@ use \system\cache\Cache;
  * The default (not so) cache component to use, for development purposes.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.cache
  * @since 0.2.0
  */
 class DefaultCache extends Cache

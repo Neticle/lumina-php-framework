@@ -33,7 +33,6 @@ use \system\core\exception\RuntimeException;
  * Defines the base behaviour and events for all Lumina extensions.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
  * @since 0.2.0
  */
 abstract class Extension extends Element

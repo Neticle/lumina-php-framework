@@ -29,7 +29,6 @@ namespace system\web\session;
  * in order to provide a more specific implementation.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web.session
  * @since 0.2.0
  */
 interface ISessionSaveHandler

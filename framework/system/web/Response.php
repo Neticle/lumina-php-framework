@@ -32,7 +32,6 @@ use \system\core\exception\RuntimeException;
  * to easily manage the response headers and its contents.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web
  * @since 0.2.0
  */
 class Response
@@ -85,12 +84,12 @@ class Response
 	 *	removed and replaced by this one.
 	 */
 	public static function setHeader($name, $content, $replace = false)
-	{
-		$header = $name . ': ' . str_replace(array("\t", "\r"), ' ', 
-			str_replace("\n", "\n ", $content)
+	{		
+		header
+		(
+			$name . ': ' . str_replace(array("\t", "\r"), ' ', str_replace("\n", "\n ", $content)), 
+			$replace
 		);
-		
-		header($header, $replace);
 	}
 	
 	/**
@@ -159,14 +158,19 @@ class Response
 	{
 		if (isset($message))
 		{
-			$message = str_replace(array("\t", "\r"), ' ', 
+			$message = str_replace
+			(
+				array("\t", "\r"), 
+				' ', 
 				str_replace("\n", "\n ", $message)
 			);
 		}
+		
 		else if (isset(self::$httpStatusMessages[$code]))
 		{
 			$message = self::$httpStatusMessages[$code];
 		}
+		
 		else
 		{
 			throw new RuntimeException('Unable to determine "' . $code . '" status code message.'); 

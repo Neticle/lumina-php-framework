@@ -35,7 +35,6 @@ use \system\web\html\HtmlElement;
  * stage.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web
  * @since 0.2.0
  */
 class Form extends Element

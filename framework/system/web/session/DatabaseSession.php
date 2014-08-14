@@ -40,7 +40,6 @@ use \system\sql\driver\Driver;
  * "connection" component.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web.session
  * @since 0.2.0
  */
 class DatabaseSession extends Session implements ISessionSaveHandler

@@ -31,7 +31,6 @@ use \system\sql\Expression;
  * Criteria.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.sql
  * @since 0.2.0
  */
 class Criteria extends Express

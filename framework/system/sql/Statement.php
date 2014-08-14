@@ -31,21 +31,64 @@ use \system\sql\Reader;
  * Statement.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.sql
  * @since 0.2.0
  */
 class Statement extends Element
-{	
+{
+	/**
+	 * Defines the type for a boolean parameter.
+	 *
+	 * @type int
+	 */
 	const PARAM_BOOL = \PDO::PARAM_BOOL;
+	
+	/**
+	 * Defines the type for a null parameter.
+	 *
+	 * @type int
+	 */
 	const PARAM_NULL = \PDO::PARAM_NULL;
+	
+	/**
+	 * Defines the type for an integer parameter.
+	 *
+	 * @type int
+	 */
 	const PARAM_INT = \PDO::PARAM_INT;
+	
+	/**
+	 * Defines the type for a string parameter.
+	 *
+	 * @type int
+	 */
 	const PARAM_STR = \PDO::PARAM_STR;
+	
+	/**
+	 * Defines the type for a binary parameter.
+	 *
+	 * @type int
+	 */
 	const PARAM_LOB = \PDO::PARAM_LOB;
 	
+	/**
+	 * The database connection wrapper to be used by this statement.
+	 *
+	 * @type Connection
+	 */
 	private $connection;
 	
+	/**
+	 * The underlying PDO statement wrapper.
+	 *
+	 * @type \PDOStatement
+	 */
 	private $pdoStatement;
 	
+	/**
+	 * The original SQL statement.
+	 *
+	 * @type string
+	 */
 	private $sqlStatement;
 	
 	/**

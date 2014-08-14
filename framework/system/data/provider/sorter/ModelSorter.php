@@ -38,7 +38,6 @@ use \system\data\provider\sorter\Sorter;
  * feature.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.data.provider.sorter
  * @since 0.2.0
  */
 class ModelSorter extends Sorter

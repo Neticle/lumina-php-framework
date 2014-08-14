@@ -31,7 +31,6 @@ use \system\core\exception\RuntimeException;
  * The table schema object.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.sql.schema
  * @since 0.2.0
  */
 class TableSchema extends Schema

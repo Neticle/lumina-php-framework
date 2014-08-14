@@ -30,18 +30,64 @@ use \system\sql\schema\Schema;
  * The column schema object.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.sql.schema
  * @since 0.2.0
  */
 class ColumnSchema extends Schema
 {
+	/**
+	 * Defines the type for a string data column.
+	 *
+	 * @type string
+	 */
 	const TYPE_STRING = 'string';
+	
+	/**
+	 * Defines the type for an integer data column.
+	 *
+	 * @type string
+	 */
 	const TYPE_INT = 'int';
+	
+	/**
+	 * Defines the type for a floating point number data column.
+	 *
+	 * @type string
+	 */
 	const TYPE_FLOAT = 'float';
+	
+	/**
+	 * Defines the type for a character data column.
+	 *
+	 * @type string
+	 */
 	const TYPE_CHAR = 'char';
+	
+	/**
+	 * Defines the type for a boolean data column.
+	 *
+	 * @type string
+	 */
 	const TYPE_BOOL = 'bool';
+	
+	/**
+	 * Defines the type for a binary data column.
+	 *
+	 * @type string
+	 */
 	const TYPE_BINARY = 'binary';
+	
+	/**
+	 * Defines the type for a enumeration data column.
+	 *
+	 * @type string
+	 */
 	const TYPE_ENUM = 'enum';
+	
+	/**
+	 * Defines the type for a timestamp data column.
+	 *
+	 * @type string
+	 */
 	const TYPE_TIMESTAMP = 'timestamp';
 
 	/**

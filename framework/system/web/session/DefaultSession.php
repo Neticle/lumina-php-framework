@@ -36,7 +36,6 @@ use \system\core\exception\RuntimeException;
  * file ("php.ini").
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web.session
  * @since 0.2.0
  */
 class DefaultSession extends Session

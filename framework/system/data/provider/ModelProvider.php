@@ -34,7 +34,6 @@ use \system\data\provider\sorter\ModelSorter;
  * support for sorting and pagination.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.data.provider
  * @since 0.2.0
  */
 class ModelProvider extends Provider

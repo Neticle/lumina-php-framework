@@ -33,7 +33,6 @@ use \system\web\exception\HttpException;
  * throw http exceptions when the dispatch procedure fails on them.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web
  * @since 0.2.0
  */
 class Controller extends \system\base\Controller
@@ -107,7 +106,8 @@ class Controller extends \system\base\Controller
 	{
 		if (is_array($location))
 		{
-			$location = $this->getComponent('router')->createAbsoluteUrl(
+			$location = $this->getComponent('router')->createAbsoluteUrl
+			(
 				$this->getResolvedContextRoute($location[0]), 
 				array_slice($location, 1)
 			);
@@ -147,8 +147,7 @@ class Controller extends \system\base\Controller
 	 */
 	protected function sendText($status, $text) 
 	{
-		$this->setHttpStatus($status);
-		
+		Response::setStatus($status);
 		Response::setHeader('Content-Type', 'text/plain', true);
 		
 		echo $text;
@@ -165,12 +164,10 @@ class Controller extends \system\base\Controller
 	 */
 	protected function sendJson($status, $data) 
 	{
-		$this->setHttpStatus($status);
-		
+		Response::setStatus($status);
 		Response::setHeader('Content-Type', 'application/json', true);
 		
 		echo json_encode($data);
 	}
-
 }
 

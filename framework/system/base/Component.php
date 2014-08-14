@@ -31,7 +31,6 @@ use \system\core\LazyExtension;
  * Defines the base behaviour and events for all Lumina components.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
  * @since 0.2.0
  */
 abstract class Component extends LazyExtension

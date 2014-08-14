@@ -30,7 +30,6 @@ use \system\cache\Cache;
  * This component provides caching features through PHP's APC(u) extension.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.cache
  * @since 0.2.0
  */
 class ApcCache extends Cache

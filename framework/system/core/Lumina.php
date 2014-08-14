@@ -31,7 +31,6 @@ use \system\core\exception\RuntimeException;
  * Lumina.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
  * @since 0.2.0
  */
 class Lumina 

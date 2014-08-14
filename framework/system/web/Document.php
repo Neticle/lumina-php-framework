@@ -36,7 +36,6 @@ use \system\web\html\Html;
  * This Component is defined by default for the web applications.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web
  * @since 0.2.0
  */
 class Document extends Component
@@ -53,20 +52,22 @@ class Document extends Component
 	 *
 	 * @type string
 	 */
-	private $bundles = array(
-	
-		'jquery' => array(
+	private $bundles = array
+	(
+		'jquery' => array
+		(
 			'class' => 'vendor\\jquery\\JQueryBundle'
 		),
 		
-		'jqueryui' => array(
+		'jqueryui' => array
+		(
 			'class' => 'vendor\\jqueryui\\JQueryUiBundle'
 		),
 		
-		'bootstrap' => array(
+		'bootstrap' => array
+		(
 			'class' => 'vendor\\bootstrap\\BootstrapBundle'
 		)
-		
 	);
 	
 	/**
@@ -115,7 +116,8 @@ class Document extends Component
 	 *
 	 * @type array
 	 */
-	private $meta = array(
+	private $meta = array
+	(
 		'http-equiv:content-type' => array(array('http-equiv', 'content-type', 'text/html; charset=utf8'))
 	);
 	

@@ -39,7 +39,6 @@ use \system\sql\data\provider\CriteriaProvider;
  * or RecordProvider according to your needs.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.sql.data.provider
  * @since 0.2.0
  */
 class SelectProvider extends CriteriaProvider

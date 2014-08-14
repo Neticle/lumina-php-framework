@@ -30,7 +30,6 @@ use \system\core\Express;
  * The base schema object.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.sql.schema
  * @since 0.2.0
  */
 abstract class Schema extends Express

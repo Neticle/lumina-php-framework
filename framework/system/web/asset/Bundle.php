@@ -37,7 +37,6 @@ use \system\web\Document;
  * use the module components to implement the necessary logic.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web.asset
  * @since 0.2.0
  */
 abstract class Bundle extends LazyExtension

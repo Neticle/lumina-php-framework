@@ -24,13 +24,13 @@
 
 namespace system\web;
 
+use \system\web\asset\AssetManager;
 use \system\web\exception\HttpException;
 
 /**
  * Application.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web
  * @since 0.2.0
  */
 class Application extends \system\base\Application
@@ -49,30 +49,90 @@ class Application extends \system\base\Application
 		if (parent::onConstruction())
 		{
 			// Register the core components
-			$this->setComponents(array(
-				
-				'assetManager' => array(
-					'class' => 'system\\web\\asset\\AssetManager'
-				),
-				
-				'document' => array(
-					'class' => 'system\\web\\Document',
-				),
-				
-				'router' => array(
-					'class' => 'system\\web\\router\\DefaultRouter'
-				),
-				
-				'session' => array(
-					'class' => 'system\\web\\session\\DefaultSession'
+			$this->setComponents
+			(
+				array
+				(
+					// Manages any published assets and allows the application
+					// elements to publish their own from a protected directory
+					// into the application web root.
+					'assetManager' => array
+					(
+						'class' => 'system\\web\\asset\\AssetManager'
+					),
+					
+					// Holds the meta data related to the document being served
+					// to the client, as well as any registered scripts and
+					// styles.
+					'document' => array
+					(
+						'class' => 'system\\web\\Document',
+					),
+					
+					// Creates URLs that link to a specific route and parses
+					// the current request into a route array.
+					'router' => array
+					(
+						'class' => 'system\\web\\router\\DefaultRouter'
+					),
+					
+					// Handles loading and saving of session data for the
+					// current request.
+					'session' => array
+					(
+						'class' => 'system\\web\\session\\DefaultSession'
+					)
 				)
-				
-			));
+			);
 			
 			return true;
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Returns the asset manager component.
+	 *
+	 * @return AssetManager
+	 *	The asset manager component.
+	 */
+	public final function getAssetManager()
+	{
+		return $this->getComponent('assetManager');
+	}
+	
+	/**
+	 * Returns the document component.
+	 *
+	 * @return Document
+	 *	The document component.
+	 */
+	public final function getDocument()
+	{
+		return $this->getComponent('document');
+	}
+	
+	/**
+	 * Returns the router component.
+	 *
+	 * @return Router
+	 *	The router component.
+	 */
+	public final function getRouter()
+	{
+		return $this->getComponent('router');
+	}
+	
+	/**
+	 * Returns the session component.
+	 *
+	 * @return Session
+	 *	The session component.
+	 */
+	public final function getSession()
+	{
+		return $this->getSession();
 	}
 	
 	/**

@@ -33,7 +33,6 @@ use \system\web\html\HtmlElement;
  * an image and a label.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web.extension.widget.navigation
  * @since 0.2.0
  */
 class ButtonWidget extends Widget

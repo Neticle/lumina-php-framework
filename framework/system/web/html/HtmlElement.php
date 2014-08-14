@@ -32,7 +32,6 @@ use \system\web\html\Html;
  * and render any HTML DOM Element.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web
  * @since 0.2.0
  */
 class HtmlElement extends Element

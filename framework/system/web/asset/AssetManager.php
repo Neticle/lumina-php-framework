@@ -33,7 +33,6 @@ use \system\core\exception\RuntimeException;
  * a public directory that can be accessed through the browser.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web.asset
  * @since 0.2.0
  */
 class AssetManager extends Component

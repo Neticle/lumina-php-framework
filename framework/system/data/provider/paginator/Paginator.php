@@ -36,7 +36,6 @@ use \system\data\provider\Provider;
  * feature.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.data.provider.paginator
  * @since 0.2.0
  */
 abstract class Paginator extends Element

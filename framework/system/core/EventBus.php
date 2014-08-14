@@ -29,7 +29,6 @@ namespace system\core;
  * raised by multiple class instances that might not even exist and the moment.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
  * @since 0.2.0
  */
 class EventBus

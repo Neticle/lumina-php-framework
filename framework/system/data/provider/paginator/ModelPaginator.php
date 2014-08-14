@@ -36,7 +36,6 @@ use \system\data\provider\paginator\ArrayPaginator;
  * feature.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.data.provider.paginator
  * @since 0.2.0
  */
 class ModelPaginator extends ArrayPaginator

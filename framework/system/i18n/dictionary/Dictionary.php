@@ -31,7 +31,6 @@ use \system\base\Component;
  * and number formatting.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.global.dictionary
  * @since 0.2.0
  */
 abstract class Dictionary extends Component

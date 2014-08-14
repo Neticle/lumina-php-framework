@@ -38,7 +38,6 @@ use \system\sql\data\provider\CriteriaProvider;
  * feature.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.data.provider.sorter
  * @since 0.2.0
  */
 class CriteriaSorter extends Sorter

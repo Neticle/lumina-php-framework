@@ -35,7 +35,6 @@ use \system\base\Component;
  * implementation.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.security
  * @since 0.2.0
  */
 class MessageDigest extends Component

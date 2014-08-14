@@ -24,16 +24,13 @@
 
 namespace system\core\exception;
 
-use \Exception as PHPException;
-
 /**
  * A generic exception.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core.exception
  * @since 0.2.0
  */
-abstract class Exception extends PHPException
+abstract class Exception extends \Exception
 {
 	/**
 	 * Constructor.

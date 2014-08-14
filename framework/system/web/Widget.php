@@ -32,7 +32,6 @@ use \system\core\exception\RuntimeException;
  * HTML elements that can than be rendered throughout the view.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web
  * @since 0.2.0
  */
 abstract class Widget extends Element

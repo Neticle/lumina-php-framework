@@ -30,7 +30,6 @@ use \system\base\Module;
  * Application.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
  * @since 0.2.0
  */
 class Application extends Module
@@ -49,23 +48,35 @@ class Application extends Module
 		if (parent::onConstruction())
 		{
 			// Register the core components
-			$this->setComponents(array(
+			$this->setComponents
+			(
+				array
+				(
+					// Handles all interactions between the application elements
+					// and a SQL database.
+					'database' => array
+					(
+						'class' => 'system\\sql\\Connection',
+						'driver' => 'mysql'
+					),
 				
-				'database' => array(
-					'class' => 'system\\sql\\Connection',
-					'driver' => 'mysql'
-				),
+					// Handles translation of messages and number formating for
+					// multi-locale application.
+					'dictionary' => array
+					(
+						'class' => 'system\\i18n\\dictionary\\StaticDictionary',
+						'locale' => 'en_GB'
+					),
+					
+					// Manages cached entries in order to avoid running further
+					// expensive deterministic procedures in future requests.
+					'cache' => array
+					(
+						'class' => 'system\\cache\\DefaultCache'
+					)
 				
-				'dictionary' => array(
-					'class' => 'system\\i18n\\dictionary\\StaticDictionary',
-					'locale' => 'en_GB'
-				),
-				
-				'cache' => array(
-					'class' => 'system\\cache\\DefaultCache'
 				)
-				
-			));
+			);
 			
 			return true;
 		}

@@ -34,7 +34,6 @@ use \system\web\html\HtmlElement;
  * with links to actions that will display the contents of other pages.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web.extension.widget
  * @since 0.2.0
  */
 class PaginatorWidget extends Widget

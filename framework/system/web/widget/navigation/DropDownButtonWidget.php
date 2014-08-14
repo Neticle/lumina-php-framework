@@ -34,7 +34,6 @@ use \system\web\html\HtmlElement;
  * menus contained in it.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.ext.web.widget.navigation.dropDownButton
  * @since 0.2.0
  */
 class DropDownButtonWidget extends ButtonWidget

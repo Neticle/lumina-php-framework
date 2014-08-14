@@ -34,7 +34,6 @@ use system\i18n\dictionary\Dictionary;
  * projects due to it's performance impact.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.global.dictionary
  * @since 0.2.0
  */
 class StaticDictionary extends Dictionary

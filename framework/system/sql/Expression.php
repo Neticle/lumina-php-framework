@@ -29,7 +29,6 @@ namespace system\sql;
  * on any SQL expression.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.sql
  * @since 0.2.0
  */
 class Expression

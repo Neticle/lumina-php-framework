@@ -41,7 +41,6 @@ use \system\core\exception\RuntimeException;
  * others, the application layouts and views.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
  * @since 0.2.0
  */
 abstract class Context extends LazyExtension
@@ -212,14 +211,10 @@ abstract class Context extends LazyExtension
 	 */
 	public function render($view, array $variables = null, $capture = false)
 	{
-		$view = Lumina::getAliasPath($view, 'php', $this->getViewsPath());
-		$view = ContextView::getContextFileView($this, $view, $variables);
-		$this->onRender($view);
-		
+		$view = ContextView::getContextView($this, $view, $variables);
+		$this->onRender($view);	
 		return $view->run($capture);
 	}
-	
-	
 	
 	/**
 	 * Resolves and returns the context route.

@@ -32,7 +32,6 @@ use \system\core\exception\Exception;
  * client.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core.exception
  * @since 0.2.0
  */
 class HttpException extends Exception

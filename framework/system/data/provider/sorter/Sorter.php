@@ -36,7 +36,6 @@ use \system\data\provider\Provider;
  * feature.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.data.provider.sorter
  * @since 0.2.0
  */
 abstract class Sorter extends Element
@@ -46,14 +45,14 @@ abstract class Sorter extends Element
 	 *
 	 * @type string
 	 */
-	const SORT_DIRECTION_ASC = 'asc';
+	const SORT_ASC = 'asc';
 	
 	/**
 	 * Defines the descendent sorting direction.
 	 *
 	 * @type string
 	 */
-	const SORT_DIRECTION_DESC = 'desc';
+	const SORT_DESC = 'desc';
 	
 	/**
 	 * The data provider this sorter belongs to.
@@ -64,7 +63,7 @@ abstract class Sorter extends Element
 	
 	/**
 	 * An associative array of rules, defining the direction 
-	 * (Sorter::SORT_DIRECTION_* constants), indexed by field name.
+	 * (Sorter::SORT_* constants), indexed by field name.
 	 *
 	 * @type array
 	 */
@@ -121,7 +120,7 @@ abstract class Sorter extends Element
 	 *
 	 * @param array $rules
 	 *	An associative array of rules, defining the direction 
-	 *	(Sorter::SORT_DIRECTION_* constants), indexed by field name.
+	 *	(Sorter::SORT_* constants), indexed by field name.
 	 */
 	public function setRules(array $rules)
 	{
@@ -140,7 +139,7 @@ abstract class Sorter extends Element
 	 *
 	 * @return array
 	 *	An associative array of rules, defining the direction 
-	 *	(Sorter::SORT_DIRECTION_* constants), indexed by field name.
+	 *	(Sorter::SORT_* constants), indexed by field name.
 	 */
 	public function getRules()
 	{

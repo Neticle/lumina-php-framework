@@ -28,8 +28,6 @@ use \system\base\Module;
 use \system\core\Context;
 use \system\core\View;
 
-use \ReflectionClass as PHPReflectionClass;
-
 /**
  * A Context is a special kind of extension that can be used with other
  * extensions capable of having different behaviours depending on the
@@ -39,7 +37,6 @@ use \ReflectionClass as PHPReflectionClass;
  * that are relative to a specific module or controller.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
  * @since 0.2.0
  */
 abstract class Controller extends Context
@@ -430,7 +427,7 @@ abstract class Controller extends Context
 		
 		if ($this->onBeforeDispatch($action, $parameters))
 		{
-			$class = new PHPReflectionClass($this);
+			$class = new \ReflectionClass($this);
 			$method = $this->getDefaultActionMethod($action);
 			
 			if ($class->hasMethod($method))

@@ -38,7 +38,6 @@ use \system\web\html\Html;
  * cells.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web.extension.widget.grid
  * @since 0.2.0
  */
 class CustomColumn extends Column

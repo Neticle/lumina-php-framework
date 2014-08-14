@@ -29,7 +29,6 @@ namespace system\web\html;
  * of HTML content.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web
  * @since 0.2.0
  */
 class Html

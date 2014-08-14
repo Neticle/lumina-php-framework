@@ -32,7 +32,6 @@ use \system\core\Lumina;
  * variables that are made available to it.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
  * @since 0.2.0
  */
 class View extends Render

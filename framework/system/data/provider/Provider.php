@@ -30,7 +30,6 @@ use \system\core\Element;
  * An abstract data provider.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.data
  * @since 0.2.0
  */
 abstract class Provider extends Element implements \IteratorAggregate

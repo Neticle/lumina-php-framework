@@ -31,15 +31,43 @@ use \system\sql\Reader;
  * Reader.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.sql
  * @since 0.2.0
  */
 class Reader
 {
+	/**
+	 * Defines the associative array fetch mode.
+	 *
+	 * @type int
+	 */
 	const FETCH_ASSOC = \PDO::FETCH_ASSOC;
+	
+	/**
+	 * Defines the numeric array fetch mode.
+	 *
+	 * @type int
+	 */
 	const FETCH_NUM = \PDO::FETCH_NUM;
+	
+	/**
+	 * Defines the associative and numeric (mixed) array fetch mode.
+	 *
+	 * @type int
+	 */
 	const FETCH_BOTH = \PDO::FETCH_BOTH;
+	
+	/**
+	 * Defines the object array fetch mode.
+	 *
+	 * @type int
+	 */
 	const FETCH_OBJ = \PDO::FETCH_OBJ;
+	
+	/**
+	 * Defines the named fetch mode.
+	 *
+	 * @type int
+	 */
 	const FETCH_NAMED = \PDO::FETCH_NAMED;
 
 	/**

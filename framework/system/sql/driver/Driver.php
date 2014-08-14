@@ -32,7 +32,6 @@ use \system\sql\Connection;
  * database schema and statement factory instances.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.sql.driver
  * @since 0.2.0
  */
 abstract class Driver extends Extension

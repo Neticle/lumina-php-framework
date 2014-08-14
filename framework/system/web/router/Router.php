@@ -32,7 +32,6 @@ use \system\base\Component;
  * controller action.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web.router
  * @since 0.2.0
  */
 abstract class Router extends Component

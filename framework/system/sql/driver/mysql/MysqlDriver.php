@@ -33,7 +33,6 @@ use \system\sql\driver\mysql\MysqlStatementFactory;
  * database schema and statement factory instances.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.sql.driver
  * @since 0.2.0
  */
 class MysqlDriver extends Driver

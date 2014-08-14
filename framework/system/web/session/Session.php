@@ -33,7 +33,6 @@ use \system\web\session\ISessionSaveHandler;
  * persistently across multiple requests.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.web.session
  * @since 0.2.0
  */
 abstract class Session extends Component

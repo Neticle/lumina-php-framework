@@ -33,7 +33,6 @@ use \system\core\exception\RuntimeException;
  * implementation.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.security
  * @since 0.2.0
  */
 class PasswordDigest extends Component
@@ -51,7 +50,8 @@ class PasswordDigest extends Component
 	 *
 	 * @type string
 	 */
-	private $options = array(
+	private $options = array
+	(
 		'cost' => 10
 	);
 	

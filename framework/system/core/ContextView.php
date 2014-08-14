@@ -33,7 +33,6 @@ use \system\core\Lumina;
  * variables that are made available to it.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.core
  * @since 0.2.0
  */
 class ContextView extends View
@@ -56,8 +55,12 @@ class ContextView extends View
 	 */
 	public static function getContextView(Context $context, $view, array $variables = null)
 	{
-		$file = Lumina::getAliasPath($view, 'php', $context->getViewsPath());
-		return new ContextView($context, $file, $variables);
+		return new ContextView
+		(
+			$context, 
+			Lumina::getAliasPath($view, 'php', $context->getViewsPath()), 
+			$variables
+		);
 	}
 	
 	/**
@@ -129,7 +132,8 @@ class ContextView extends View
 	 */
 	public function render($view, array $variables = null, $capture = false)
 	{
-		$nested = new ContextView(
+		$nested = new ContextView
+		(
 			$this->getParent(),
 			Lumina::getAliasPath($view, 'php', $this->basePath), 
 			$variables

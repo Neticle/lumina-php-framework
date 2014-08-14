@@ -33,7 +33,6 @@ use \system\web\navigation\Breadcrumb;
  * of a breadcrumb navigation component.
  *
  * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.ext.web.widget.navigation
  * @since 0.2.0
  */
 class BreadcrumbWidget extends Widget
