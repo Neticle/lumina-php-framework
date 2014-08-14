@@ -22,7 +22,7 @@
 //
 // =============================================================================
 
-namespace system\security;
+namespace system\security\cryptography;
 
 use \system\base\Component;
 use \system\core\exception\RuntimeException;
