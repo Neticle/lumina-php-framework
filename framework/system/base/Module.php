@@ -106,13 +106,13 @@ class Module extends Context
 	 * @param string $namespace
 	 *	The module namespace.
 	 *
-	 * @param Context $parent
-	 *	The parent context extension.
+	 * @param Module $parent
+	 *	The parent module instance.
 	 *
 	 * @param array $configuration
 	 *	The module express configuration array.
 	 */
-	public final function __construct($name, $namespace, Context $parent = null, array $configuration = null)
+	public final function __construct($name, $namespace, Module $parent = null, array $configuration = null)
 	{
 		parent::__construct($name, $parent);
 		
@@ -530,6 +530,9 @@ class Module extends Context
 		$length = count($tokens);
 		$module = $this;
 		
+		$application = $this->getApplication();
+		$application->setContext($this);
+		
 		do
 		{
 			$token = (--$length < 0) ?
@@ -537,7 +540,10 @@ class Module extends Context
 			
 			// The token needs to be normalized before it's passed to a 
 			// controller or module as it's name.
-			$token = str_replace(' ', '', 
+			$token = str_replace
+			(
+				' ', 
+				'', 
 				lcfirst(ucwords(str_replace(array('-', '_', '.'), ' ', $token)))
 			);
 			
@@ -552,7 +558,9 @@ class Module extends Context
 				{
 					if ($controller->dispatch($action, $parameters))
 					{
+						$application->setContext($this);
 						$this->onAfterDispatch($controller, $action, $parameters);
+						$application->setContext(null);
 						return true;
 					}
 				}
@@ -569,6 +577,7 @@ class Module extends Context
 		} while (true);
 		
 		$this->onDispatchFailure($route, $parameters);
+		$application->setContext(null);
 		return false;		
 	}
 	

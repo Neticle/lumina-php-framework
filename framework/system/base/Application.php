@@ -25,6 +25,7 @@
 namespace system\base;
 
 use \system\base\Module;
+use \system\core\Context;
 
 /**
  * Application.
@@ -34,6 +35,15 @@ use \system\base\Module;
  */
 class Application extends Module
 {
+	
+	/**
+	 * The currently active application context, which can be used to resolve
+	 * contextual routes.
+	 *
+	 * @type Context
+	 */
+	private $context;
+
 	/**
 	 * This method is invoked during the application construction procedure,
 	 * before the configuration takes place.
@@ -46,7 +56,7 @@ class Application extends Module
 	protected function onConstruction()
 	{
 		if (parent::onConstruction())
-		{
+		{		
 			// Register the core components
 			$this->setComponents
 			(
@@ -82,6 +92,34 @@ class Application extends Module
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Defines or updates the application context.
+	 *
+	 * @param Context $context
+	 *	The application context, or NULL to remove.
+	 */
+	public final function setContext(Context $context = null)
+	{
+		$this->context = $context;
+	}
+	
+	/**
+	 * Returns the application context.
+	 *
+	 * @return Context
+	 *	The application context which, if not defined, is the application
+	 *	itself.
+	 */
+	public final function getContext()
+	{
+		if (isset($this->context))
+		{
+			return $this->context;
+		}
+		
+		return $this;
 	}
 }
 

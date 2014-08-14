@@ -231,22 +231,30 @@ abstract class Context extends LazyExtension
 	 * @return string
 	 *	The resolved absolute route.
 	 */
-	protected function getResolvedContextRoute($route)
+	public final function getResolvedContextRoute($route)
 	{
-		if (isset($route[0]))
+		if (empty($route) || $route === '/')
 		{
-			if ($route[0] === '/')
-			{
-				return trim($route, '/');
-			}
-			
-			$context = ($this instanceof Module) || !strpos($route, '/') ?
-				$this : $this->getParentModule();
-			
-			return $context->getRoute() . '/' . $route;
+			return null;
 		}
 		
-		return $this->getRoute();
+		if ($route[0] === '/')
+		{
+			return (isset($route[1])) ?
+				substr($route, 1) : null;
+		}
+		
+		if ($this->isBaseExtension())
+		{
+			return $route;
+		}
+		
+		if (($this instanceof Module) || strpos($route, '/') === false)
+		{
+			return $this->getRoute() . '/' . $route;
+		}
+		
+		return $this->getParent()->getRoute() . '/' . $route;
 	}
 	
 	/**

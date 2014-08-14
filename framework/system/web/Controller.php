@@ -108,7 +108,7 @@ class Controller extends \system\base\Controller
 		{
 			$location = $this->getComponent('router')->createAbsoluteUrl
 			(
-				$this->getResolvedContextRoute($location[0]), 
+				$location[0], 
 				array_slice($location, 1)
 			);
 		}

@@ -24,6 +24,7 @@
 
 namespace system\core;
 
+use \system\base\Application;
 use \system\base\Module;
 use \system\core\Element;
 use \system\core\Lumina;
@@ -43,6 +44,8 @@ abstract class Extension extends Element
 	 * @type Extension
 	 */
 	private $parent;
+	
+	private $application;
 	
 	/**
 	 * The extension components construction and configuration data, indexed
@@ -71,6 +74,7 @@ abstract class Extension extends Element
 		$this->parent = $parent;
 	}
 	
+	
 	/**
 	 * Returns the parent extension.
 	 *
@@ -98,6 +102,48 @@ abstract class Extension extends Element
 		}
 		
 		return $parent;		
+	}
+	
+	/**
+	 * Returns the application instance.
+	 *
+	 * @return Application
+	 *	The application instance, or NULL if the base extension isn't an
+	 *	application instance.
+	 */
+	public final function getApplication()
+	{
+		$extension = $this;
+		
+		while (isset($extension->parent))
+		{
+			$extension = $extension->parent;
+		}
+		
+		if ($extension instanceof Application)
+		{
+			return $extension;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Returns the base extension instance.
+	 *
+	 * @return Extension
+	 *	The base extension instance.
+	 */
+	public final function getBaseExtension()
+	{
+		$extension = $this;
+		
+		while (isset($extension->parent))
+		{
+			$extension = $extension->parent;
+		}
+		
+		return $extension;
 	}
 	
 	/**

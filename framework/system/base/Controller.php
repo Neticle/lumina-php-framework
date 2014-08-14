@@ -421,9 +421,16 @@ abstract class Controller extends Context
 		}
 		
 		// Normalize the action name.
-		$action = str_replace(' ', '', 
+		$action = str_replace
+		(
+			' ', 
+			'', 
 			lcfirst(ucwords(str_replace(array('_', '-'), ' ', $action)))
 		);
+		
+		// Update the application context
+		$application = $this->getApplication();
+		$application->setContext($this);
 		
 		if ($this->onBeforeDispatch($action, $parameters))
 		{
@@ -472,6 +479,7 @@ abstract class Controller extends Context
 							$this->currentAction = null;
 							
 							$this->onAfterDispatch($action, $filter, $arguments);
+							$application->setContext(null);
 							return true;
 						}
 					}
@@ -493,6 +501,7 @@ abstract class Controller extends Context
 		}
 		
 		$this->onDispatchFailure($action, $parameters);
+		$application->setContext(null);
 		return false;
 	}
 }

@@ -89,6 +89,50 @@ abstract class Router extends Component
 	 *	The requested route as an array.
 	 */
 	public abstract function getRequestRoute();
+	
+	/**
+	 * Creates a URL relative to the application base URL.
+	 *
+	 * @param string $route
+	 *	A route resolving to a controller action.
+	 *
+	 * @param array $parameters
+	 *	An associative array defining the parameters to be bound
+	 *	to the action method.
+	 *
+	 * @return string
+	 *	The created URL.
+	 */
+	public final function createUrl($route, array $parameters = null)
+	{
+		return $this->createRouteUrl
+		(
+			$this->getApplication()->getContext()->getResolvedContextRoute($route),
+			$parameters
+		);
+	}
+	
+	/**
+	 * Creates an absolute URL.
+	 *
+	 * @param string $route
+	 *	A route resolving to a controller action.
+	 *
+	 * @param array $parameters
+	 *	An associative array defining the parameters to be bound
+	 *	to the action method.
+	 *
+	 * @return string
+	 *	The created URL.
+	 */
+	public final function createAbsoluteUrl($route, array $parameters = null)
+	{
+		return $this->createAbsoluteRouteUrl
+		(
+			$this->getApplication()->getContext()->getResolvedContextRoute($route),
+			$parameters
+		);
+	}
 
 	/**
 	 * Creates a URL relative to the application base URL.
@@ -103,7 +147,7 @@ abstract class Router extends Component
 	 * @return string
 	 *	The created URL.
 	 */
-	public abstract function createUrl($route, array $parameters = null);
+	public abstract function createRouteUrl($route, array $parameters = null);
 	
 	/**
 	 * Creates an absolute URL.
@@ -121,86 +165,9 @@ abstract class Router extends Component
 	 * @return string
 	 *	The created URL.
 	 */
-	public function createAbsoluteUrl($route, array $parameters = null)
+	public function createAbsoluteRouteUrl($route, array $parameters = null)
 	{
-		return $this->getBaseUrl() . $this->createUrl($route, $parameters);
-	}
-	
-	/**
-	 * Creates a URL, relative to the application base URL.
-	 *
-	 * @param string $context
-	 *	The context to get the route from.
-	 *
-	 * @param string $route
-	 *	A route resolving to a controller action, relative to the
-	 *	context route.
-	 *
-	 * @param array $parameters
-	 *	An associative array defining the parameters to be bound
-	 *	to the action method.
-	 *
-	 * @return string
-	 *	The created URL.
-	 */
-	public function createContextUrl(Context $context, $route, array $parameters = null)
-	{
-		$croute = $context->getRoute();
-		
-		if (isset($croute[0]))
-		{
-			if ($croute[0] === '/')
-			{
-				$route = substr($route, 1);
-			}
-			else
-			{
-				$route = isset($route[0]) ? 
-					($croute . '/' . $route) : $croute;
-			}
-		}
-		
-		return $this->createUrl($route, $parameters);
-	}
-	
-	/**
-	 * Creates a URL absolute URL.
-	 *
-	 * An absolute URL results from the concatenation of the application
-	 * base URL and the relative URL returned by "createUrl".
-	 *
-	 * @param string $context
-	 *	The context to get the route from.
-	 *
-	 * @param string $route
-	 *	A route resolving to a controller action, relative to the
-	 *	context route.
-	 *
-	 * @param array $parameters
-	 *	An associative array defining the parameters to be bound
-	 *	to the action method.
-	 *
-	 * @return string
-	 *	The created URL.
-	 */
-	public function createContextAbsoluteUrl(Context $context, $route, array $parameters = null)
-	{
-		$croute = $context->getRoute();
-		
-		if (isset($croute[0]))
-		{
-			if ($croute[0] === '/')
-			{
-				$route = substr($route, 1);
-			}
-			else
-			{
-				$route = isset($route[0]) ? 
-					($croute . '/' . $route) : $croute;
-			}
-		}
-		
-		return $this->createAbsoluteUrl($route, $parameters);
+		return $this->getBaseUrl() . $this->createRouteUrl($route, $parameters);
 	}
 
 }

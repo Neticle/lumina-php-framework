@@ -154,12 +154,12 @@ class DefaultRouter extends Router
 	 * @return string
 	 *	The created URL.
 	 */
-	public function createUrl($route, array $parameters = null)
+	public function createRouteUrl($route, array $parameters = null)
 	{
 		$url = $this->getScript();
 		$query = array();
 		
-		if (!empty($route))
+		if (isset($route))
 		{
 			$query[$this->key] = str_replace('/', $this->delimiter, $route);
 		}
