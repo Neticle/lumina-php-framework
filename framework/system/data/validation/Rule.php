@@ -76,11 +76,19 @@ abstract class Rule extends Element
 	
 	/**
 	 * The message to be reported back to the model when one of the attributes
-	 * fails validation due to it being empty when a value is required.
+	 * fails the rule-specific validation.
 	 *
 	 * @type string
 	 */
 	protected $message = 'Attribute "{attribute}" does not have a valid format.';
+	
+	/**
+	 * The message to be reported back to the model when one of the attributes
+	 * fails validation due to it being empty when a value is required.
+	 *
+	 * @type string
+	 */
+	protected $emptyMessage = 'Attribute "{attribute}" can not be empty.';
 	
 	/**
 	 * A flag indicating wether or not the attribute value is required in
@@ -358,7 +366,7 @@ abstract class Rule extends Element
 					if ($this->required)
 					{
 						$success = false;
-						$this->report($model, $attribute);
+						$this->reportEx($model, $attribute, $this->emptyMessage);
 					}
 				}
 			
@@ -389,7 +397,7 @@ abstract class Rule extends Element
 	 *	An associative array containing additional parameters to be used
 	 *	by the error message.
 	 */
-	protected final function report(Model $model, $attribute, array $parameters = null)
+	protected final function reportEx(Model $model, $attribute, $message, array $parameters = null)
 	{
 		$search = array('{attribute}', '{attribute-name}');
 		$replace = array($model->getAttributeLabel($attribute), $attribute);
@@ -403,8 +411,26 @@ abstract class Rule extends Element
 			}
 		}
 		
-		$message = str_replace($search, $replace, $this->message);	
+		$message = str_replace($search, $replace, $message);	
 		$model->addAttributeError($attribute, $message);
+	}
+	
+	/**
+	 * Reports a validation error message.
+	 *
+	 * @param Model $model
+	 *	The model to report the error message to.
+	 *
+	 * @param string $attribute
+	 *	The attribute the message is related to.
+	 *
+	 * @param array $parameters
+	 *	An associative array containing additional parameters to be used
+	 *	by the error message.
+	 */
+	protected final function report(Model $model, $attribute, array $parameters = null)
+	{
+		$this->reportEx($model, $attribute, $this->message, $parameters);
 	}
 	
 }
