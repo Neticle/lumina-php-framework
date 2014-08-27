@@ -126,6 +126,20 @@ class ColumnSchema extends Schema
 	private $autoIncrementable;
 	
 	/**
+	 * A flag indicating wether or not this column's data type is unsigned.
+	 *
+	 * @type bool
+	 */
+	private $unsigned;
+	
+	/**
+	 * The column's default value.
+	 *
+	 * @type string
+	 */
+	private $default;
+	
+	/**
 	 * Constructor.
 	 *
 	 * @param array $configuration
@@ -261,5 +275,50 @@ class ColumnSchema extends Schema
 	{
 		return $this->autoIncrementable;
 	}
+	
+	/**
+	 * Defines wether or not this column's data type is unsigned.
+	 *
+	 * @param bool $unsigned
+	 *	Set to TRUE if the column data type is unsigned, FALSE otherwise.
+	 */
+	public function setUnsigned($unsigned)
+	{
+		$this->unsigned = $unsigned;
+	}
+	
+	/**
+	 * Checks wether or not this column's data type is unsigned.
+	 *
+	 * @returns bool
+	 *	Returns TRUE if the data type is unsigned, FALSE otherwise.
+	 */
+	public function isUnsigned()
+	{
+		return $this->unsigned;
+	}
+	
+	/**
+	 * Defines the column's default value.
+	 *
+	 * @param string $default
+	 *	The default value assumed by the column.
+	 */
+	public function setDefault($default)
+	{
+		$this->default = $default;
+	}
+	
+	/**
+	 * Returns the column's default value.
+	 *
+	 * @returns string
+	 *	Returns the column's default value, if any.
+	 */
+	public function getDefault()
+	{
+		return $this->default;
+	}
+	
 }
 

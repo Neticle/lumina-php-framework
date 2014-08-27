@@ -218,7 +218,8 @@ class MysqlSchema extends Schema
 		$column->setCharset($schema['CHARACTER_SET_NAME']);
 		$column->setRequired($schema['IS_NULLABLE'] === 'NO');
 		$column->setAutoIncrementable($schema['EXTRA'] === 'auto_increment');
-	
+		$column->setDefault($schema['COLUMN_DEFAULT']);
+		
 		// Determine the column data type and size
 		switch (strtolower($schema['DATA_TYPE']))
 		{
@@ -258,6 +259,7 @@ class MysqlSchema extends Schema
 			case 'bigint':
 				$column->setType('int');
 				$column->setSize($schema['NUMERIC_SCALE']);
+				$column->setUnsigned(strpos($schema['COLUMN_TYPE'], 'unsigned') !== false);
 				break;
 				
 			// floats
