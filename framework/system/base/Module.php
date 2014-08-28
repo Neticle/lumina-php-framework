@@ -289,7 +289,7 @@ class Module extends Context
 			// the class namespace.
 			else if (isset($class))
 			{
-				$namepsace = $this->getClassNamespace($class);
+				$namespace = $this->getClassNamespace($class);
 			}
 		}
 		
