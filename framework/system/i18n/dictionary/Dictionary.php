@@ -94,7 +94,7 @@ abstract class Dictionary extends Component
 	 */
 	protected function onLocaleChange($previous, $locale)
 	{
-		return $this->raiseArray('localeChange', array($previous, $locale));
+		return $this->raiseArray('localeChange', [ $previous, $locale ]);
 	}
 	
 	/**
@@ -132,8 +132,8 @@ abstract class Dictionary extends Component
 		
 		if (isset($parameters))
 		{
-			$search = array();
-			$replace = array();
+			$search = [];
+			$replace = [];
 			
 			foreach ($parameters as $index => $value)
 			{

@@ -39,7 +39,7 @@ class EventBus
 	 *
 	 * @type array
 	 */
-	private $handlers = array();
+	private $handlers = [];
 
 	/**
 	 * Constructor.
@@ -104,7 +104,7 @@ class EventBus
 	{
 		if (!isset($this->handlers[$event]))
 		{
-			$this->handlers[$event] = array();
+			$this->handlers[$event] = [];
 		}
 		
 		$this->handlers[$event][$class][] = $callback;
@@ -159,7 +159,7 @@ class EventBus
 				{
 					if(!isset($callbackArguments))
 					{
-						$callbackArguments = array_merge(array($source), (array) $arguments);
+						$callbackArguments = array_merge([ $source ], (array) $arguments);
 					}
 					
 					foreach ($handlers as $callback)

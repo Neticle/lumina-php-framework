@@ -86,7 +86,7 @@ class BreadcrumbWidget extends Widget
 	protected function buildListItemAnchor(Breadcrumb $breadcrumb, array $route, $title, $active)
 	{
 		$a = new HtmlElement('a');
-		$a->setClass(array('lw-breadcrumb-item-anchor', ($active ? 'active' : 'current')));
+		$a->setClass([ 'lw-breadcrumb-item-anchor', ($active ? 'active' : 'current') ]);
 		$a->setTextContent($title);
 		
 		if ($active)
@@ -124,7 +124,7 @@ class BreadcrumbWidget extends Widget
 		$a = $this->buildListItemAnchor($breadcrumb, $route, $title, $active);
 	
 		$li = new HtmlElement('li');
-		$li->setClass(array('lw-breadcrumb-item', ($active ? 'active' : 'current')));
+		$li->setClass([ 'lw-breadcrumb-item', ($active ? 'active' : 'current') ]);
 		$li->setContent($a);
 		return $li;
 	}
@@ -143,7 +143,7 @@ class BreadcrumbWidget extends Widget
 		$items = $breadcrumb->getItems();
 		$count = count($items);
 		
-		$content = array();
+		$content = [];
 		
 		for ($i = 0; $i < $count; /* void */)
 		{
@@ -151,7 +151,7 @@ class BreadcrumbWidget extends Widget
 		}
 		
 		$ul = new HtmlElement('ul');
-		$ul->setClass(array('lw-breadcrumb'));
+		$ul->setClass([ 'lw-breadcrumb' ]);
 		$ul->setContent($content);
 		return $ul;
 	}

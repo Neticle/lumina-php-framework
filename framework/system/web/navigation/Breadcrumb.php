@@ -41,7 +41,7 @@ class Breadcrumb extends Component
 	 *
 	 * @type array
 	 */
-	private $items = array();
+	private $items = [];
 	
 	/**
 	 * Adds a new breadcrumb navigation item.
@@ -54,7 +54,7 @@ class Breadcrumb extends Component
 	 */
 	public function addItem(array $route, $title)
 	{
-		$this->items[] = array($route, $title);
+		$this->items[] = [ $route, $title ];
 	}
 	
 	/**

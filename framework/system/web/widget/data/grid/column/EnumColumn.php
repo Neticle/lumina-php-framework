@@ -44,7 +44,7 @@ class EnumColumn extends Column
 	 *
 	 * @type array
 	 */
-	private $labels = array();
+	private $labels = [];
 	
 	/**
 	 * Defines the value labels, indexed by value.

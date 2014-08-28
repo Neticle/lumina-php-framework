@@ -58,5 +58,5 @@ require(L_SYSTEM . '/core/Lumina.php');
 \system\core\Lumina::setPackagePath('vendor', L_VENDOR);
 
 // Register the Lumina auto loader implementation
-spl_autoload_register(array('system\\core\\Lumina', 'loadClass'), true, true);
+spl_autoload_register([ 'system\\core\\Lumina', 'loadClass' ], true, true);
 

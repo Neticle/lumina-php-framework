@@ -113,7 +113,7 @@ abstract class Provider extends Element implements \IteratorAggregate
 	 */
 	public function getDefaultFieldLabel($field)
 	{
-		return ucwords(str_replace(array('_', '-', '.'), ' ', $field));
+		return ucwords(str_replace([ '_', '-', '.' ], ' ', $field));
 	}
 	
 	/**

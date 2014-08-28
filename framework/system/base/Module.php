@@ -53,21 +53,21 @@ class Module extends Context
 	 *
 	 * @type array
 	 */
-	private $controllers = array();
+	private $controllers = [];
 	
 	/**
 	 * The modules express construction and configurarion array.
 	 *
 	 * @type array
 	 */
-	private $modules = array();
+	private $modules = [];
 	
 	/**
 	 * The module instances, indexed by name.
 	 *
 	 * @type array
 	 */
-	private $moduleInstances = array();
+	private $moduleInstances = [];
 	
 	/**
 	 * The absolute path to the module layouts folder.
@@ -427,7 +427,7 @@ class Module extends Context
 	 */
 	public final function setModules(array $modules, $merge = true)
 	{
-		$collection = array();
+		$collection = [];
 		
 		foreach ($modules as $name => $configuration)
 		{
@@ -435,7 +435,7 @@ class Module extends Context
 			{
 				if (!isset($collection[$configuration]))
 				{
-					$collection[$configuration] = array();
+					$collection[$configuration] = [];
 				}
 				
 				continue;
@@ -544,7 +544,7 @@ class Module extends Context
 			(
 				' ', 
 				'', 
-				lcfirst(ucwords(str_replace(array('-', '_', '.'), ' ', $token)))
+				lcfirst(ucwords(str_replace([ '-', '_', '.' ], ' ', $token)))
 			);
 			
 			if ($length < 2 && $module->hasController($token))
@@ -674,7 +674,7 @@ class Module extends Context
 	 */
 	protected function onBeforeDispatch($route, array $parameters = null)
 	{
-		return $this->raiseArray('beforeDispatch', array($route, $parameters));
+		return $this->raiseArray('beforeDispatch', [ $route, $parameters ]);
 	}
 	
 	/**
@@ -695,7 +695,7 @@ class Module extends Context
 	 */
 	protected function onDispatchFailure($route, array $parameters = null)
 	{
-		$this->raiseArray('dispatchFailure', array($route, $parameters));
+		$this->raiseArray('dispatchFailure', [ $route, $parameters ]);
 		return true;
 	}
 	
@@ -719,7 +719,7 @@ class Module extends Context
 	 */
 	protected function onDispatch(Controller $controller, $action, array $parameters = null)
 	{
-		return $this->raiseArray('dispatch', array($controller, $action, $parameters));
+		return $this->raiseArray('dispatch', [ $controller, $action, $parameters ]);
 	}
 	
 	/**
@@ -742,7 +742,7 @@ class Module extends Context
 	 */
 	protected function onAfterDispatch(Controller $controller, $action, array $parameters = null)
 	{
-		return $this->raiseArray('afterDispatch', array($controller, $action, $parameters));
+		return $this->raiseArray('afterDispatch', [ $controller, $action, $parameters ]);
 	}
 }
 

@@ -121,10 +121,15 @@ class LengthRule extends Rule
 		
 		if($length < $this->minimum || $length > $this->maximum) 
 		{
-			$this->report($model, $attribute, array(
-				'minimum' => $this->minimum,
-				'maximum' => $this->maximum
-			));
+			$this->report
+			(
+				$model, 
+				$attribute,
+				[
+					'minimum' => $this->minimum,
+					'maximum' => $this->maximum
+				]
+			);
 			
 			return false;
 		}

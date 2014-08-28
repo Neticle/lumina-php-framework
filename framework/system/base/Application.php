@@ -60,32 +60,32 @@ class Application extends Module
 			// Register the core components
 			$this->setComponents
 			(
-				array
-				(
+				
+				[
 					// Handles all interactions between the application elements
 					// and a SQL database.
-					'database' => array
-					(
+					'database' => 
+					[
 						'class' => 'system\\sql\\Connection',
 						'driver' => 'mysql'
-					),
+					],
 				
 					// Handles translation of messages and number formating for
 					// multi-locale application.
-					'dictionary' => array
-					(
+					'dictionary' => 
+					[
 						'class' => 'system\\i18n\\dictionary\\StaticDictionary',
 						'locale' => 'en_GB'
-					),
+					],
 					
 					// Manages cached entries in order to avoid running further
 					// expensive deterministic procedures in future requests.
-					'cache' => array
-					(
+					'cache' => 
+					[
 						'class' => 'system\\cache\\DefaultCache'
-					)
+					]
 				
-				)
+				]
 			);
 			
 			return true;

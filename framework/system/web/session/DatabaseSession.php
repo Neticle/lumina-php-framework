@@ -192,11 +192,12 @@ class DatabaseSession extends Session implements ISessionSaveHandler
 		$criteria->setAlias('session');
 		$criteria->addComparison('session.id', $id);
 		
-		$fields = array(
+		$fields = 
+		[
 			$this->keyColumn => $id,
 			$this->dataColumn => $data,
 			$this->timestampColumn => new Expression('CURRENT_TIMESTAMP')
-		);
+		];
 		
 		if ($this->connection->exists($this->table, $criteria))
 		{

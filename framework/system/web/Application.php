@@ -51,38 +51,38 @@ class Application extends \system\base\Application
 			// Register the core components
 			$this->setComponents
 			(
-				array
-				(
+				
+				[
 					// Manages any published assets and allows the application
 					// elements to publish their own from a protected directory
 					// into the application web root.
-					'assetManager' => array
-					(
+					'assetManager' => 
+					[
 						'class' => 'system\\web\\asset\\AssetManager'
-					),
+					],
 					
 					// Holds the meta data related to the document being served
 					// to the client, as well as any registered scripts and
 					// styles.
-					'document' => array
-					(
+					'document' => 
+					[
 						'class' => 'system\\web\\Document',
-					),
+					],
 					
 					// Creates URLs that link to a specific route and parses
-					// the current request into a route array.
-					'router' => array
-					(
+					// the current request into a route .
+					'router' => 
+					[
 						'class' => 'system\\web\\router\\DefaultRouter'
-					),
+					],
 					
 					// Handles loading and saving of session data for the
 					// current request.
-					'session' => array
-					(
+					'session' => 
+					[
 						'class' => 'system\\web\\session\\DefaultSession'
-					)
-				)
+					]
+				]
 			);
 			
 			return true;

@@ -219,8 +219,8 @@ class PgsqlStatementFactory extends StatementFactory
 	 */
 	public function createUpdateStatement($table, array $fields, $criteria = null)
 	{
-		$definitions = array();
-		$parameters = array();
+		$definitions = [];
+		$parameters = [];
 		$pid = 0;
 		
 		foreach ($fields as $field => $value)
@@ -299,9 +299,9 @@ class PgsqlStatementFactory extends StatementFactory
 	 */
 	public function createInsertStatement($table, array $fields)
 	{
-		$names = array();
-		$values = array();
-		$parameters = array();
+		$names = [];
+		$values = [];
+		$parameters = [];
 		$pid = 0;
 		
 		foreach ($fields as $name => $value)

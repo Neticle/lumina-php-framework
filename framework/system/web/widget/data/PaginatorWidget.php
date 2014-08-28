@@ -164,10 +164,11 @@ class PaginatorWidget extends Widget
 	 */
 	protected function buildList($from, $to, $active, $count)
 	{
-		$items = array(
+		$items =
+		[
 			$this->buildFirstListItem(1, $active > 1),
 			$this->buildPreviousListItem($active - 1, $active > 1)
-		);
+		];
 		
 		for ($i = $from; $i <= $to; ++$i)
 		{
@@ -209,11 +210,14 @@ class PaginatorWidget extends Widget
 	
 		$li = new HtmlElement('li');
 		$li->setContent($a);
-		$li->setClass(array(
-			'lw-paginator-item',
-			'lw-paginator-item-first',
-			($enable ? 'lw-paginator-item-available' : 'lw-paginator-item-disabled')
-		));
+		$li->setClass
+		(
+			[
+				'lw-paginator-item',
+				'lw-paginator-item-first',
+				($enable ? 'lw-paginator-item-available' : 'lw-paginator-item-disabled')
+			]
+		);
 		
 		return $li;
 	}
@@ -243,11 +247,14 @@ class PaginatorWidget extends Widget
 	
 		$li = new HtmlElement('li');
 		$li->setContent($a);
-		$li->setClass(array(
-			'lw-paginator-item',
-			'lw-paginator-item-previous',
-			($enable ? 'lw-paginator-item-available' : 'lw-paginator-item-disabled')
-		));
+		$li->setClass
+		(
+			[
+				'lw-paginator-item',
+				'lw-paginator-item-previous',
+				($enable ? 'lw-paginator-item-available' : 'lw-paginator-item-disabled')
+			]
+		);
 		
 		return $li;
 	}
@@ -277,11 +284,14 @@ class PaginatorWidget extends Widget
 	
 		$li = new HtmlElement('li');
 		$li->setContent($a);
-		$li->setClass(array(
-			'lw-paginator-item',
-			'lw-paginator-item-last',
-			($enable ? 'lw-paginator-item-available' : 'lw-paginator-item-disabled')
-		));
+		$li->setClass
+		(
+			[
+				'lw-paginator-item',
+				'lw-paginator-item-last',
+				($enable ? 'lw-paginator-item-available' : 'lw-paginator-item-disabled')
+			]
+		);
 		
 		return $li;
 	}
@@ -311,11 +321,14 @@ class PaginatorWidget extends Widget
 	
 		$li = new HtmlElement('li');
 		$li->setContent($a);
-		$li->setClass(array(
-			'lw-paginator-item',
-			'lw-paginator-item-last',
-			($enable ? 'lw-paginator-item-available' : 'lw-paginator-item-disabled')
-		));
+		$li->setClass
+		(
+			[
+				'lw-paginator-item',
+				'lw-paginator-item-last',
+				($enable ? 'lw-paginator-item-available' : 'lw-paginator-item-disabled')
+			]
+		);
 		
 		return $li;
 	}
@@ -343,7 +356,7 @@ class PaginatorWidget extends Widget
 		}
 	
 		$li = new HtmlElement('li');
-		$li->setClass(array('lw-paginator-item', ($active ? 'lw-paginator-item-active' : 'lw-paginator-item-available')));
+		$li->setClass([ 'lw-paginator-item', ($active ? 'lw-paginator-item-active' : 'lw-paginator-item-available') ]);
 		$li->setContent($a);
 		return $li;
 	}

@@ -54,7 +54,7 @@ class GridWidget extends Widget
 	 *
 	 * @type Column[]
 	 */
-	private $columns = array();
+	private $columns = [];
 	
 	/**
 	 * The grid widget paginator query string key.
@@ -248,12 +248,15 @@ class GridWidget extends Widget
 	protected function buildTable(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, PaginatorWidget $paginatorWidget = null)
 	{
 		$table = new HtmlElement('table');
-		$table->setClass(array('lw-grid-table'));
-		$table->setContent(array(
-			$this->buildTableHeader($provider, $paginator, $sorter, $paginatorWidget),
-			$this->buildTableBody($provider, $paginator, $sorter),
-			$this->buildTableFooter($provider, $paginator, $sorter, $paginatorWidget)
-		));
+		$table->setClass([ 'lw-grid-table' ]);
+		$table->setContent
+		(
+			[
+				$this->buildTableHeader($provider, $paginator, $sorter, $paginatorWidget),
+				$this->buildTableBody($provider, $paginator, $sorter),
+				$this->buildTableFooter($provider, $paginator, $sorter, $paginatorWidget)
+			]
+		);
 		return $table;
 	}
 	
@@ -280,7 +283,7 @@ class GridWidget extends Widget
 		$fields = isset($sorter) ? 
 			$sorter->getFields() : null;
 		
-		$content = array();
+		$content = [];
 		
 		foreach ($this->columns as $column)
 		{
@@ -288,11 +291,11 @@ class GridWidget extends Widget
 		}
 		
 		$tr = new HtmlElement('tr');
-		$tr->setClass(array('lw-grid-header'));
+		$tr->setClass([ 'lw-grid-header' ]);
 		$tr->setContent($content);
 		
 		$thead = new HtmlElement('thead');
-		$thead->setClass(array('lw-grid-header-container'));
+		$thead->setClass([ 'lw-grid-header-container' ]);
 		$thead->setContent($tr);
 		return $thead;
 	}
@@ -331,7 +334,7 @@ class GridWidget extends Widget
 		$a = $this->buildTableHeaderItemAnchor($provider, $paginator, $sorter, $column, $field, $direction);
 		
 		$th = new HtmlElement('th');
-		$th->setClass(array('lw-grid-header-cell'));
+		$th->setClass([ 'lw-grid-header-cell' ]);
 		$th->setContent($a);
 		return $th;
 	}
@@ -363,7 +366,7 @@ class GridWidget extends Widget
 	protected function buildTableHeaderItemAnchor(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, Column $column, $field, $direction)
 	{
 		$a = new HtmlElement('a');
-		$a->setClass(array('lw-grid-sort', (isset($direction) ? ('lw-grid-sort-' . $direction) : 'lw-grid-sort-disabled')));
+		$a->setClass([ 'lw-grid-sort', (isset($direction) ? ('lw-grid-sort-' . $direction) : 'lw-grid-sort-disabled') ]);
 		$a->setTextContent($column->getLabel());
 		
 		if (isset($direction))
@@ -403,16 +406,16 @@ class GridWidget extends Widget
 		if (isset($paginatorWidget))
 		{
 			$td = new HtmlElement('td');
-			$td->setClass(array('lw-grid-footer-cell', 'lw-paginator-container'));
+			$td->setClass([ 'lw-grid-footer-cell', 'lw-paginator-container' ]);
 			$td->setAttribute('colspan', count($this->columns));
 			$td->setContent($paginatorWidget->pack());	
 		
 			$tr = new HtmlElement('tr');
-			$tr->setClass(array('lw-grid-footer'));
+			$tr->setClass([ 'lw-grid-footer' ]);
 			$tr->setContent($td);
 		
 			$tfoot = new HtmlElement('tfoot');
-			$tfoot->setClass(array('lw-grid-footer-container'));
+			$tfoot->setClass([ 'lw-grid-footer-container' ]);
 			$tfoot->setContent($tr);
 			return $tfoot;
 		}
@@ -437,7 +440,7 @@ class GridWidget extends Widget
 	 */
 	protected function buildTableBody(Provider $provider, Paginator $paginator = null, Sorter $sorter = null)
 	{
-		$rows = array();
+		$rows = [];
 	
 		foreach ($provider->getIterator() as $item)
 		{
@@ -445,7 +448,7 @@ class GridWidget extends Widget
 		}
 		
 		$tbody = new HtmlElement('tbody');
-		$tbody->setClass(array('lw-grid-body'));
+		$tbody->setClass([ 'lw-grid-body' ]);
 		$tbody->setContent($rows);
 		return $tbody;
 	}
@@ -470,7 +473,7 @@ class GridWidget extends Widget
 	 */
 	protected function buildTableBodyRow(Provider $provider, Paginator $paginator = null, Sorter $sorter = null, $item)
 	{
-		$cells = array();
+		$cells = [];
 		
 		foreach ($this->columns as $column)
 		{
@@ -478,7 +481,7 @@ class GridWidget extends Widget
 		}
 		
 		$tr = new HtmlElement('tr');
-		$tr->setClass(array('lw-grid-item'));
+		$tr->setClass([ 'lw-grid-item' ]);
 		$tr->setContent($cells);
 		return $tr;
 	}
@@ -505,7 +508,7 @@ class GridWidget extends Widget
 	{	
 		// Build the container with the table
 		$div = new HtmlElement('div');
-		$div->setClass(array('lw-grid'));
+		$div->setClass([ 'lw-grid' ]);
 		$div->setContent(
 			$this->buildTable($provider, $paginator, $sorter, $paginatorWidget)
 		);

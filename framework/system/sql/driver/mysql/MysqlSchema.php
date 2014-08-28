@@ -113,7 +113,7 @@ class MysqlSchema extends Schema
 		}
 		
 		$table = $this->createTableSchema($schema);
-		$primaryKey = array();
+		$primaryKey = [];
 		
 		// Fetch the columns schema
 		$statement = 'SELECT * FROM information_schema.COLUMNS ' .
@@ -160,10 +160,14 @@ class MysqlSchema extends Schema
 			'WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=:table ' .
 			'AND COLUMN_NAME=:column';
 		
-		$schema = $connection->query($statement, array(
-			':table' => $table,
-			':column' => $column
-		));
+		$schema = $connection->query
+		(
+			$statement,
+			[
+				':table' => $table,
+				':column' => $column
+			]
+		);
 		
 		return $this->createColumnSchema($schema);
 	}

@@ -238,8 +238,8 @@ class MysqlStatementFactory extends StatementFactory
 	 */
 	public function createUpdateStatement($table, array $fields, $criteria = null)
 	{
-		$definitions = array();
-		$parameters = array();
+		$definitions = [];
+		$parameters = [];
 		
 		foreach ($fields as $field => $value)
 		{	
@@ -320,9 +320,9 @@ class MysqlStatementFactory extends StatementFactory
 	 */
 	public function createInsertStatement($table, array $fields)
 	{
-		$names = array();
-		$values = array();
-		$parameters = array();
+		$names = [];
+		$values = [];
+		$parameters = [];
 		
 		foreach ($fields as $name => $value)
 		{
@@ -368,8 +368,8 @@ class MysqlStatementFactory extends StatementFactory
 		
 		if (isset($parameters))
 		{
-			$collection = array();
-			$values = array();
+			$collection = [];
+			$values = [];
 			$i = 0;
 		
 			foreach ($parameters as $name => $value)

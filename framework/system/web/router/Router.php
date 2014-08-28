@@ -103,7 +103,7 @@ abstract class Router extends Component
 	 * @return string
 	 *	The created URL.
 	 */
-	public final function createUrl($route, array $parameters = null)
+	public final function createUrl($route = null, array $parameters = null)
 	{
 		return $this->createRouteUrl
 		(
@@ -125,7 +125,7 @@ abstract class Router extends Component
 	 * @return string
 	 *	The created URL.
 	 */
-	public final function createAbsoluteUrl($route, array $parameters = null)
+	public final function createAbsoluteUrl($route = null, array $parameters = null)
 	{
 		return $this->createAbsoluteRouteUrl
 		(
@@ -147,7 +147,7 @@ abstract class Router extends Component
 	 * @return string
 	 *	The created URL.
 	 */
-	public abstract function createRouteUrl($route, array $parameters = null);
+	public abstract function createRouteUrl($route = null, array $parameters = null);
 	
 	/**
 	 * Creates an absolute URL.
@@ -165,7 +165,7 @@ abstract class Router extends Component
 	 * @return string
 	 *	The created URL.
 	 */
-	public function createAbsoluteRouteUrl($route, array $parameters = null)
+	public function createAbsoluteRouteUrl($route = null, array $parameters = null)
 	{
 		return $this->getBaseUrl() . $this->createRouteUrl($route, $parameters);
 	}

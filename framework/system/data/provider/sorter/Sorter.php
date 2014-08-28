@@ -218,7 +218,7 @@ abstract class Sorter extends Element
 	{
 		if (!$merge)
 		{
-			$this->rules = array();
+			$this->rules = [];
 		}
 		
 		if (isset($this->fields))

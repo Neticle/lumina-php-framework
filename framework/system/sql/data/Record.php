@@ -199,7 +199,7 @@ abstract class Record extends Model
 	public function findAll($criteria = null)
 	{
 		$db = $this->getDatabase();
-		$instances = array();
+		$instances = [];
 		$primaryKey = $this->getTableSchema()->getPrimaryKey();
 		$reader = $db->select($this->getTableName(), $criteria);
 		
@@ -368,7 +368,7 @@ abstract class Record extends Model
 		$columns = $table->getColumns();
 		$attributes = $this->getAttributes();
 		$autoIncrementable = false;
-		$fields = array();
+		$fields = [];
 		
 		// Go through all column schemas
 		foreach ($columns as $name => $column)

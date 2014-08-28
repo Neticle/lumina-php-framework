@@ -59,7 +59,7 @@ class Controller extends \system\base\Controller
 	 */
 	protected function onDispatchFailure($action, array $parameters = null)
 	{
-		if ($this->raiseArray('dispatchFailure', array($action, $parameters)))
+		if ($this->raiseArray('dispatchFailure', [ $action, $parameters ]))
 		{
 			throw new HttpException(404, 'Document Not Found');
 		}
@@ -86,7 +86,7 @@ class Controller extends \system\base\Controller
 	 */
 	protected function onDispatchActionBindFailure($action, array $parameters = null)
 	{
-		if ($this->raiseArray('dispatchActionBindFailure', array($action, $parameters)))
+		if ($this->raiseArray('dispatchActionBindFailure', [ $action, $parameters ]))
 		{
 			throw new HttpException(400, 'Bad Request');
 		}

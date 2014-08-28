@@ -87,7 +87,7 @@ class Response
 	{		
 		header
 		(
-			$name . ': ' . str_replace(array("\t", "\r"), ' ', str_replace("\n", "\n ", $content)), 
+			$name . ': ' . str_replace([ "\t", "\r" ], ' ', str_replace("\n", "\n ", $content)), 
 			$replace
 		);
 	}

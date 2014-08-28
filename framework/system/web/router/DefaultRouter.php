@@ -83,7 +83,7 @@ class DefaultRouter extends Router
 			$route = null;
 		}
 		
-		return array($route, $query);
+		return [ $route, $query ];
 	}
 	
 	/**
@@ -154,10 +154,10 @@ class DefaultRouter extends Router
 	 * @return string
 	 *	The created URL.
 	 */
-	public function createRouteUrl($route, array $parameters = null)
+	public function createRouteUrl($route = null, array $parameters = null)
 	{
 		$url = $this->getScript();
-		$query = array();
+		$query = [];
 		
 		if (isset($route))
 		{

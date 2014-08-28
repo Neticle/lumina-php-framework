@@ -40,7 +40,7 @@ class DatabaseSchema extends Schema
 	 *
 	 * @type array
 	 */
-	private $tables = array();
+	private $tables = [];
 
 	/**
 	 * Constructor.
@@ -66,7 +66,7 @@ class DatabaseSchema extends Schema
 	 */
 	public function setTables(array $tables, $merge = true)
 	{
-		$collection = array();
+		$collection = [];
 		
 		foreach ($tables as $table)
 		{

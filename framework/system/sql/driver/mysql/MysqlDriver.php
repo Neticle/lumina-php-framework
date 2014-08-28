@@ -106,7 +106,7 @@ class MysqlDriver extends Driver
 	 */
 	public function quote($name)
 	{
-		return '`' . str_replace(array('`', '.'), array('\\\`', '`.`'), $name) . '`';
+		return '`' . str_replace([ '`', '.' ], [ '\\\`', '`.`' ], $name) . '`';
 	}
 	
 	/**

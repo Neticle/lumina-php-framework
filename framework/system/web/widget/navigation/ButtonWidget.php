@@ -198,7 +198,7 @@ class ButtonWidget extends Widget
 	protected function buildImage($image, $width, $height)
 	{
 		$img = new HtmlElement('img');
-		$img->setClass(array('lw-button-image'));
+		$img->setClass([ 'lw-button-image' ]);
 		$img->setAttribute('src', $image);
 		
 		if (isset($width))
@@ -207,7 +207,7 @@ class ButtonWidget extends Widget
 			
 			if ($width === $height)
 			{
-				$img->setClass(array('lw-button-image-' . $height));
+				$img->setClass([ 'lw-button-image-' . $height ]);
 			}
 		}
 		
@@ -232,7 +232,7 @@ class ButtonWidget extends Widget
 	protected function buildLabel($label)
 	{
 		$span = new HtmlElement('span');
-		$span->setClass(array('lw-button-label'));
+		$span->setClass([ 'lw-button-label' ]);
 		$span->setTextContent($label);
 		return $span;
 	}
@@ -246,8 +246,8 @@ class ButtonWidget extends Widget
 	protected function build()
 	{
 		$a = new HtmlElement('a');
-		$classes = array('lw-button');
-		$content = array();
+		$classes = [ 'lw-button' ];
+		$content = [];
 		
 		if (isset($this->url))
 		{

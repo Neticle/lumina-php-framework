@@ -97,7 +97,7 @@ class DropDownButtonWidget extends ButtonWidget
 	protected function buildListItemLabel($item, $label)
 	{
 		$span = new HtmlElement('span');
-		$span->setClass(array('lw-button-dropdown-item-label'));
+		$span->setClass([ 'lw-button-dropdown-item-label' ]);
 		$span->setTextContent($label);
 		return $span;
 	}
@@ -123,7 +123,7 @@ class DropDownButtonWidget extends ButtonWidget
 	protected function buildListItemImage($item, $image, $width, $height)
 	{
 		$img = new HtmlElement('img');
-		$img->setClass(array('lw-button-dropdown-item-image'));
+		$img->setClass([ 'lw-button-dropdown-item-image' ]);
 		$img->setAttribute('src', $image);
 		
 		if (isset($width))
@@ -154,7 +154,7 @@ class DropDownButtonWidget extends ButtonWidget
 	protected function buildListItemButton($item, $level)
 	{
 		$a = new HtmlElement('a');
-		$a->setClass(array('lw-button-dropdown-item-anchor'));
+		$a->setClass([ 'lw-button-dropdown-item-anchor' ]);
 		
 		if (isset($item['image']))
 		{
@@ -204,7 +204,7 @@ class DropDownButtonWidget extends ButtonWidget
 	protected function buildListItem($item, $level)
 	{		
 		$li = new HtmlElement('li');
-		$li->setClass(array('lw-button-dropdown-item', 'lw-button-dropdown-item-depth-' . $level));
+		$li->setClass([ 'lw-button-dropdown-item', 'lw-button-dropdown-item-depth-' . $level ]);
 		$li->setAttribute('data-list-depth', $level);
 		$li->setContent($this->buildListItemButton($item, $level));
 		
@@ -231,10 +231,10 @@ class DropDownButtonWidget extends ButtonWidget
 	protected function buildList(array $items, $level = 0)
 	{
 		$ul = new HtmlElement('ul');
-		$ul->setClass(array('lw-button-dropdown-list', 'lw-button-dropdown-list-depth-' . $level));
+		$ul->setClass([ 'lw-button-dropdown-list', 'lw-button-dropdown-list-depth-' . $level ]);
 		$ul->setAttribute('data-list-depth', $level);
 	
-		$content = array();
+		$content = [];
 	
 		foreach ($items as $item)
 		{
@@ -250,7 +250,7 @@ class DropDownButtonWidget extends ButtonWidget
 		if (isset($this->items))
 		{
 			$div = new HtmlElement('div');
-			$div->setClass(array('lw-dropdownbutton'));
+			$div->setClass([ 'lw-dropdownbutton' ]);
 			$div->addContent(parent::build());
 			$div->addContent($this->buildList($this->items, 0));
 			return $div;

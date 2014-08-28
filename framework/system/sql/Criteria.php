@@ -575,7 +575,8 @@ class Criteria extends Express
 	 */
 	public function toArray()
 	{
-		return array(
+		return
+		[
 			'select' => $this->select,
 			'for' => $this->for,
 			'distinct' => $this->isDistinct,
@@ -587,7 +588,7 @@ class Criteria extends Express
 			'offset' => $this->offset,
 			'limit' => $this->limit,
 			'parameters' => $this->parameters
-		);
+		];
 	}	
 }
 

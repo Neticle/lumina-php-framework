@@ -48,14 +48,14 @@ class HtmlElement extends Element
 	 *
 	 * @type string[]
 	 */
-	private $classes = array();
+	private $classes = [];
 	
 	/**
 	 * The element attribute values, indexed by name.
 	 *
 	 * @type array
 	 */
-	private $attributes = array();
+	private $attributes = [];
 	
 	/**
 	 * An array of child contents, which may be represented as either a string
@@ -63,7 +63,7 @@ class HtmlElement extends Element
 	 *
 	 * @type array
 	 */
-	private $children = array();
+	private $children = [];
 
 	/**
 	 * Constructor.

@@ -57,12 +57,15 @@ class Form extends Element
 		parent::__construct(null);
 		
 		$this->form = new HtmlElement('form');
-		$this->form->setClass(array('lh-form'));
-		$this->form->setAttributes(array(
-			'id' => 'form',
-			'method' => 'POST',
-			'action' => $_SERVER['REQUEST_URI']
-		));
+		$this->form->setClass([ 'lh-form' ]);
+		$this->form->setAttributes
+		(
+			[
+				'id' => 'form',
+				'method' => 'POST',
+				'action' => $_SERVER['REQUEST_URI']
+			]
+		);
 		
 		if (isset($configuration))
 		{
@@ -92,7 +95,7 @@ class Form extends Element
 	 */
 	protected function getDefaultInputId($name)
 	{
-		return strtolower($this->form->getAttribute('id') . '-input-' . trim(str_replace(array('][', '[', '_', '.'), '-', $name), " \t\n\r\0\x0B]["));
+		return strtolower($this->form->getAttribute('id') . '-input-' . trim(str_replace([ '][', '[', '_', '.' ], '-', $name), " \t\n\r\0\x0B]["));
 	}
 	
 	/**
@@ -114,13 +117,16 @@ class Form extends Element
 	protected function buildTextField($name, $value, array $configuration = null)
 	{
 		$element = new HtmlElement('input');
-		$element->setClass(array('lh-form-input', 'lh-form-input-textfield'));
-		$element->setAttributes(array(
-			'id' => $this->getDefaultInputId($name),
-			'name' => $name,
-			'type' => 'text',
-			'value' => $value
-		));
+		$element->setClass([ 'lh-form-input', 'lh-form-input-textfield' ]);
+		$element->setAttributes
+		(
+			[
+				'id' => $this->getDefaultInputId($name),
+				'name' => $name,
+				'type' => 'text',
+				'value' => $value
+			]
+		);
 		
 		if (isset($configuration))
 		{
@@ -149,11 +155,14 @@ class Form extends Element
 	protected function buildTextArea($name, $value, array $configuration = null)
 	{
 		$element = new HtmlElement('input');
-		$element->setClass(array('lh-form-input', 'lh-form-input-textarea'));
-		$element->setAttributes(array(
-			'id' => $this->getDefaultInputId($name),
-			'name' => $name
-		));
+		$element->setClass([ 'lh-form-input', 'lh-form-input-textarea' ]);
+		$element->setAttributes
+		(
+			[
+				'id' => $this->getDefaultInputId($name),
+				'name' => $name
+			]
+		);
 		
 		if (isset($value))
 		{
@@ -187,13 +196,16 @@ class Form extends Element
 	protected function buildHiddenField($name, $value, array $configuration = null)
 	{
 		$element = new HtmlElement('input');
-		$element->setClass(array('lh-form-input', 'lh-form-input-hidden'));
-		$element->setAttributes(array(
-			'id' => $this->getDefaultInputId($name),
-			'name' => $name,
-			'type' => 'hidden',
-			'value' => $value
-		));
+		$element->setClass([ 'lh-form-input', 'lh-form-input-hidden' ]);
+		$element->setAttributes
+		(
+			[
+				'id' => $this->getDefaultInputId($name),
+				'name' => $name,
+				'type' => 'hidden',
+				'value' => $value
+			]
+		);
 		
 		if (isset($configuration))
 		{
@@ -225,11 +237,14 @@ class Form extends Element
 	protected function buildDropDownList($name, $selected, array $options, array $configuration = null)
 	{
 		$element = new HtmlElement('select');
-		$element->setClass(array('lh-form-input', 'lh-form-input-dropdownlist'));
-		$element->setAttributes(array(
-			'id' => $this->getDefaultInputId($name),
-			'name' => $name
-		));
+		$element->setClass([ 'lh-form-input', 'lh-form-input-dropdownlist' ]);
+		$element->setAttributes
+		(
+			[
+				'id' => $this->getDefaultInputId($name),
+				'name' => $name
+			]
+		);
 		
 		$selected = (string) $selected;
 		
@@ -271,7 +286,7 @@ class Form extends Element
 	protected function buildLabel($for, $label, array $configuration = null)
 	{
 		$element = new HtmlElement('label');
-		$element->setClass(array('lh-form-label'));
+		$element->setClass([ 'lh-form-label' ]);
 		$element->setAttribute('for', $for);
 		$element->setTextContent($label);
 		
@@ -292,18 +307,18 @@ class Form extends Element
 	 */
 	protected function buildInputErrors(array $messages)
 	{
-		$content = array();
+		$content = [];
 		
 		foreach ($messages as $message)
 		{
 			$li = new HtmlElement('li');
-			$li->setClass(array('lh-form-input-error'));
+			$li->setClass([ 'lh-form-input-error' ]);
 			$li->setTextContent($message);
 			$content[] = $li;
 		}
 		
 		$ul = new HtmlElement('ul');
-		$ul->setClass(array('lh-form-input-errors'));
+		$ul->setClass([ 'lh-form-input-errors' ]);
 		$ul->setContent($content);
 		return $ul;
 	}
@@ -317,18 +332,18 @@ class Form extends Element
 	 */
 	protected function buildFormErrors(array $messages)
 	{
-		$content = array();
+		$content = [];
 		
 		foreach ($messages as $message)
 		{
 			$li = new HtmlElement('li');
-			$li->setClass(array('lh-form-error'));
+			$li->setClass([ 'lh-form-error' ]);
 			$li->setTextContent($message);
 			$content[] = $li;
 		}
 		
 		$ul = new HtmlElement('ul');
-		$ul->setClass(array('lh-form-errors'));
+		$ul->setClass([ 'lh-form-errors' ]);
 		$ul->setContent($content);
 		return $ul;
 	}
@@ -352,11 +367,14 @@ class Form extends Element
 	private function buildGenericButton($type, $label, $configuration)
 	{
 		$input = new HtmlElement('input');
-		$input->setClass(array('lh-form-input', 'lh-form-input-' . $type));
-		$input->setAttributes(array(
-			'type' => $type,
-			'value' => $label
-		));
+		$input->setClass([ 'lh-form-input', 'lh-form-input-' . $type ]);
+		$input->setAttributes
+		(
+			[
+				'type' => $type,
+				'value' => $label
+			]
+		);
 				
 		if (isset($configuration))
 		{
@@ -435,7 +453,8 @@ class Form extends Element
 	 */
 	public function activeTextField(Model $model, $attribute, array $configuration = null)
 	{
-		$input = $this->buildTextField(
+		$input = $this->buildTextField
+		(
 			$model->getAttributeName($attribute),
 			$model->getAttribute($attribute),
 			$configuration
@@ -443,7 +462,7 @@ class Form extends Element
 	
 		if ($model->hasAttributeErrors($attribute))
 		{
-			$input->setClass('lh-form-input-error');
+			$input->setClass([ 'lh-form-input-error' ]);
 		}
 		
 		$input->render();
@@ -483,11 +502,11 @@ class Form extends Element
 	public function activeTextArea(Model $model, $attribute, array $configuration = null)
 	{
 		$input = $this->buildTextArea
-			(
-				$model->getAttributeName($model, $attribute),
-				$model->getAttribute($attribute),
-				$configuration
-			);
+		(
+			$model->getAttributeName($model, $attribute),
+			$model->getAttribute($attribute),
+			$configuration
+		);
 		
 		if ($model->hasAttributeErrors($attribute))
 		{
@@ -531,11 +550,11 @@ class Form extends Element
 	public function activeHiddenField(Model $model, $attribute, array $configuration = null)
 	{
 		$input = $this->buildHiddenField
-			(
-				$model->getAttributeName($attribute),
-				$model->getAttribute($attribute),
-				$configuration
-			);
+		(
+			$model->getAttributeName($attribute),
+			$model->getAttribute($attribute),
+			$configuration
+		);
 	
 		if ($model->hasAttributeErrors($attribute))
 		{
@@ -591,12 +610,12 @@ class Form extends Element
 	public function activeDropDownList(Model $model, $attribute, array $options, array $configuration = null)
 	{
 		$this->buildDropDownList
-			(
-				$model->getAttributeName($attribute),
-				$model->getAttribute($attribute),
-				$options,
-				$configuration
-			)
+		(
+			$model->getAttributeName($attribute),
+			$model->getAttribute($attribute),
+			$options,
+			$configuration
+		)
 			->render();
 	}
 	
@@ -634,11 +653,11 @@ class Form extends Element
 	public function activeLabel(Model $model, $attribute, array $configuration = null)
 	{	
 		$this->buildLabel
-			(
-				$this->getDefaultInputId($model->getAttributeName($attribute)),
-				$model->getAttributeLabel($attribute),
-				$configuration
-			)
+		(
+			$this->getDefaultInputId($model->getAttributeName($attribute)),
+			$model->getAttributeLabel($attribute),
+			$configuration
+		)
 			->render();
 	}
 	
@@ -699,7 +718,7 @@ class Form extends Element
 	 */
 	public function activeFormErrors(/* ... */)
 	{
-		$messages = array();
+		$messages = [];
 	
 		foreach (func_get_args() as $i => $value)
 		{

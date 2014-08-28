@@ -214,7 +214,7 @@ class Statement extends Element
 	 */
 	public function query()
 	{
-		$this->raiseArray('statement', array($this));
+		$this->raiseArray('statement', [ $this ]);
 		return new Reader($this);
 	}
 	
@@ -238,7 +238,7 @@ class Statement extends Element
 	 */
 	public function execute()
 	{
-		$this->raiseArray('statement', array($this));
+		$this->raiseArray('statement', [ $this ]);
 		$this->pdoStatement->execute();
 		return $this->pdoStatement->rowCount();
 	}

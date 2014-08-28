@@ -110,7 +110,7 @@ abstract class Context extends LazyExtension
 	 */
 	protected function onRender($view)
 	{
-		$this->raiseArray('render', array($view));
+		$this->raiseArray('render', [ $view ]);
 		return true;
 	}
 	
@@ -127,7 +127,7 @@ abstract class Context extends LazyExtension
 	 */
 	protected function onDisplay($layout)
 	{
-		$this->raiseArray('display', array($layout));
+		$this->raiseArray('display', [ $layout ]);
 		return true;
 	}
 	
@@ -181,9 +181,12 @@ abstract class Context extends LazyExtension
 		
 		if (isset($layout))
 		{
-			$layout = ContextView::getContextFileView($this, $layout, array(
-				'viewContents' => $this->render($view, $variables, true)
-			));
+			$layout = ContextView::getContextFileView
+			(
+				$this, 
+				$layout,
+				[ 'viewContents' => $this->render($view, $variables, true) ]
+			);
 			
 			$this->onDisplay($layout);			
 			return $layout->run($capture);

@@ -40,7 +40,7 @@ class TableSchema extends Schema
 	 *
 	 * @type array
 	 */
-	private $columns = array();
+	private $columns = [];
 	
 	/**
 	 * The names of the columns composing the table primary key.
@@ -73,7 +73,7 @@ class TableSchema extends Schema
 	 */
 	public function setColumns(array $columns, $merge = true)
 	{
-		$collection = array();
+		$collection = [];
 		
 		foreach ($columns as $column)
 		{

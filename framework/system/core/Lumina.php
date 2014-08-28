@@ -40,7 +40,7 @@ class Lumina
 	 *
 	 * @type array
 	 */
-	private static $packagePaths = array();
+	private static $packagePaths = [];
 	
 	/**
 	 * The global event bus instance.

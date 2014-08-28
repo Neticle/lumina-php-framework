@@ -97,7 +97,7 @@ abstract class Controller extends Context
 	 */
 	protected function onBeforeDispatch($action, array $parameters = null)
 	{
-		return $this->raiseArray('beforeDispatch', array($action, $parameters));
+		return $this->raiseArray('beforeDispatch', [ $action, $parameters ]);
 	}
 	
 	/**
@@ -118,7 +118,7 @@ abstract class Controller extends Context
 	 */
 	protected function onDispatchFailure($action, array $parameters = null)
 	{
-		$this->raiseArray('dispatchFailure', array($action, $parameters));
+		$this->raiseArray('dispatchFailure', [ $action, $parameters ]);
 		return true;
 	}
 	
@@ -141,7 +141,7 @@ abstract class Controller extends Context
 	 */
 	protected function onDispatchActionNotFound($action, array $parameters = null)
 	{
-		$this->raiseArray('dispatchActionNotFound', array($action, $parameters));
+		$this->raiseArray('dispatchActionNotFound', [ $action, $parameters ]);
 		return true;
 	}
 	
@@ -164,7 +164,7 @@ abstract class Controller extends Context
 	 */
 	protected function onDispatchActionNotVisible($action, array $parameters = null)
 	{
-		$this->raiseArray('dispatchActionNotVisible', array($action, $parameters));
+		$this->raiseArray('dispatchActionNotVisible', [ $action, $parameters ]);
 		return true;
 	}
 	
@@ -186,7 +186,7 @@ abstract class Controller extends Context
 	 */
 	protected function onDispatchActionBindFailure($action, array $parameters = null)
 	{
-		$this->raiseArray('dispatchActionBindFailure', array($action, $parameters));
+		$this->raiseArray('dispatchActionBindFailure', [ $action, $parameters ]);
 		return true;
 	}
 	
@@ -213,7 +213,7 @@ abstract class Controller extends Context
 	 */
 	protected function onDispatch($action, array $parameters = null, array $arguments = null)
 	{
-		return $this->raiseArray('dispatch', array($action, $parameters, $arguments));
+		return $this->raiseArray('dispatch', [ $action, $parameters, $arguments ]);
 	}
 	
 	/**
@@ -239,7 +239,7 @@ abstract class Controller extends Context
 	 */
 	protected function onAfterDispatch($action, array $parameters = null, array $arguments = null)
 	{
-		$this->raiseArray('afterDispatch', array($action, $parameters, $arguments));
+		$this->raiseArray('afterDispatch', [ $action, $parameters, $arguments ]);
 		return true;
 	}
 
@@ -425,7 +425,7 @@ abstract class Controller extends Context
 		(
 			' ', 
 			'', 
-			lcfirst(ucwords(str_replace(array('_', '-'), ' ', $action)))
+			lcfirst(ucwords(str_replace([ '_', '-' ], ' ', $action)))
 		);
 		
 		// Update the application context
@@ -443,8 +443,8 @@ abstract class Controller extends Context
 				
 				if ($method->isPublic() && !$method->isStatic())
 				{
-					$filter = array();
-					$arguments = array();
+					$filter = [];
+					$arguments = [];
 					$success = true;
 					
 					foreach ($method->getParameters() as $parameter)

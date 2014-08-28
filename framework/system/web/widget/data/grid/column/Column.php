@@ -43,11 +43,12 @@ abstract class Column extends Element
 	 *
 	 * @type array
 	 */
-	private static $columnTypeClasses = array(
+	private static $columnTypeClasses = 
+	[
 		'text' => 'system\\web\\widget\\data\\grid\\column\\TextColumn',
 		'enum' => 'system\\web\\widget\\data\\grid\\column\\EnumColumn',
 		'custom' => 'system\\web\\widget\\data\\grid\\column\\CustomColumn'
-	);
+	];
 
 	/**
 	 * The parent grid widget instance.
@@ -235,7 +236,7 @@ abstract class Column extends Element
 		}	
 	
 		$td = new HtmlElement('td');
-		$td->setClass(array('lw-grid-item-cell'), false);
+		$td->setClass([ 'lw-grid-item-cell' ], false);
 		$td->setContent($content);
 		return $td;
 	}
@@ -258,7 +259,7 @@ abstract class Column extends Element
 	protected function buildEmptyCellContent(Provider $provider, $item, $message)
 	{
 		$span = new HtmlElement('span');
-		$span->setClass(array('lw-grid-item-cell-empty-message'));
+		$span->setClass([ 'lw-grid-item-cell-empty-message' ]);
 		$span->setTextContent($message);
 		return $span;
 	}

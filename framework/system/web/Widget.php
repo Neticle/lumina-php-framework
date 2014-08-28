@@ -56,14 +56,15 @@ abstract class Widget extends Element
 	 *
 	 * @type array
 	 */
-	private static $widgetClasses = array(
+	private static $widgetClasses =
+	[
 		'document' => 'system\\web\\widget\\DocumentWidget',
 		'data.grid' => 'system\\web\\widget\\data\\grid\\GridWidget',
 		'data.paginator' => 'system\\web\\widget\\data\\PaginatorWidget',
 		'navigation.breadcrumb' => 'system\\web\\widget\\navigation\\BreadcrumbWidget',
 		'navigation.button' => 'system\\web\\widget\\navigation\\ButtonWidget',
 		'navigation.dropDownButton' => 'system\\web\\widget\\navigation\\DropDownButtonWidget'
-	);
+	];
 	
 	/**
 	 * Creates a new widget instance.

@@ -41,11 +41,11 @@ class Connection extends Component
 	 *
 	 * @type array
 	 */
-	private static $driverClasses = array
-	(
+	private static $driverClasses =
+	[
 		'mysql' => 'system\\sql\\driver\\mysql\\MysqlDriver',
 		'pgsql' => 'system\\sql\\driver\\pgsql\\PgsqlDriver'
-	);
+	];
 	
 	/**
 	 * The username to use for authentication.

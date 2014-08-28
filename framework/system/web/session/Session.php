@@ -95,12 +95,12 @@ abstract class Session extends Component
 			{
 				session_set_save_handler
 				(
-					array($this, 'openSessionStore'),
-					array($this, 'closeSessionStore'),
-					array($this, 'readSessionData'),
-					array($this, 'writeSessionData'),
-					array($this, 'destroySessionData'),
-					array($this, 'purgeSessionData')
+					[ $this, 'openSessionStore' ],
+					[ $this, 'closeSessionStore' ],
+					[ $this, 'readSessionData' ],
+					[ $this, 'writeSessionData' ],
+					[ $this, 'destroySessionData' ],
+					[ $this, 'purgeSessionData' ]
 				);
 			}
 		
@@ -162,7 +162,7 @@ abstract class Session extends Component
 	{
 		if ($reset)
 		{
-			$_SESSION = array();
+			$_SESSION = [];
 		}
 		
 		if (!session_regenerate_id(true))

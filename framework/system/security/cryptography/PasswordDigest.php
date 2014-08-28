@@ -51,9 +51,9 @@ class PasswordDigest extends Component
 	 * @type string
 	 */
 	private $options = array
-	(
+	[
 		'cost' => 10
-	);
+	];
 	
 	/**
 	 * A static preffix salt to be applied to the raw passwords in order to
@@ -348,10 +348,11 @@ class PasswordDigest extends Component
 		
 			if ($start === '$1')
 			{
-				return array(
+				return
+				[
 					'algorithm' => 'md5',
 					'modifier' => null
-				);
+				];
 			}
 		
 			if ($start === '$5' || $start === '$6')
@@ -359,22 +360,24 @@ class PasswordDigest extends Component
 				$rounds = (substr($hash, 2, 8) === '$rounds=') ?
 					intval(substr($hash, 10, strpos($hash, '$', $index + 1) - 10)) : 0;
 			
-				return array(
+				return 
+				[
 					'algorithm' => $start === '$5' ? 'sha256' : 'sha512',
 					'modifier' => $rounds,
 					'rounds' => $rounds
-				);
+				];
 			}
 			
 			if ($start === '$2y' || $start === '$2x' || $start === '$2a')
 			{
 				$cost = intval(ltrim(substr($hash, 4, 2), '0'));
 			
-				return array(
+				return
+				[
 					'algorithm' => 'blowfish',
 					'modifier' => $cost,
 					'cost' => $cost
-				);
+				];
 			}
 		}
 		

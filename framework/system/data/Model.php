@@ -42,7 +42,7 @@ abstract class Model extends Element
 	 *
 	 * @type array
 	 */
-	private static $modelInstances = array();
+	private static $modelInstances = [];
 	
 	/**
 	 * The model attribute values, indexed by name.
@@ -64,7 +64,7 @@ abstract class Model extends Element
 	 *
 	 * @type array
 	 */
-	private $attributeErrors = array();
+	private $attributeErrors = [];
 	
 	/**
 	 * The model validation context.
@@ -154,8 +154,8 @@ abstract class Model extends Element
 	 */
 	public function reset()
 	{
-		$this->attributes = array();
-		$this->attributeErrors = array();
+		$this->attributes = [];
+		$this->attributeErrors = [];
 	}
 	
 	/**
@@ -297,7 +297,7 @@ abstract class Model extends Element
 	{
 		if (!isset($this->attributeNames))
 		{
-			$names = array();
+			$names = [];
 		
 			foreach ($this->getValidationRuleInstances() as $rule)
 			{
@@ -319,7 +319,7 @@ abstract class Model extends Element
 	 */
 	public function getAttributeLabels()
 	{
-		return array();
+		return [];
 	}
 	
 	/**
@@ -341,7 +341,7 @@ abstract class Model extends Element
 			return $labels[$attribute];
 		}
 		
-		return ucwords(str_replace(array('-', '_'), ' ', $attribute));
+		return ucwords(str_replace([ '-', '_' ], ' ', $attribute));
 	}
 	
 	/**
@@ -362,8 +362,8 @@ abstract class Model extends Element
 			$context = $this->context;
 		}
 	
-		$unsafe = array();
-		$attributes = array();
+		$unsafe = [];
+		$attributes = [];
 		
 		foreach ($this->getValidationRuleInstances() as $rule)
 		{
@@ -393,7 +393,7 @@ abstract class Model extends Element
 	 */
 	protected function getValidationRules()
 	{
-		return array();
+		return [];
 	}
 	
 	/**
@@ -406,7 +406,7 @@ abstract class Model extends Element
 	{
 		if (!isset($this->rules))
 		{
-			$collection = array();
+			$collection = [];
 			
 			foreach ($this->getValidationRules() as $rule)
 			{
@@ -437,7 +437,7 @@ abstract class Model extends Element
 	{
 		// Determine the attributes to validate
 		$names = $this->getAttributeNames();
-		$this->attributeErrors = array();
+		$this->attributeErrors = [];
 		
 		if (isset($attributes))
 		{			
@@ -533,7 +533,7 @@ abstract class Model extends Element
 			$errors = $this->attributeErrors;
 		}
 		
-		$messages = array();
+		$messages = [];
 		
 		foreach ($errors as $attribute => $attributeMessages)
 		{
@@ -641,7 +641,7 @@ abstract class Model extends Element
 	 */
 	protected function onValidation(array $attributes)
 	{
-		return $this->raiseArray('validation', array($attributes));
+		return $this->raiseArray('validation', [ $attributes ]);
 	}
 	
 	/**
@@ -659,7 +659,7 @@ abstract class Model extends Element
 	 */
 	protected function onBeforeValidation(array $attributes)
 	{
-		return $this->raiseArray('beforeValidation', array($attributes));
+		return $this->raiseArray('beforeValidation', [ $attributes ]);
 	}
 	
 	/**
@@ -673,7 +673,7 @@ abstract class Model extends Element
 	 */
 	protected function onAfterValidation(array $attributes)
 	{
-		return $this->raiseArray('afterValidation', array($attributes));
+		return $this->raiseArray('afterValidation', [ $attributes ]);
 	}
 	
 	/**

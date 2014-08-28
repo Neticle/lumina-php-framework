@@ -52,64 +52,64 @@ class Document extends Component
 	 *
 	 * @type string
 	 */
-	private $bundles = array
-	(
-		'jquery' => array
-		(
+	private $bundles = 
+	[
+		'jquery' => 
+		[
 			'class' => 'vendor\\jquery\\JQueryBundle'
-		),
+		],
 		
-		'jqueryui' => array
-		(
+		'jqueryui' => 
+		[
 			'class' => 'vendor\\jqueryui\\JQueryUiBundle'
-		),
+		],
 		
-		'bootstrap' => array
-		(
+		'bootstrap' => 
+		[
 			'class' => 'vendor\\bootstrap\\BootstrapBundle'
-		)
-	);
+		]
+	];
 	
 	/**
 	 * The document bundle instances.
 	 *
 	 * @type array
 	 */
-	private $bundleInstances = array();
+	private $bundleInstances = [];
 	
 	/**
 	 * An array holding the instances of the bundles currently applied to
 	 * this document.
 	 */
-	private $appliedBundles = array();
+	private $appliedBundles = [];
 
 	/**
 	 * The document scripts.
 	 *
 	 * @type array
 	 */
-	private $scripts = array();
+	private $scripts = [];
 	
 	/**
 	 * The document styles.
 	 *
 	 * @type array
 	 */
-	private $styles = array();
+	private $styles = [];
 	
 	/**
 	 * The document inline scripts.
 	 *
 	 * @type array
 	 */
-	private $inlineScripts = array();
+	private $inlineScripts = [];
 	
 	/**
 	 * The document inline styles.
 	 *
 	 * @type array
 	 */
-	private $inlineStyles = array();
+	private $inlineStyles = [];
 
 	/**
 	 * The document meta data.
@@ -118,7 +118,7 @@ class Document extends Component
 	 */
 	private $meta = array
 	(
-		'http-equiv:content-type' => array(array('http-equiv', 'content-type', 'text/html; charset=utf8'))
+		'http-equiv:content-type' => [ [ 'http-equiv', 'content-type', 'text/html; charset=utf8' ] ]
 	);
 	
 	/**
@@ -148,7 +148,7 @@ class Document extends Component
 			$id = 'script-' . self::$nextAssetId++;
 		}
 		
-		$this->scripts[$id] = array($script, $position);
+		$this->scripts[$id] = [ $script, $position ];
 	}
 	
 	/**
@@ -171,7 +171,7 @@ class Document extends Component
 			$id = 'script-' . self::$nextAssetId++;
 		}
 		
-		$this->inlineScripts[$id] = array($script, $position);
+		$this->inlineScripts[$id] = [ $script, $position ];
 	}
 	
 	/**
@@ -238,7 +238,7 @@ class Document extends Component
 			$id = 'style-' . self::$nextAssetId++;
 		}
 		
-		$this->styles[$id] = array($style, $position);
+		$this->styles[$id] = [ $style, $position ];
 	}
 	
 	/**
@@ -261,7 +261,7 @@ class Document extends Component
 			$id = 'style-' . self::$nextAssetId++;
 		}
 		
-		$this->inlineStyles[$id] = array($style, $position);
+		$this->inlineStyles[$id] = [ $style, $position ];
 	}
 	
 	/**
@@ -327,7 +327,7 @@ class Document extends Component
 	public function setMeta($key, $value, $type = 'name')
 	{
 		$index = strtolower($type . ':' . $key);
-		$this->meta[$index] = array(array($type, $key, $value));
+		$this->meta[$index] = [ [ $type, $key, $value ] ];
 	}
 	
 	/**
@@ -346,7 +346,7 @@ class Document extends Component
 	public function addMeta($key, $value, $type = 'name')
 	{
 		$index = strtolower($type . ':' . $key);
-		$this->meta[$index][] = array($type, $key, $value);
+		$this->meta[$index][] = [ $type, $key, $value ];
 	}
 	
 	/**
@@ -357,7 +357,7 @@ class Document extends Component
 	 */
 	public function getMeta()
 	{
-		$collection = array();
+		$collection = [];
 		
 		foreach(array_values($this->meta) as $entries)
 		{
