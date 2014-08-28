@@ -266,32 +266,40 @@ class Module extends Context
 	 */
 	public final function loadModuleFromArray($name, array $configuration = null)
 	{
+		$class;
+		$namespace;
+		
 		if (isset($configuration))
 		{
+			// Explicitly defined module class
 			if (isset($configuration['class']))
 			{
 				$class = $configuration['class'];
-				$namespace = Lumina::getClassNamespace($class);
 				unset($configuration['class']);
 			}
-			else
-			{
-				$class = $this->getDefaultModuleClass($name);
-			}
-		
+			
+			// Explicitly defined module namespace
 			if (isset($configuration['namespace']))
 			{
 				$namespace = $configuration['namespace'];
 				unset($configuration['namespace']);
 			}
-			else
+			
+			// If a custom class has been defined, the namespace defaults to
+			// the class namespace.
+			else if (isset($class))
 			{
-				$namespace = $this->getDefaultModuleNamespace($name);
+				$namepsace = $this->getClassNamespace($class);
 			}
 		}
-		else
+		
+		if (!isset($class))
 		{
 			$class = $this->getDefaultModuleClass($name);
+		}
+		
+		if (!isset($namespace))
+		{
 			$namespace = $this->getDefaultModuleNamespace($name);
 		}
 		
