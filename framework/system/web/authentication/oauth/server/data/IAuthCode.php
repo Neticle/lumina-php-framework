@@ -1,6 +1,6 @@
 <?php
 
-namespace system\web\oauth\server\data;
+namespace system\web\authentication\oauth\server\data;
 
 /**
  * Represents an access token entry, that may be stored in a database and should

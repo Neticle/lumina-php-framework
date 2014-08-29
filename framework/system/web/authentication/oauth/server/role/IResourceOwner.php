@@ -1,6 +1,6 @@
 <?php
 
-namespace system\web\oauth\server\role;
+namespace system\web\authentication\oauth\server\role;
 
 /**
  * Represents a resource owner and must be implemented by any class that is to 

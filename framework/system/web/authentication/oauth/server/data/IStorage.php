@@ -1,6 +1,6 @@
 <?php
 
-namespace system\web\oauth\server\data;
+namespace system\web\authentication\oauth\server\data;
 
 interface IStorage {
 	

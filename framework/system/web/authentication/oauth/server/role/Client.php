@@ -1,6 +1,6 @@
 <?php
 
-namespace system\web\oauth\server\role;
+namespace system\web\authentication\oauth\server\role;
 
 use \system\core\Express;
 

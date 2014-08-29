@@ -1,6 +1,6 @@
 <?php
 
-namespace system\web\oauth\server\role;
+namespace system\web\authentication\oauth\server\role;
 
 /**
  * Represents a client application and must be implemented by any class that 
@@ -26,7 +26,7 @@ interface IClient {
 	/**
 	 * Clients incapable of maintaining the confidentiality of their credentials
 	 * (e.g. clients executing on a device used by the resource owner, such as an 
-	 * install native application or a web browser-based application), and incapable
+	 * installed native application or a web browser-based application), and incapable
 	 * of secure client authentication via any other means.
 	 */
 	const TYPE_PUBLIC = 1;
@@ -41,7 +41,7 @@ interface IClient {
 	
 	/**
 	 * A user-agent-based application is a public client in which the client code
-	 * is downloaded from a web server and executes within a user-agent (e.g., a
+	 * is downloaded from a web server and executes within an user-agent (e.g., a
 	 * web browser) on the device used by the resource owner.
 	 * Protocol data and credentials are easily accessible (and often visible) to
 	 * the resource owner.
@@ -51,7 +51,7 @@ interface IClient {
 	/**
 	 * A native application is a public client installed and executed on the device 
 	 * used by the resource owner. Protocol data and credentials are accessible to
-	 * the resource owner. It is assumed that any any client authentication 
+	 * the resource owner. It is assumed that any client authentication 
 	 * credentials included in the application can be extracted.
 	 */
 	const PROFILE_NATIVE_APPLICATION = 2;
@@ -75,6 +75,7 @@ interface IClient {
 	
 	/**
 	 * Gets the client's type.
+	 *
 	 * This type is used to determine the level of safety the client is able to
 	 * provide and therefore should return one of the values pre-defined as 
 	 * constants on the IClient interface (TYPE_CONFIDENTIAL or TYPE_PUBLIC).

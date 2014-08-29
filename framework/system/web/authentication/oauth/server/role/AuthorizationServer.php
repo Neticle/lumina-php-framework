@@ -1,11 +1,11 @@
 <?php
 
-namespace system\web\oauth\server\role;
+namespace system\web\authentication\oauth\server\role;
 
 use \system\core\Express;
-use \system\web\oauth\server\data\AuthCode;
-use \system\web\oauth\server\data\AccessToken;
-use \system\web\oauth\server\data\IStorage;
+use \system\web\authentication\oauth\server\data\AuthCode;
+use \system\web\authentication\oauth\server\data\AccessToken;
+use \system\web\authentication\oauth\server\data\IStorage;
 
 class AuthorizationServer extends Express implements IAuthorizationServer {
 	

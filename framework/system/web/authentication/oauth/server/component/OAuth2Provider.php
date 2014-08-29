@@ -1,6 +1,6 @@
 <?php
 
-namespace system\web\oauth\server\component;
+namespace system\web\authentication\oauth\server\component;
 
 use \system\base\Component;
 use \system\web\Request;
@@ -8,14 +8,9 @@ use \system\web\Response;
 use \system\core\exception\RuntimeException;
 use \system\web\exception\HttpException;
 
-use \system\web\oauth\server\data\ISession;
-use \system\web\oauth\server\data\IStorage;
-use \system\web\oauth\server\data\IAuthCode;
-use \system\web\oauth\server\data\IAccessToken;
-
-use \system\web\oauth\server\role\IAuthorizationServer;
-use \system\web\oauth\server\role\IClient;
-use \system\web\oauth\server\role\IResourceOwner;
+use \system\web\authentication\oauth\server\data\ISession;
+use \system\web\authentication\oauth\server\role\IClient;
+use \system\web\authentication\oauth\server\role\IResourceOwner;
 
 class OAuth2Provider extends Component {
 	
@@ -42,13 +37,6 @@ class OAuth2Provider extends Component {
 	private $authenticationEndpoint = array('/oauth2/login');
 	
 	/**
-	 * The session's component identifier.
-	 * NOTE: The used session component should implement the ISession interface,
-	 * otherwise you'll get limited functionality from this component.
-	 */
-	private $sessionComponentName = 'session';
-	
-	/**
 	 * The session component instance.
 	 */
 	private $session = null;
@@ -58,7 +46,7 @@ class OAuth2Provider extends Component {
 	 * If you want to implement your own variation of the authorization, you can
 	 * specify it's class name here. Make sure your class implements IAuthorizationServer.
 	 */	
-	private $authorizationServerDefaultClass = '\\system\\web\\oauth\\server\\role\\AuthorizationServer';
+	private $authorizationServerDefaultClass = 'system\\web\\authentication\\oauth\\server\\role\\AuthorizationServer';
 	
 	/**
 	 * The authorization server instance
@@ -137,7 +125,7 @@ class OAuth2Provider extends Component {
 			$session = $this->getComponent($this->getSessionComponentName());
 			
 			if(!($session instanceof ISession)) {
-				throw new RuntimeException('OAuth2Provider requires session component to implement the "neticle/base/module/oauth2/data/ISession" interface');
+				throw new RuntimeException('OAuth2Provider requires session component to implement the "system\\web\\authentication\\oauth2\\data\\ISession" interface');
 			}
 			
 			$this->session = $session;
@@ -195,7 +183,9 @@ class OAuth2Provider extends Component {
 	 */
 	public function endUserAuthenticated ($redirect = false) {
 		if($this->getEndUser() === null) {
-			Response::setLocation($this->getAuthenticationEndpoint());
+			if($redirect) {
+				Response::setLocation($this->getAuthenticationEndpoint());
+			}
 			
 			return false;
 		}
@@ -250,9 +240,8 @@ class OAuth2Provider extends Component {
 			throw new HttpException(400, 'client_id must be specified when requesting an authorization grant');
 		}
 		
-		$storage = $this->getStorage();
-		$client = $storage->fetchClient($clientId);
-				
+		$client = $this->getStorage()->fetchClient($clientId);
+		
 		if($client === null) {
 			throw new HttpException(400, 'The specified client_id is not registered as an authorized client');
 		}
