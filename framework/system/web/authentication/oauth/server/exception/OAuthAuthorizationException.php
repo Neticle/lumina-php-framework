@@ -108,6 +108,14 @@ class OAuthAuthorizationException extends Exception
 	private $errorURI;
 
 	/**
+	 * Required if a "state" parameter was present in the client authorization
+	 * request. The exact value received is to be sent back to the client.
+	 * 
+	 * @type string 
+	 */
+	private $state;
+	
+	/**
 	 * Constructor.
 	 *
 	 * @param string $message
@@ -116,11 +124,12 @@ class OAuthAuthorizationException extends Exception
 	 * @param PHPException $previous
 	 * 	The previous exception instance, for chaining.
 	 */
-	public function __construct ($errorCode, $errorDescription = null, $errorURI = null, $previous = null)
+	public function __construct ($errorCode, $state = null, $errorDescription = null, $errorURI = null, $previous = null)
 	{
 		parent::__construct($errorCode, $previous);
 		
 		$this->errorCode = $errorCode;
+		$this->state = $state;
 		$this->errorDescription = $this->filterASCIISafeString($errorDescription);
 		$this->errorURI = $errorURI;
 	}
@@ -138,7 +147,17 @@ class OAuthAuthorizationException extends Exception
 	}
 
 	/**
-	 * Gets the error description.
+	 * Gets the provided state, if any.
+	 * 
+	 * @return string
+	 */
+	public function getState () 
+	{
+		return $this->state;
+	}
+	
+	/**
+	 * Gets the error description, if any.
 	 * 
 	 * @return string
 	 */
@@ -148,7 +167,7 @@ class OAuthAuthorizationException extends Exception
 	}
 
 	/**
-	 * Gets the error URI.
+	 * Gets the error URI, if any.
 	 * 
 	 * @return string
 	 */
