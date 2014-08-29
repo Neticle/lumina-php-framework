@@ -1,5 +1,27 @@
 <?php
 
+// =============================================================================
+//
+// Copyright 2013 Neticle
+// http://lumina.neticle.com
+//
+// This file is part of "Lumina/PHP Framework", hereafter referred to as 
+// "Lumina".
+//
+// Lumina is free software: you can redistribute it and/or modify it under the 
+// terms of the GNU General Public License as published by the Free Software 
+// Foundation, either version 3 of the License, or (at your option) any later
+// version.
+//
+// Lumina is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+// A PARTICULAR PURPOSE. See theGNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// "Lumina". If not, see <http://www.gnu.org/licenses/>.
+//
+// =============================================================================
+
 namespace system\web\authentication\oauth\server\role;
 
 /**
@@ -14,8 +36,12 @@ namespace system\web\authentication\oauth\server\role;
  *  resource owner and with its authorization. The term "client" does not imply
  *  any particular implementation characteristics (e.g., whether the application 
  *  executes on a server, a desktop, or other devices).
+ * 
+ * @author Igor Azevedo <igor.azevedo@neticle.pt>
+ * @since 0.2.0
  */
-interface IClient {
+interface IClient
+{
 	
 	/**
 	 * Clients capable of maintaining the confidentiality of their credentials, 
@@ -79,18 +105,25 @@ interface IClient {
 	 * This type is used to determine the level of safety the client is able to
 	 * provide and therefore should return one of the values pre-defined as 
 	 * constants on the IClient interface (TYPE_CONFIDENTIAL or TYPE_PUBLIC).
+	 * 
+	 * @return int
 	 */
 	public function getType ();
 	
 	/**
 	 * Gets the client's profile type.
+	 * 
+	 * @return int
 	 */
 	public function getProfile ();
 	
 	/**
 	 * Gets the client's redirection endpoint URI.
+	 * 
 	 * This is where the authorization server will redirect the end-user to, along 
 	 * with the authorization code.
+	 * 
+	 * @return string
 	 */
 	public function getRedirectionEndpointURI ();
 	

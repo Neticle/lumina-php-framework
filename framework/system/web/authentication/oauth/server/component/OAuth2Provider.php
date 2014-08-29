@@ -1,5 +1,27 @@
 <?php
 
+// =============================================================================
+//
+// Copyright 2013 Neticle
+// http://lumina.neticle.com
+//
+// This file is part of "Lumina/PHP Framework", hereafter referred to as 
+// "Lumina".
+//
+// Lumina is free software: you can redistribute it and/or modify it under the 
+// terms of the GNU General Public License as published by the Free Software 
+// Foundation, either version 3 of the License, or (at your option) any later
+// version.
+//
+// Lumina is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+// A PARTICULAR PURPOSE. See theGNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// "Lumina". If not, see <http://www.gnu.org/licenses/>.
+//
+// =============================================================================
+
 namespace system\web\authentication\oauth\server\component;
 
 use \system\base\Component;
@@ -12,130 +34,234 @@ use \system\web\authentication\oauth\server\data\ISession;
 use \system\web\authentication\oauth\server\role\IClient;
 use \system\web\authentication\oauth\server\role\IResourceOwner;
 
-class OAuth2Provider extends Component {
+/**
+ * The OAuth2Provider component implements the OAuth 2.0 Authorization Framework 
+ * as described on the official protocol specification (RFC 6749). 
+ * 
+ * This component provides a basic implementation of the authentication and
+ * authorization system. It is meant to be used as a server, on which a set of
+ * known third-party applications ("clients") are able to send requests on behalf
+ * of a resource owner ("end-user").
+ * 
+ * At a bare minimum, all that needs to be set up on the application side is the
+ * storage class (IStorage).
+ * You can of course constomize the component further (see component's setters 
+ * documentation for more information on what can be configured). 
+ *
+ * @author Igor Azevedo <igor.azevedo@neticle.pt>
+ * @since 0.2.0
+ */
+class OAuth2Provider extends Component 
+{
 	
 	/**
-	 * Route to the action responsible to act as the authorization endpoint
+	 * Route to the action responsible to act as the authorization endpoint.
 	 * 
-	 * @var array 
+	 * @type array
 	 */
-	private $authorizationEndpoint = array('/oauth2/authorization');
+	private $authorizationEndpoint = ['/oauth2/authorization'];
 	
 	/**
-	 * Route to the action responsible to act as the token endpoint
+	 * Route to the action responsible to act as the token endpoint.
 	 * 
-	 * @var array 
+	 * @type array
 	 */
-	private $tokenEndpoint = array('/oauth2/token');
+	private $tokenEndpoint = ['/oauth2/token'];
 	
 	/**
 	 * Route to the action responsible for prompting the user for the authentication
 	 * credentials.
 	 * 
-	 * @var type 
+	 * @type array
 	 */
-	private $authenticationEndpoint = array('/oauth2/login');
+	private $authenticationEndpoint = ['/oauth2/login'];
 	
 	/**
 	 * The session component instance.
+	 * 
+	 * @type ISession
 	 */
-	private $session = null;
+	private $session;
 	
 	/**
 	 * The authorization server default class.
-	 * If you want to implement your own variation of the authorization, you can
-	 * specify it's class name here. Make sure your class implements IAuthorizationServer.
+	 * 
+	 * If you want to implement your own variation of the authorization server, you can
+	 * specify it's class name here. 
+	 * Make sure your class implements IAuthorizationServer.
+	 * 
+	 * @type string
 	 */	
 	private $authorizationServerDefaultClass = 'system\\web\\authentication\\oauth\\server\\role\\AuthorizationServer';
 	
 	/**
-	 * The authorization server instance
+	 * The authorization server instance.
+	 * 
+	 * @type IAuthorizationServer
 	 */
-	private $authorizationServer = null;
+	private $authorizationServer;
 	
 	/**
 	 * The storage default class.
-	 * Specify here the class name to your implementation of IStorage.
+	 * 
+	 * You must specify here the class name to your implementation of IStorage.
+	 * This is required in order for the Authorization Server to be able to
+	 * save and retrieve data.
+	 * 
+	 * @type string
 	 */
 	private $storageDefaultClass;
 	
 	/**
 	 * The storage instance.
+	 * 
+	 * @type IStorage
 	 */
 	private $storage;
 	
-	public function getAuthorizationEndpoint () {
+	/**
+	 * Gets the authorization endpoint route.
+	 * 
+	 * @return array
+	 *  The authorization endpoint route.
+	 */
+	public function getAuthorizationEndpoint () 
+	{
 		return $this->authorizationEndpoint;
 	}
 	
-	public function getTokenEndpoint () {
+	/**
+	 * Gets the token endpoint route.
+	 * 
+	 * @return array
+	 *  The token endpoint route.
+	 */
+	public function getTokenEndpoint () 
+	{
 		return $this->tokenEndpoint;
 	}
 	
-	public function getAuthenticationEndpoint () {
+	/**
+	 * Gets the authentication endpoint route.
+	 * 
+	 * @return array
+	 *  The authentication endpoint route.
+	 */
+	public function getAuthenticationEndpoint () 
+	{
 		return $this->authenticationEndpoint;
 	}
 	
-	public function getSessionComponentName () {
-		return $this->sessionComponentName;
-	}
-	
-	public function getAuthorizationServerDefaultClass () {
+	/**
+	 * Gets the default class name for the Authorization Server in use by the 
+	 * component.
+	 * 
+	 * @return string
+	 *  The class name for the Authorization Server.
+	 */
+	public function getAuthorizationServerDefaultClass () 
+	{
 		return $this->authorizationServerDefaultClass;
 	}
 	
-	public function getStorageDefaultClass () {
+	/**
+	 * Gets the default class name for the Storage in use by the 
+	 * component.
+	 * 
+	 * @return string
+	 *  The class name for the Storage.
+	 */
+	public function getStorageDefaultClass () 
+	{
 		return $this->storageDefaultClass;
 	}
 	
-	public function setAuthorizationEndpoint ($authorizationEndpoint) {
-		return $this->authorizationEndpoint = $authorizationEndpoint;
+	/**
+	 * Sets the route to the authorization endpoint action.
+	 * 
+	 * @param array $authorizationEndpoint
+	 */
+	public function setAuthorizationEndpoint (array $authorizationEndpoint) 
+	{
+		$this->authorizationEndpoint = $authorizationEndpoint;
 	}
 	
-	public function setTokenEndpoint ($tokenEndpoint) {
-		return $this->tokenEndpoint = $tokenEndpoint;
+	/**
+	 * Sets the route to the token endpoint action.
+	 * 
+	 * @param array $tokenEndpoint
+	 */
+	public function setTokenEndpoint (array $tokenEndpoint) 
+	{
+		$this->tokenEndpoint = $tokenEndpoint;
 	}
 	
-	public function setAuthenticationEndpoint ($authenticationEndpoint) {
+	/**
+	 * Sets the route to the authentication endpoint action.
+	 * 
+	 * @param array $authenticationEndpoint
+	 */
+	public function setAuthenticationEndpoint (array $authenticationEndpoint) 
+	{
 		$this->authenticationEndpoint = $authenticationEndpoint;
 	}
 	
-	public function setSessionComponentName ($sessionComponentName) {
-		$this->sessionComponentName = $sessionComponentName;
-	}
-	
-	public function setAuthorizationServerDefaultClass ($authorizationServerDefaultClass) {
+	/**
+	 * Sets the default class name for the Authorization Server to be used.
+	 * 
+	 * @param string $authorizationServerDefaultClass
+	 */
+	public function setAuthorizationServerDefaultClass ($authorizationServerDefaultClass) 
+	{
 		$this->authorizationServerDefaultClass = $authorizationServerDefaultClass;
 	}
 	
-	public function setStorageDefaultClass ($storageDefaultClass) {
+	/**
+	 * Sets the default class name for the Storage to be used.
+	 * 
+	 * @param string $storageDefaultClass
+	 */
+	public function setStorageDefaultClass ($storageDefaultClass) 
+	{
 		$this->storageDefaultClass = $storageDefaultClass;
 	}
 	
 	/**
 	 * Gets the current session component.
+	 * 
 	 * In order for this component to work with full functionality, the session
 	 * component in use by the application must implement the ISession interface.
 	 * 
 	 * @return ISession
 	 *  The current session component.
 	 */
-	public final function getSession () {
-		if($this->session === null) {
+	public final function getSession () 
+	{
+		if($this->session === null) 
+		{
 			$session = $this->getComponent($this->getSessionComponentName());
 			
-			if(!($session instanceof ISession)) {
-				throw new RuntimeException('OAuth2Provider requires session component to implement the "system\\web\\authentication\\oauth2\\data\\ISession" interface');
+			if($session instanceof ISession) 
+			{
+				return $this->session = $session;
 			}
 			
-			$this->session = $session;
+			throw new RuntimeException('OAuth2Provider requires session component to implement the "system\\web\\authentication\\oauth2\\data\\ISession" interface');
 		}
 		
 		return $this->session;
 	}
 	
-	public final function getStorage () {
-		if($this->storage === null) {
+	/**
+	 * Gets the Storage object currently in use by this component.
+	 * 
+	 * @return IStorage
+	 *  The current storage object.
+	 */
+	public final function getStorage () 
+	{
+		if($this->storage === null) 
+		{
 			$class = $this->getStorageDefaultClass();
 
 			$this->storage = new $class();
@@ -144,8 +270,16 @@ class OAuth2Provider extends Component {
 		return $this->storage;
 	}
 	
-	public final function getAuthorizationServer () {
-		if($this->authorizationServer === null) {
+	/**
+	 * Gets the Authorization Server currently in use by this component.
+	 * 
+	 * @return IAuthorizationServer
+	 *  The current authorization server object.
+	 */
+	public final function getAuthorizationServer () 
+	{
+		if($this->authorizationServer === null) 
+		{
 			$class = $this->getAuthorizationServerDefaultClass();
 
 			$this->authorizationServer = new $class(array(
@@ -162,7 +296,8 @@ class OAuth2Provider extends Component {
 	 * @return IResourceOwner
 	 *  The currently authenticated end-user if any, or NULL otherwise.
 	 */
-	public final function getEndUser () {
+	public final function getEndUser ()
+	{
 		return $this->getSession()->getEndUser();
 	}
 	
@@ -175,144 +310,202 @@ class OAuth2Provider extends Component {
 	 * necessary.
 	 * 
 	 * @param bool $redirect
-	 *  If set to TRUE, there will be issue a redirect to the authentication
+	 *  If set to TRUE, there will be issued a response redirection to the authentication
 	 *  endpoint in case there is no authenticated end-user.
 	 * 
 	 * @return bool
 	 *  Returns TRUE if there is an end-user currently authenticated, FALSE otherwise.
 	 */
-	public function endUserAuthenticated ($redirect = false) {
-		if($this->getEndUser() === null) {
-			if($redirect) {
+	public function endUserAuthenticated ($redirect = false)
+	{
+		if ($this->getEndUser() === null)
+		{
+			if ($redirect)
+			{
 				Response::setLocation($this->getAuthenticationEndpoint());
 			}
-			
+
 			return false;
 		}
-		
+
 		return true;
 	}
-		
-	public function prepareRedirectionEndpointURI ($URI, array $arguments, $holder = 'query') {
+
+	/**
+	 * Prepares a given URI (the client's redirection endpoint) and adds the given
+	 * arguments to it.
+	 * 
+	 * @param string $URI
+	 *  The original URI to be prepared.
+	 * 
+	 * @param array $arguments
+	 *  An associative array containing the arguments to be added to the URI.
+	 * 
+	 * @param string $holder
+	 *  Defines the holder part of the URI that will contain the arguments 
+	 *  ("query" for the querystring, "fragment" for the fragment).
+	 * 
+	 * @return string
+	 *	The prepared URI as a string.
+	 * 
+	 * @throws RuntimeException
+	 */
+	public function prepareRedirectionEndpointURI ($URI, array $arguments, $holder = 'query')
+	{
 		$URIComponents = parse_url($URI);
 
-		if($URIComponents === false) {
+		if ($URIComponents === false)
+		{
 			throw new RuntimeException('URI is malformed and couldn\'t be parsed.');
 		}
-		
-		if(!isset($URIComponents[$holder])) {
+
+		if (!isset($URIComponents[$holder]))
+		{
 			$URIComponents[$holder] = '';
 		}
-		
-		$queryString = array();
+
+		$queryString = array ();
 		parse_str($URIComponents[$holder], $queryString);
 
 		$URIComponents[$holder] = http_build_query(array_merge($queryString, $arguments));
 
 		$URI = $URIComponents['scheme'] . '://' . $URIComponents['host'];
-		
-		if(isset($URIComponents['port'])) {
+
+		if (isset($URIComponents['port']))
+		{
 			$URI .= ':' . $URIComponents['port'];
 		}
-		
-		if(isset($URIComponents['path'])) {
+
+		if (isset($URIComponents['path']))
+		{
 			$URI .= $URIComponents['path'];
-		} else {
+		}
+		else
+		{
 			$URI .= '/';
 		}
-		
-		if(isset($URIComponents['query'])) {
+
+		if (isset($URIComponents['query']))
+		{
 			$URI .= '?' . $URIComponents['query'];
 		}
-		
-		if(isset($URIComponents['fragment'])) {
+
+		if (isset($URIComponents['fragment']))
+		{
 			$URI .= '#' . $URIComponents['fragment'];
 		}
-		
+
 		return $URI;
 	}
-	
-	public function getRequestingClient () {
+
+	/**
+	 * Gets the currently requesting client.
+	 * 
+	 * This method parses the current request and finds the "client_id" argument.
+	 * It then uses the Storage to fetch the object corresponding to the given ID.
+	 * It will throw an exception either if no "client_id" argument is present or
+	 * if it is present but there is no known client found with that ID.
+	 * 
+	 * @return IClient
+	 *  The requesting client.
+	 * 
+	 * @throws HttpException
+	 */
+	public function getRequestingClient ()
+	{
 		// the client identifier must always be supplied when requesting authorization
 		$clientId = Request::getString('client_id', $_GET, false, null);
-		
-		if($clientId === null) {
+
+		if ($clientId === null)
+		{
 			throw new HttpException(400, 'client_id must be specified when requesting an authorization grant');
 		}
-		
+
 		$client = $this->getStorage()->fetchClient($clientId);
-		
-		if($client === null) {
+
+		if ($client === null)
+		{
 			throw new HttpException(400, 'The specified client_id is not registered as an authorized client');
 		}
-		
+
 		return $client;
 	}
-	
+
 	/**
 	 * This method contains all the logic necessary to grant an authorization
 	 * code to an application, given a resource owner.
+	 * 
 	 * You should make sure the given resource owner (end-user) is authenticated
 	 * and authorized the grant before calling this method.
-	 * Once called, this method will handle everything from getting the necessary
-	 * data from the request to redirect the end-user to the client endpoint.
 	 * 
+	 * Once called, this method will handle everything from getting the necessary
+	 * data to redirect the end-user to the client redirection endpoint.
+	 * 
+	 * @param IResourceOwner $endUser
+	 *  The end-user ("resource owner") that is granting authorization.
+	 * 
+	 * @param IClient $client
+	 *  The client that requested and is being granted authorization.
 	 */
-	public function grantClientAuthorization (IResourceOwner $endUser, IClient $client) {
+	public final function grantClientAuthorization (IResourceOwner $endUser, IClient $client)
+	{
 		$authServer = $this->getAuthorizationServer();
-		
+
 		// response_type specifies the type of grant being request,
 		// this endpoint supports both "code" and "token" (implicit request),
 		// as it is specified on the OAuth2 specs.
 		$responseType = Request::getString('response_type', $_GET, false, null);
-		
+
 		// the state is optional and is not handled by the authorization server
 		// the contents of state are simply returned back to the client when
 		// redirecting the end-user
 		$state = Request::getString('state', $_GET, false, null);
-		
-		if($responseType === null) {
+
+		if ($responseType === null)
+		{
 			// redirect back to client - add &error=invalid_request
-			$redirectURI = $this->prepareRedirectionEndpointURI($client->getRedirectionEndpointURI(), array(
+			$redirectURI = $this->prepareRedirectionEndpointURI($client->getRedirectionEndpointURI(), array (
 				'error' => 'invalid_request'
 			));
-			
+
 			Response::setLocation($redirectURI);
-			
+
 			return;
 		}
-		
+
 		// handle request for an authorization code
-		if($responseType === 'code') {
+		if ($responseType === 'code')
+		{
 			$authCode = $authServer->grantAuthorizationCode($endUser, $client);
-			
-			$redirectURI = $this->prepareRedirectionEndpointURI ($client->getRedirectionEndpointURI(), array(
+
+			$redirectURI = $this->prepareRedirectionEndpointURI($client->getRedirectionEndpointURI(), array (
 				'code' => $authCode->getCode(),
 				'state' => $state
 			), 'query');
 
 			Response::setLocation($redirectURI);
-			
+
 			return;
 		}
-		
+
 		// handle request for an access token (implicit request)
-		else if($responseType === 'token') {
+		else if ($responseType === 'token')
+		{
 			$token = $authServer->grantImplicitAccessToken($endUser, $client);
-			
-			$redirectURI = $this->prepareRedirectionEndpointURI ($client->getRedirectionEndpointURI(), array(
+
+			$redirectURI = $this->prepareRedirectionEndpointURI($client->getRedirectionEndpointURI(), array (
 				'access_token' => $token->getToken(),
 				'token_type' => '',
 				//'expires_in' => '3600',
 				'state' => $state
 			), 'fragment');
-			
+
 			Response::setLocation($redirectURI);
-			
+
 			return;
 		}
 	}
-	
+
 	/**
 	 * This method contains all the logic behind the authorization endpoint.
 	 * You can call this method directly into the controller action that is set
@@ -332,29 +525,36 @@ class OAuth2Provider extends Component {
 	 *  Used by the client to obtain authorization from the resource owner via 
 	 *  user-agent redirection.
 	 */
-	public function handleAuthorizationEndpoint () {
+	public function handleAuthorizationEndpoint ()
+	{
 		// check if there is an end-user currently authenticated.
 		// if not, we have to redirect to the authentication promp so that the
 		// end-user can authenticate itself
-		if(!$this->endUserAuthenticated(true)) {
+		if (!$this->endUserAuthenticated(true))
+		{
 			return;
 		}
-		
+
 		// get the current end-user and requesting client
 		$endUser = $this->getEndUser();
 		$client = $this->getRequestingClient();
-		
-		try {
+
+		try
+		{
 			$this->grantClientAuthorization($endUser, $client);
-		} /*catch (OAuthAuthorizationException $e) {
+		} 
+		/*catch (OAuthAuthorizationException $e) 
+		{
 			$redirectURI = $this->prepareRedirectionEndpointURI ($client->getRedirectionEndpointURI(), array(
-				'error' => $e->getOAuthErrorToken(),
-				'errorMsg' => $e->getOAuthErrorMessage()
+			'error' => $e->getOAuthErrorToken(),
+			'errorMsg' => $e->getOAuthErrorMessage()
 			), 'query');
 
 			Response::setLocation($redirectURI);
-		}*/ catch (\Exception $e) {
-			$redirectURI = $this->prepareRedirectionEndpointURI ($client->getRedirectionEndpointURI(), array(
+		}*/
+		catch (\Exception $e)
+		{
+			$redirectURI = $this->prepareRedirectionEndpointURI($client->getRedirectionEndpointURI(), array(
 				'error' => 'server_error',
 				'errorMsg' => 'The server encountered an internal problem an cannot fulfill the request at the moment.'
 			), 'query');
@@ -362,5 +562,5 @@ class OAuth2Provider extends Component {
 			Response::setLocation($redirectURI);
 		}
 	}
-	
+
 }

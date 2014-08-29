@@ -1,5 +1,27 @@
 <?php
 
+// =============================================================================
+//
+// Copyright 2013 Neticle
+// http://lumina.neticle.com
+//
+// This file is part of "Lumina/PHP Framework", hereafter referred to as 
+// "Lumina".
+//
+// Lumina is free software: you can redistribute it and/or modify it under the 
+// terms of the GNU General Public License as published by the Free Software 
+// Foundation, either version 3 of the License, or (at your option) any later
+// version.
+//
+// Lumina is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+// A PARTICULAR PURPOSE. See theGNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// "Lumina". If not, see <http://www.gnu.org/licenses/>.
+//
+// =============================================================================
+
 namespace system\web\authentication\oauth\server\data;
 
 /**
@@ -13,12 +35,22 @@ namespace system\web\authentication\oauth\server\data;
  *  is a string representing an authorization issued to the client.
  *  Tokens represent specific scopes and durations of access, granted by the 
  *  resource owner, and enforced by the resource server and authorization server.
+ * 
+ * @author Igor Azevedo <igor.azevedo@neticle.pt>
+ * @since 0.2.0
  */
-interface IAccessToken {
+interface IAccessToken
+{
 	
 	const TYPE_BEARER = 'bearer';
+	
 	const TYPE_MAC = 'mac';
 	
+	/**
+	 * Gets the token as a string.
+	 * 
+	 * @return string
+	 */
 	public function getToken ();
 	
 	/**
@@ -55,5 +87,11 @@ interface IAccessToken {
 	 */
 	public function isValid ();
 	
+	/**
+	 * Gets the token type.
+	 * 
+	 * @return string
+	 */
 	public function getType ();
+	
 }
