@@ -462,16 +462,15 @@ class OAuth2Provider extends Component
 		// redirecting the end-user
 		$state = Request::getString('state', $_GET, false, null);
 
+		// response type must always be provided
 		if ($responseType === null)
 		{
-			// redirect back to client - add &error=invalid_request
-			$redirectURI = $this->prepareRedirectionEndpointURI($client->getRedirectionEndpointURI(), array (
-				'error' => 'invalid_request'
-			));
-
-			Response::setLocation($redirectURI);
-
-			return;
+			throw new OAuthAuthorizationException
+			(
+				OAuthAuthorizationException::ERROR_INVALID_REQUEST,
+				$state,
+				'Response type is required. (Pass response type using the "response_type" parameter)'
+			);
 		}
 
 		// handle request for an authorization code
@@ -504,6 +503,17 @@ class OAuth2Provider extends Component
 			Response::setLocation($redirectURI);
 
 			return;
+		}
+		
+		// response type unknown / unimplemented
+		else
+		{
+			throw new OAuthAuthorizationException
+			(
+				OAuthAuthorizationException::ERROR_UNSUPPORTED_RESPONSE_TYPE,
+				$state,
+				'Response type "' . $responseType . '" is unsupported/unknown. Currently implemented response types: "code", "token"'
+			);
 		}
 	}
 
