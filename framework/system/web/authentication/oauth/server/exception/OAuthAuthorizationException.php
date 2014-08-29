@@ -92,7 +92,7 @@ class OAuthAuthorizationException extends Exception
 	 * 
 	 * OPTIONAL
 	 * 
-	 * @var string
+	 * @type string
 	 */
 	private $errorDescription;
 
@@ -101,7 +101,9 @@ class OAuthAuthorizationException extends Exception
 	 * error, used to provide the clien developer with additional information 
 	 * about the error.
 	 * 
-	 * @var sring
+	 * OPTIONAL
+	 * 
+	 * @type string
 	 */
 	private $errorURI;
 
