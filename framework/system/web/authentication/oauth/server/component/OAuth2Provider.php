@@ -33,6 +33,7 @@ use \system\web\exception\HttpException;
 use \system\web\authentication\oauth\server\data\ISession;
 use \system\web\authentication\oauth\server\role\IClient;
 use \system\web\authentication\oauth\server\role\IResourceOwner;
+use \system\web\authentication\oauth\server\exception\OAuthAuthorizationException;
 
 /**
  * The OAuth2Provider component implements the OAuth 2.0 Authorization Framework 
@@ -507,6 +508,56 @@ class OAuth2Provider extends Component
 	}
 
 	/**
+	 * Handles a given exception and prepares the redirection URI to then
+	 * redirect and report back the error to the client.
+	 * 
+	 * @param OAuthAuthorizationException $e
+	 *  The exception being handled.
+	 * 
+	 * @param IClient $client
+	 *  The requesting client that will receive the error response.
+	 */
+	public final function handleAuthorizationException (OAuthAuthorizationException $e, IClient $client) {
+		$parameters = array
+		(
+			'error' => $e->getErrorCode()
+		);
+
+		if($e->getErrorDescription() !== null)
+		{
+			$parameters['error_description'] = $e->getErrorDescription();
+		}
+
+		if($e->getErrorURI() !== null)
+		{
+			$parameters['error_uri'] = $e->getErrorURI();
+		}
+
+		if($e->getState() !== null)
+		{
+			$parameters['state'] = $e->getState();
+		}
+		else
+		{
+			$state = Request::getString('state', $_GET, false, null);
+			
+			if($state !== null)
+			{
+				$parameters['state'] = $state;
+			}
+		}
+		
+		$redirectURI = $this->prepareRedirectionEndpointURI
+		(
+			$client->getRedirectionEndpointURI(),
+			$parameters,
+			'query'
+		);
+
+		Response::setLocation($redirectURI);
+	}
+	
+	/**
 	 * This method contains all the logic behind the authorization endpoint.
 	 * You can call this method directly into the controller action that is set
 	 * as the endpoint and the component will take care of the rest.
@@ -543,23 +594,30 @@ class OAuth2Provider extends Component
 		{
 			$this->grantClientAuthorization($endUser, $client);
 		} 
-		/*catch (OAuthAuthorizationException $e) 
+		
+		// catch any authorization exceptions
+		catch (OAuthAuthorizationException $e) 
 		{
-			$redirectURI = $this->prepareRedirectionEndpointURI ($client->getRedirectionEndpointURI(), array(
-			'error' => $e->getOAuthErrorToken(),
-			'errorMsg' => $e->getOAuthErrorMessage()
-			), 'query');
-
-			Response::setLocation($redirectURI);
-		}*/
+			$this->handleAuthorizationException($e, $client);
+		}
+		
+		// turn any other exception into a server error authorization exception
 		catch (\Exception $e)
 		{
-			$redirectURI = $this->prepareRedirectionEndpointURI($client->getRedirectionEndpointURI(), array(
-				'error' => 'server_error',
-				'errorMsg' => 'The server encountered an internal problem an cannot fulfill the request at the moment.'
-			), 'query');
-
-			Response::setLocation($redirectURI);
+			$this->handleAuthorizationException
+			(
+				new OAuthAuthorizationException
+				(
+					OAuthAuthorizationException::ERROR_SERVER_ERROR, 
+					null, 
+					'The server encountered an unexpected condition that prevented it from fulfilling the request.', 
+					null, 
+					$e
+				),
+				
+				$client
+				
+			);
 		}
 	}
 
