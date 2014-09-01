@@ -28,6 +28,7 @@ use \system\core\Express;
 use \system\web\authentication\oauth\server\data\AuthCode;
 use \system\web\authentication\oauth\server\data\AccessToken;
 use \system\web\authentication\oauth\server\data\IStorage;
+use \system\web\authentication\oauth\server\exception\OAuthAuthorizationException;
 
 /**
  * A simple implementation of the Authorization Server (as specified by the 
@@ -189,6 +190,23 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 	 */
 	public final function grantImplicitAccessToken (IResourceOwner $owner, IClient $client)
 	{
+		if ($client->getType() === IClient::TYPE_CONFIDENTIAL || 
+			$client->getProfile() == IClient::PROFILE_WEB_APPLICATION)
+		{
+			
+			// Implicit tokens are meant for client-side or native applications,
+			// if a client has means for a more secure authorization flow, then
+			// that client is required to use the most secure option available to it.
+			
+			throw new OAuthAuthorizationException (
+				OAuthAuthorizationException::ERROR_UNAUTHORIZED_CLIENT,
+				null,
+				$client,
+				'Confidential clients or server-side web applications must use the proper authorization code grant method.'
+			);
+			
+		}
+		
 		$token = $this->buildImplicitAccessToken($owner, $client);
 
 		$this->getStorage()->storeAccessToken($token);
@@ -196,9 +214,44 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 		return $token;
 	}
 
-	public function grantByClientCredentials ()
+	public function grantAccessTokenByClientCredentials (array $credentials)
 	{
+		if(count($credentials) !== 2) {
+			throw new OAuthAuthorizationException(
+				OAuthAuthorizationException::ERROR_INVALID_REQUEST,
+				null,
+				'Client credentials are malformed. Credentials consist of the client_id and client_secret.'
+			);
+		}
 		
+		$clientId = $credentials[0];
+		$clientSecret = $credentials[1];
+		
+		$client = $this->getStorage()->fetchClient($clientId);
+		
+		if($client === null || $client->getSecret() !== $clientSecret)
+		{
+			throw new OAuthAuthorizationException(
+				OAuthAuthorizationException::ERROR_ACCESS_DENIED,
+				null,
+				'Provided credentials do not match any known client.'
+			);
+		}
+				
+		if($client->getType() !== IClient::TYPE_CONFIDENTIAL)
+		{
+			throw new OAuthAuthorizationException(
+				OAuthAuthorizationException::ERROR_UNAUTHORIZED_CLIENT,
+				null,
+				'Only confidential clients may use this method of authorization.'
+			);
+		}
+		
+		$token = $this->buildClientAccessToken ($client);
+		
+		$this->getStorage()->storeAccessToken ($token);
+		
+		return $token;
 	}
 
 	public function grantByResourceOwnerCredentials (array $credentials, IClient $client = null)

@@ -332,6 +332,39 @@ class OAuth2Provider extends Component
 		return true;
 	}
 
+	public function getHTTPAuthorization ()
+	{
+		$authorizationHdr = Request::getHeader('Authorization');
+		
+		if($authorizationHdr !== null) 
+		{
+			$parts = explode(' ', $authorizationHdr);
+			
+			if(!isset($parts[0])) 
+			{
+				return null;
+			}
+			
+			$parts[0] = strtolower($parts[0]);
+			
+			if($parts[0] === 'basic' && isset($parts[1])) 
+			{
+				$credentials = explode(':', base64_decode($parts[1]));
+				
+				if(count($credentials) === 2) 
+				{
+					return array
+					(
+						'type' => 'basic',
+						'credentials' => $credentials
+					);
+				}
+			}
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * Prepares a given URI (the client's redirection endpoint) and adds the given
 	 * arguments to it.
@@ -412,26 +445,138 @@ class OAuth2Provider extends Component
 	 * 
 	 * @throws HttpException
 	 */
-	public function getRequestingClient ()
+	public function getRequestingClient ($raiseException = true)
 	{
 		// the client identifier must always be supplied when requesting authorization
 		$clientId = Request::getString('client_id', $_GET, false, null);
 
 		if ($clientId === null)
 		{
-			throw new HttpException(400, 'client_id must be specified when requesting an authorization grant');
+			if ($raiseException) 
+			{
+				throw new OAuthAuthorizationException(
+					OAuthAuthorizationException::ERROR_INVALID_REQUEST,
+					null,
+					null,
+					'client_id must be specified when requesting an authorization grant'
+				);
+			}
+			
+			return null;
 		}
 
 		$client = $this->getStorage()->fetchClient($clientId);
 
 		if ($client === null)
 		{
-			throw new HttpException(400, 'The specified client_id is not registered as an authorized client');
+			if ($raiseException) 
+			{
+				throw new OAuthAuthorizationException(
+					OAuthAuthorizationException::ERROR_ACCESS_DENIED,
+					null,
+					null,
+					'The specified client_id is not registered as an authorized client'
+				);
+			}
 		}
 
 		return $client;
 	}
 
+	protected function handleAuthorizationCodeGrant ()
+	{
+		$authServer = $this->getAuthorizationServer();
+
+		// the state is optional and is not handled by the authorization server
+		// the contents of state are simply returned back to the client when
+		// redirecting the end-user
+		$state = Request::getString('state', $_GET, false, null);
+		
+		// check if there is an end-user currently authenticated.
+		// if not, we have to redirect to the authentication prompt so that the
+		// end-user can authenticate itself
+		if (!$this->endUserAuthenticated(true))
+		{
+			return;
+		}
+
+		// get the current end-user and requesting client
+		$endUser = $this->getEndUser();
+		$client = $this->getRequestingClient();
+
+		$authCode = $authServer->grantAuthorizationCode($endUser, $client);
+
+		$redirectURI = $this->prepareRedirectionEndpointURI($client->getRedirectionEndpointURI(), array (
+			'code' => $authCode->getCode(),
+			'state' => $state
+		), 'query');
+
+		Response::setLocation($redirectURI);
+	}
+	
+	protected function handleAuthorizationImplicitGrant ()
+	{
+		$authServer = $this->getAuthorizationServer();
+
+		// the state is optional and is not handled by the authorization server
+		// the contents of state are simply returned back to the client when
+		// redirecting the end-user
+		$state = Request::getString('state', $_GET, false, null);
+		
+		// check if there is an end-user currently authenticated.
+		// if not, we have to redirect to the authentication prompt so that the
+		// end-user can authenticate itself
+		if (!$this->endUserAuthenticated(true))
+		{
+			return;
+		}
+
+		// get the current end-user and requesting client
+		$endUser = $this->getEndUser();
+		$client = $this->getRequestingClient();
+		
+		$token = $authServer->grantImplicitAccessToken($endUser, $client);
+
+		$redirectURI = $this->prepareRedirectionEndpointURI($client->getRedirectionEndpointURI(), array (
+			'access_token' => $token->getToken(),
+			'token_type' => '',
+			//'expires_in' => '3600',
+			'state' => $state
+		), 'fragment');
+
+		Response::setLocation($redirectURI);
+	}
+	
+	protected function handleAuthorizationClientCredentialsGrant ()
+	{
+		$authServer = $this->getAuthorizationServer();
+		
+		$httpAuth = $this->getHTTPAuthorization();
+
+		if($httpAuth === null || $httpAuth['type'] !== 'basic')
+		{
+			throw new OAuthAuthorizationException(
+				OAuthAuthorizationException::ERROR_INVALID_REQUEST,
+				null,
+				null,
+				'Client credentials must be passed using HTTP Basic Authorization'
+			);
+		}
+
+		$token = $authServer->grantAccessTokenByClientCredentials($httpAuth['credentials']);
+
+		$responseObject = array
+		(
+			'access_token' => $token->getToken(),
+			'token_type' => ''
+			//'expires_in' => '3600',
+		);
+
+		echo json_encode($responseObject);
+
+		return;
+	}
+	
 	/**
 	 * This method contains all the logic necessary to grant an authorization
 	 * code to an application, given a resource owner.
@@ -447,20 +592,15 @@ class OAuth2Provider extends Component
 	 * 
 	 * @param IClient $client
 	 *  The client that requested and is being granted authorization.
+	 * 
+	 * @throws OAuthAuthorizationException
 	 */
-	public final function grantClientAuthorization (IResourceOwner $endUser, IClient $client)
+	public final function grantClientAuthorization ()
 	{
-		$authServer = $this->getAuthorizationServer();
-
 		// response_type specifies the type of grant being request,
 		// this endpoint supports both "code" and "token" (implicit request),
 		// as it is specified on the OAuth2 specs.
 		$responseType = Request::getString('response_type', $_GET, false, null);
-
-		// the state is optional and is not handled by the authorization server
-		// the contents of state are simply returned back to the client when
-		// redirecting the end-user
-		$state = Request::getString('state', $_GET, false, null);
 
 		// response type must always be provided
 		if ($responseType === null)
@@ -468,41 +608,25 @@ class OAuth2Provider extends Component
 			throw new OAuthAuthorizationException
 			(
 				OAuthAuthorizationException::ERROR_INVALID_REQUEST,
-				$state,
+				null,
+				$this->getRequestingClient(false),
 				'Response type is required. (Pass response type using the "response_type" parameter)'
 			);
 		}
 
-		// handle request for an authorization code
 		if ($responseType === 'code')
 		{
-			$authCode = $authServer->grantAuthorizationCode($endUser, $client);
-
-			$redirectURI = $this->prepareRedirectionEndpointURI($client->getRedirectionEndpointURI(), array (
-				'code' => $authCode->getCode(),
-				'state' => $state
-			), 'query');
-
-			Response::setLocation($redirectURI);
-
-			return;
+			return $this->handleAuthorizationCodeGrant();
 		}
-
-		// handle request for an access token (implicit request)
+		
 		else if ($responseType === 'token')
 		{
-			$token = $authServer->grantImplicitAccessToken($endUser, $client);
-
-			$redirectURI = $this->prepareRedirectionEndpointURI($client->getRedirectionEndpointURI(), array (
-				'access_token' => $token->getToken(),
-				'token_type' => '',
-				//'expires_in' => '3600',
-				'state' => $state
-			), 'fragment');
-
-			Response::setLocation($redirectURI);
-
-			return;
+			return $this->handleAuthorizationImplicitGrant();
+		}
+		
+		else if ($responseType === 'client_credentials')
+		{
+			return $this->handleAuthorizationClientCredentialsGrant();
 		}
 		
 		// response type unknown / unimplemented
@@ -511,8 +635,9 @@ class OAuth2Provider extends Component
 			throw new OAuthAuthorizationException
 			(
 				OAuthAuthorizationException::ERROR_UNSUPPORTED_RESPONSE_TYPE,
-				$state,
-				'Response type "' . $responseType . '" is unsupported/unknown. Currently implemented response types: "code", "token"'
+				null,
+				$this->getRequestingClient(false),
+				'Response type "' . $responseType . '" is unsupported/unknown. Currently implemented response types: "code", "token", "client_credentials"'
 			);
 		}
 	}
@@ -526,8 +651,11 @@ class OAuth2Provider extends Component
 	 * 
 	 * @param IClient $client
 	 *  The requesting client that will receive the error response.
+	 *  If none provided, the error will be presented on the response body
+	 *  instead, in JSON format.
 	 */
-	public final function handleAuthorizationException (OAuthAuthorizationException $e, IClient $client) {
+	public final function handleAuthorizationException (OAuthAuthorizationException $e) 
+	{
 		$parameters = array
 		(
 			'error' => $e->getErrorCode()
@@ -557,14 +685,24 @@ class OAuth2Provider extends Component
 			}
 		}
 		
-		$redirectURI = $this->prepareRedirectionEndpointURI
-		(
-			$client->getRedirectionEndpointURI(),
-			$parameters,
-			'query'
-		);
+		if($e->getClient() !== null) 
+		{
+			$redirectURI = $this->prepareRedirectionEndpointURI
+			(
+				$e->getClient()->getRedirectionEndpointURI(),
+				$parameters,
+				'query'
+			);
 
-		Response::setLocation($redirectURI);
+			Response::setLocation($redirectURI);
+		}
+		else
+		{
+			Response::setStatus(400);
+			Response::setHeader('Content-Type', 'application/json;charset=UTF-8');
+			
+			echo json_encode($parameters);
+		}
 	}
 	
 	/**
@@ -588,27 +726,15 @@ class OAuth2Provider extends Component
 	 */
 	public function handleAuthorizationEndpoint ()
 	{
-		// check if there is an end-user currently authenticated.
-		// if not, we have to redirect to the authentication promp so that the
-		// end-user can authenticate itself
-		if (!$this->endUserAuthenticated(true))
-		{
-			return;
-		}
-
-		// get the current end-user and requesting client
-		$endUser = $this->getEndUser();
-		$client = $this->getRequestingClient();
-
 		try
 		{
-			$this->grantClientAuthorization($endUser, $client);
+			$this->grantClientAuthorization();
 		} 
 		
 		// catch any authorization exceptions
 		catch (OAuthAuthorizationException $e) 
 		{
-			$this->handleAuthorizationException($e, $client);
+			$this->handleAuthorizationException($e);
 		}
 		
 		// turn any other exception into a server error authorization exception
@@ -620,6 +746,7 @@ class OAuth2Provider extends Component
 				(
 					OAuthAuthorizationException::ERROR_SERVER_ERROR, 
 					null, 
+					$this->getRequestingClient(false),
 					'The server encountered an unexpected condition that prevented it from fulfilling the request.', 
 					null, 
 					$e

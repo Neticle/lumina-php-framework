@@ -116,6 +116,13 @@ class OAuthAuthorizationException extends Exception
 	private $state;
 	
 	/**
+	 * The requesting client.
+	 * 
+	 * @type IClient;
+	 */
+	private $client;
+	
+	/**
 	 * Constructor.
 	 *
 	 * @param string $message
@@ -124,12 +131,13 @@ class OAuthAuthorizationException extends Exception
 	 * @param PHPException $previous
 	 * 	The previous exception instance, for chaining.
 	 */
-	public function __construct ($errorCode, $state = null, $errorDescription = null, $errorURI = null, $previous = null)
+	public function __construct ($errorCode, $state = null, $client = null, $errorDescription = null, $errorURI = null, $previous = null)
 	{
 		parent::__construct($errorCode, $previous);
 		
 		$this->errorCode = $errorCode;
 		$this->state = $state;
+		$this->client = $client;
 		$this->errorDescription = $this->filterASCIISafeString($errorDescription);
 		$this->errorURI = $errorURI;
 	}
@@ -154,6 +162,16 @@ class OAuthAuthorizationException extends Exception
 	public function getState () 
 	{
 		return $this->state;
+	}
+	
+	/**
+	 * Gets the requesting client, if any.
+	 * 
+	 * @return IClient
+	 */
+	public function getClient ()
+	{
+		return $this->client;
 	}
 	
 	/**
