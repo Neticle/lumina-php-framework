@@ -25,6 +25,8 @@
 namespace system\web\authentication\oauth\server\data;
 
 use \system\core\Express;
+use \system\web\authentication\oauth\server\role\IClient;
+use \system\web\authentication\oauth\server\role\IResourceOwner;
 
 /**
  * A simple implementation of the Authorization Code (as specified by the IAuthCode
@@ -47,11 +49,25 @@ class AuthCode extends Express implements IAuthCode
 	private $code;
 	
 	/**
+	 * The Resource Owner
+	 * 
+	 * @type IResourceOwner 
+	 */
+	private $owner;
+	
+	/**
 	 * The Resource Owner's ID.
 	 * 
 	 * @type string
 	 */
 	private $ownerId;
+	
+	/**
+	 * The Client.
+	 * 
+	 * @type IClient 
+	 */
+	private $client;
 	
 	/**
 	 * The Client's ID.
@@ -89,9 +105,14 @@ class AuthCode extends Express implements IAuthCode
 	 */
 	public function getOwnerId ()
 	{
-		return $this->ownerId;
+		return $this->owner->getIdentifier();
 	}
 
+	public function getOwner ()
+	{
+		return $this->owner;
+	}
+	
 	/**
 	 * Gets the Client's ID.
 	 * 
@@ -99,9 +120,14 @@ class AuthCode extends Express implements IAuthCode
 	 */
 	public function getClientId ()
 	{
-		return $this->clientId;
+		return $this->client->getIdentifier();
 	}
 
+	public function getClient ()
+	{
+		return $this->client;
+	}
+	
 	/**
 	 * Gets the expiration date for this code.
 	 * 
@@ -122,26 +148,17 @@ class AuthCode extends Express implements IAuthCode
 		$this->code = $code;
 	}
 
-	/**
-	 * Sets the ID of the Resource Owner this code belongs to.
-	 * 
-	 * @param string $ownerId
-	 */
-	public function setOwnerId ($ownerId)
+	public function setOwner (IResourceOwner $owner)
 	{
-		$this->ownerId = $ownerId;
+		$this->owner = $owner;
 	}
+	
 
-	/**
-	 * Sets the ID of the Client this code belongs to.
-	 * 
-	 * @param string $clientId
-	 */
-	public function setClientId ($clientId)
+	public function setClient (IClient $client)
 	{
-		$this->clientId = $clientId;
+		$this->client = $client;
 	}
-
+	
 	/**
 	 * Sets the expiration date for this code.
 	 * 

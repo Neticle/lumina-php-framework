@@ -25,11 +25,13 @@
 namespace system\web\authentication\oauth\server\role;
 
 use \system\core\Express;
+use \system\web\authentication\oauth\server\data\IAuthCode;
 use \system\web\authentication\oauth\server\data\AuthCode;
+use \system\web\authentication\oauth\server\data\IAccessToken;
 use \system\web\authentication\oauth\server\data\AccessToken;
 use \system\web\authentication\oauth\server\data\IStorage;
 use \system\web\authentication\oauth\server\exception\OAuthAuthorizationException;
-
+use \system\web\authentication\oauth\server\exception\OAuthTokenGrantException;
 /**
  * A simple implementation of the Authorization Server (as specified by the 
  * IAuthorizationServer interface).
@@ -113,10 +115,10 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 		$expiry->modify('+5 minute');
 
 		$code = new AuthCode(array (
-			'clientId' => $client->getIdentifier(),
+			'client' => $client,
 			'code' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
 			'expirationDate' => $expiry,
-			'ownerId' => $owner->getIdentifier()
+			'owner' => $owner
 		));
 
 		return $code;
@@ -164,10 +166,11 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 		$expiry->modify('+1 hour');
 
 		$code = new AccessToken(array (
-			'clientId' => $client->getIdentifier(),
+			'client' => $client,
 			'token' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
 			'expirationDate' => $expiry,
-			'ownerId' => $owner->getIdentifier()
+			'owner' => $owner,
+			'context' => IAccessToken::CONTEXT_RESOURCE_OWNER_IMPLICIT_ACCESS_TOKEN
 		));
 
 		return $code;
@@ -214,13 +217,29 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 		return $token;
 	}
 
-	public function grantAccessTokenByClientCredentials (array $credentials)
+	protected function buildClientAccessToken (IResourceOwner $owner, IClient $client)
+	{
+		$expiry = new \DateTime('now');
+		$expiry->modify('+1 hour');
+
+		$code = new AccessToken(array (
+			'client' => $client,
+			'token' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
+			'expirationDate' => $expiry,
+			'owner' => $owner,
+			'context' => IAccessToken::CONTEXT_CLIENT_ACCESS_TOKEN
+		));
+
+		return $code;
+	}
+	
+	public final function grantAccessTokenByClientCredentials (array $credentials)
 	{
 		if(count($credentials) !== 2) {
 			throw new OAuthAuthorizationException(
 				OAuthAuthorizationException::ERROR_INVALID_REQUEST,
 				null,
-				'Client credentials are malformed. Credentials consist of the client_id and client_secret.'
+				'Client credentials are malformed.'
 			);
 		}
 		
@@ -255,6 +274,95 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 	}
 
 	public function grantByResourceOwnerCredentials (array $credentials, IClient $client = null)
+	{
+		
+	}
+
+	protected function buildAccessToken (IAuthCode $code)
+	{
+		$expiry = new \DateTime('now');
+		$expiry->modify('+1 hour');
+
+		$client = $code->getClient();
+		$owner = $code->getOwner();
+		
+		$token = new AccessToken(array (
+			'client' => $client,
+			'token' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
+			'refreshToken' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
+			'expirationDate' => $expiry,
+			'owner' => $owner,
+			'context' => IAccessToken::CONTEXT_RESOURCE_OWNER_ACCESS_TOKEN
+		));
+
+		return $token;
+	}
+	
+	protected function buildRefreshedAccessToken (IAccessToken $original)
+	{
+		$expiry = new \DateTime('now');
+		$expiry->modify('+1 hour');
+
+		$client = $original->getClient();
+		$owner = $original->getOwner();
+		
+		$token = new AccessToken(array (
+			'client' => $client,
+			'token' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
+			'refreshToken' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
+			'expirationDate' => $expiry,
+			'owner' => $owner,
+			'context' => IAccessToken::CONTEXT_RESOURCE_OWNER_ACCESS_TOKEN
+		));
+
+		return $token;
+	}
+	
+	public function grantAccessTokenForCode (IAuthCode $code)
+	{
+		$status = $code->getStatus();
+		if($status !== IAuthCode::STATUS_UNUSED)
+		{
+			throw new OAuthTokenGrantException
+			(
+				OAuthTokenGrantException::ERROR_INVALID_GRANT,
+				null,
+				'The provided authorization code was ' . ($status === IAuthCode::STATUS_REVOKED ? 'revoked' : 'already used')
+			);
+		}
+		
+		$token = $this->buildAccessToken($code);
+		
+		$this->getStorage()->updateAuthCodeStatus($code, IAuthCode::STATUS_USED);
+		
+		$this->getStorage()->storeAccessToken($token);
+
+		return $token;
+	}
+	
+	public function refreshAccessToken (IAccessToken $original)
+	{
+		$status = $original->getStatus();
+		if($status !== IAccessToken::STATUS_OK)
+		{
+			throw new OAuthTokenGrantException
+			(
+				OAuthTokenGrantException::ERROR_INVALID_GRANT,
+				null,
+				'The original access token was' . ($status === IAccessToken::STATUS_REVOKED ? 'revoked' : 'already refreshed once')
+			);
+		}
+		
+		$token = $this->buildRefreshedAccessToken($original);
+		
+		$this->getStorage()->updateAccessTokenStatus($original, IAccessToken::STATUS_REFRESHED);
+		
+		$this->getStorage()->storeAccessToken($token);
+
+		return $token;
+	}
+
+	public function grantByClientCredentials ()
 	{
 		
 	}

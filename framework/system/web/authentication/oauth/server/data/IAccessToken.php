@@ -42,9 +42,32 @@ namespace system\web\authentication\oauth\server\data;
 interface IAccessToken
 {
 	
+	/**
+	 * Token is in good standing, not revoked or refreshed.
+	 */
+	const STATUS_OK = 0;
+	
+	/**
+	 * Token has been revoked by the authorization server and should no longer
+	 * be considered valid.
+	 */
+	const STATUS_REVOKED = 1;
+	
+	/**
+	 * The refresh token has been used to generate a new access token,
+	 * therefore, no more refreshes shall be allowed using the same refresh token.
+	 */
+	const STATUS_REFRESHED = 2;
+	
 	const TYPE_BEARER = 'bearer';
 	
 	const TYPE_MAC = 'mac';
+	
+	const CONTEXT_RESOURCE_OWNER_ACCESS_TOKEN = 0;
+	
+	const CONTEXT_RESOURCE_OWNER_IMPLICIT_ACCESS_TOKEN = 1;
+	
+	const CONTEXT_CLIENT_ACCESS_TOKEN = 2;
 	
 	/**
 	 * Gets the token as a string.
@@ -54,18 +77,34 @@ interface IAccessToken
 	public function getToken ();
 	
 	/**
-	 * Gets the resource owner that this access token belongs to.
+	 * Gets the resource owner object that this access token belongs to.
 	 * 
 	 * @return IResourceOwner
 	 *  The resource owner.
 	 */
+	public function getOwner ();
+	
+	/**
+	 * Gets the resource owner that this access token belongs to.
+	 * 
+	 * @return string
+	 *  The resource owner ID.
+	 */
 	public function getOwnerId ();
+	
+	/**
+	 * Gets the client object that this access token belongs to.
+	 * 
+	 * @return IClient
+	 *  The client.
+	 */
+	public function getClient ();
 	
 	/**
 	 * Gets the client that this access token belongs to.
 	 * 
-	 * @return IClient
-	 *  The client.
+	 * @return string
+	 *  The client ID.
 	 */
 	public function getClientId ();
 	
@@ -76,6 +115,27 @@ interface IAccessToken
 	 *  The expiration date.
 	 */
 	public function getExpirationDate ();
+	
+	/**
+	 * Gets the status of this token.
+	 * 
+	 * NOTE: The OK status itself does not determine whether a token is valid.
+	 * You must also have the expiration date in consideration.
+	 * 
+	 * (See IAccessToken::STATUS_*)
+	 * 
+	 * @return int
+	 *  The status of the token.
+	 */
+	public function getStatus ();
+	
+	/**
+	 * Gets the refresh token for this access token.
+	 * 
+	 * @return string
+	 *  The refresh token.
+	 */
+	public function getRefreshToken ();
 	
 	/**
 	 * Checks whether or not this access token is still valid.
@@ -93,5 +153,14 @@ interface IAccessToken
 	 * @return string
 	 */
 	public function getType ();
+	
+	/**
+	 * Gets the token context type.
+	 * 
+	 * (See IAccessToken::CONTEXT_*)
+	 * 
+	 * @return int
+	 */
+	public function getContextType ();
 	
 }

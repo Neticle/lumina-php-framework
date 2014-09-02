@@ -46,25 +46,32 @@ class AccessToken extends Express implements IAccessToken {
 	private $token;
 	
 	/**
-	 * The Resource Owner's ID.
+	 * The Resource Owner.
 	 * 
-	 * @type string
+	 * @type IResourceOwner
 	 */
-	private $ownerId;
-	
+	private $owner;
+		
 	/**
-	 * The Client's ID.
+	 * The Client.
 	 * 
-	 * @type string
+	 * @type IClient
 	 */
-	private $clientId;
-	
+	private $client;
+		
 	/**
 	 * The expiration date for this token.
 	 * 
 	 * @type \DateTime
 	 */
 	private $expirationDate;
+	
+	/**
+	 * The token's context type.
+	 * 
+	 * @type int 
+	 */
+	private $context;
 	
 	public function __construct(array $attributes = null)
 	{
@@ -82,15 +89,35 @@ class AccessToken extends Express implements IAccessToken {
 	}
 
 	/**
+	 * Gets the Resource Owner.
+	 * 
+	 * @return IResourceOwner
+	 */
+	public function getOwner ()
+	{
+		return $this->owner;
+	}
+	
+	/**
 	 * Gets the Resource Owner's ID.
 	 * 
 	 * @return string
 	 */
 	public function getOwnerId ()
 	{
-		return $this->ownerId;
+		return $this->owner->getIdentifier();
 	}
 
+	/**
+	 * Gets the Client.
+	 * 
+	 * @return IClient
+	 */
+	public function getClient ()
+	{
+		return $this->client;
+	}
+	
 	/**
 	 * Gets the Client's ID.
 	 * 
@@ -98,7 +125,7 @@ class AccessToken extends Express implements IAccessToken {
 	 */
 	public function getClientId ()
 	{
-		return $this->clientId;
+		return $this->client->getIdentifier();
 	}
 
 	/**
@@ -112,6 +139,18 @@ class AccessToken extends Express implements IAccessToken {
 	}
 
 	/**
+	 * Gets the tokens context type.
+	 * 
+	 * (See IAccessToken::CONTEXT_*)
+	 * 
+	 * @return int
+	 */
+	public function getContextType ()
+	{
+		return $this->context;
+	}
+	
+	/**
 	 * Sets the token string.
 	 * 
 	 * @param string $token
@@ -122,23 +161,23 @@ class AccessToken extends Express implements IAccessToken {
 	}
 
 	/**
-	 * Sets the ID of the Resource Owner this token belongs to.
+	 * Sets the Resource Owner this token belongs to.
 	 * 
-	 * @param string $ownerId
+	 * @param IResourceOwner $owner
 	 */
-	public function setOwnerId ($ownerId)
+	public function setOwner ($owner)
 	{
-		$this->ownerId = $ownerId;
+		$this->ownerId = $owner;
 	}
 
 	/**
-	 * Sets the ID of the Client this token belongs to.
+	 * Sets the Client this token belongs to.
 	 * 
-	 * @param string $clientId
+	 * @param IClient $client
 	 */
-	public function setClientId ($clientId)
+	public function setClient ($client)
 	{
-		$this->clientId = $clientId;
+		$this->clientId = $client;
 	}
 
 	/**
@@ -151,6 +190,17 @@ class AccessToken extends Express implements IAccessToken {
 		$this->expirationDate = $expirationDate;
 	}
 
+	/**
+	 * Sets the context type for this token.
+	 * 
+	 * (See IAccessToken::CONTEXT_*)
+	 * 
+	 * @param int $context
+	 */
+	public function setContextType ($context) {
+		$this->context = $context;
+	}
+	
 	/**
 	 * Checks whether or not this token is still valid.
 	 * 

@@ -98,5 +98,9 @@ interface IAuthorizationServer
 	 */
 	public function grantByResourceOwnerCredentials (array $credentials, IClient $client = null);
 	
-	public function grantByClientCredentials();
+	public function grantAccessTokenByClientCredentials(array $credentials);
+	
+	public function grantAccessTokenForCode (IAuthCode $code);
+	
+	public function refreshAccessToken (IAccessToken $original);
 }

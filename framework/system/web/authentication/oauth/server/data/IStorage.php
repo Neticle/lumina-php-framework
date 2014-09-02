@@ -39,6 +39,10 @@ namespace system\web\authentication\oauth\server\data;
  */
 interface IStorage
 {
+
+	public function fetchCurrentEndUser ();
+	
+	public function fetchResourceOwner ($identifier);
 	
 	/**
 	 * Stores an authorization code object.
@@ -50,6 +54,17 @@ interface IStorage
 	 * @throws RuntimeException
 	 */
 	public function storeAuthorizationCode (IAuthCode $code);
+	
+	/**
+	 * Updates an existing authorization code's status.
+	 * 
+	 * If an error ocurred while storing the data, an Exception must be raised.
+	 * 
+	 * @param string $codeStr
+	 * 
+	 * @param int $status
+	 */
+	public function updateAuthorizationCodeStatus ($codeStr, $status);
 	
 	/**
 	 * Fetches an authorization code object by it's string representation.
@@ -78,6 +93,17 @@ interface IStorage
 	public function storeAccessToken (IAccessToken $token);
 	
 	/**
+	 * Updates an existing access token's status.
+	 * 
+	 * If an error ocurred while storing the data, an Exception must be raised.
+	 * 
+	 * @param string $tokenStr
+	 * 
+	 * @param int $status
+	 */
+	public function updateAccessTokenStatus ($tokenStr, $status);
+	
+	/**
 	 * Fetches an access token object by it's string representation.
 	 * 
 	 * @param string $token
@@ -87,10 +113,13 @@ interface IStorage
 	 *  If FALSE, this method will return any matching access token object
 	 *  found, if TRUE, only a matching AND valid token found will be returned.
 	 * 
+	 * @param int $context
+	 *  The context of the access token being requested. (See IAccessToken::CONTEXT_*)
+	 * 
 	 * @return IAccessToken
 	 *  The matching Access Token object, if any, or NULL otherwise.
 	 */
-	public function fetchAccessToken ($token);
+	public function fetchAccessToken ($token, $context);
 	
 	/**
 	 * Fetches a client object, given its identifier string.
@@ -102,5 +131,7 @@ interface IStorage
 	 *  The matching Client object, if any, or NULL otherwise.
 	 */
 	public function fetchClient ($clientId);
+	
+	public function fetchClientByCredentials (array $credentials);
 	
 }

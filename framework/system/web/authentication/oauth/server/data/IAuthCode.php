@@ -42,6 +42,12 @@ namespace system\web\authentication\oauth\server\data;
 interface IAuthCode
 {
 	
+	const STATUS_UNUSED = 0;
+	
+	const STATUS_USED = 1;
+	
+	const STATUS_REVOKED = 2;
+	
 	/**
 	 * Gets the authorization code string.
 	 * 
@@ -56,7 +62,23 @@ interface IAuthCode
 	 * @return IResourceOwner
 	 *  The resource owner.
 	 */
+	public function getOwner ();
+	
+	/**
+	 * Gets the ID of the resource owner that this code belongs to.
+	 * 
+	 * @return string
+	 *  The resource owner ID.
+	 */
 	public function getOwnerId ();
+	
+	/**
+	 * Gets the client that this code belongs to.
+	 * 
+	 * @return IClient
+	 *  The client.
+	 */
+	public function getClient ();
 	
 	/**
 	 * Gets the client ID that this code belongs to.
@@ -73,6 +95,25 @@ interface IAuthCode
 	 *  The expiration date.
 	 */
 	public function getExpirationDate ();
+	
+	/**
+	 * Gets the code status.
+	 * 
+	 * (See IAuthCode::STATUS_*)
+	 * 
+	 * @return int
+	 *  The status.
+	 */
+	public function getStatus ();
+	
+	/**
+	 * Sets the code status.
+	 * 
+	 * (See IAuthCode::STATUS_*)
+	 * 
+	 * @param int $status
+	 */
+	public function setStatus ($status);
 	
 	/**
 	 * Checks whether or not this code is still valid.
