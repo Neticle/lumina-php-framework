@@ -80,6 +80,12 @@ class OAuthAuthorizationException extends Exception
 	const ERROR_TEMPORARILY_UNAVAILABLE = 'temporarily_unavailable';
 
 	/**
+	 * The is no resource owner currently authenticated.
+	 * Not part of the official specification.
+	 */
+	const ERROR_UNAUTHENTICATED_ENDUSER = 'unauthenticated_enduser';
+	
+	/**
 	 * The code of the raised error.
 	 * 
 	 * @type string 
