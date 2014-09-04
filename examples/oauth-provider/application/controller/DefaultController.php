@@ -25,30 +25,34 @@
 namespace application\controller;
 
 use \system\web\Controller;
+use application\model\User;
 
 /**
- * The OAuth controller.
- * This controller contains the two actions that act as the endpoints for
- * the provider component.
- * 
- * The names of the controller and actions are the same as the defaults the 
- * component routes to. If you want to have different names, you can configure
- * the routes on the component configuration.
- * 
+ * The default controller.
+ *
  * @author Igor Azevedo <igor.azevedo@neticle.pt>
  */
-class Oauth2Controller extends Controller
+class DefaultController extends Controller
 {
-
-	public function actionAuthorization()
+	
+	public function actionIndex () 
 	{
-		$this->getComponent('oauthProvider')
-			->handleAuthorizationEndpoint();
+		$session = $this->getComponent('session');
+		
+		$idUser = $session->read('id_user');
+		
+		if($idUser === null)
+		{
+			$this->redirect(array('/user/login'));
+			
+			return;
+		}
+		
+		$user = User::model()->findByAttributes(array('id' => $idUser));
+		
+		$this->render('~index', array(
+			'user' => $user
+		));
 	}
 	
-	public function actionToken()
-	{
-		$this->getComponent('oauthProvider')
-			->handleTokenEndpoint();
-	}
 }

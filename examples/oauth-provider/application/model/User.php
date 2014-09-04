@@ -27,17 +27,15 @@ namespace application\model;
 use \system\sql\data\Record;
 use \system\web\authentication\oauth\server\role\IResourceOwner;
 
+/**
+ * The User record. This is a simplistic implementation for demonstration purposes,
+ * does not contain validations or anything else.
+ * 
+ * @author Igor Azevedo <igor.azevedo@neticle.pt>
+ */
 class User extends Record implements IResourceOwner
 {
-	/**
-	 * Returns the base User model instance in the specified context.
-	 *
-	 * @param string $context
-	 *	The context to return the model in.
-	 *
-	 * @return User
-	 *	The user model instance.
-	 */
+
 	public static function model ($context = 'default')
 	{
 		return parent::getBaseModel(__CLASS__, $context);
@@ -53,25 +51,38 @@ class User extends Record implements IResourceOwner
 		return $this->getAttribute('id');
 	}
 	
+	/**
+	 * Finds a user record, given a set of credentials.
+	 * 
+	 * @param string $username
+	 *  The username.
+	 * 
+	 * @param string $password
+	 *  The password.
+	 * 
+	 * @return User
+	 *  The matching user record, if any.
+	 */
 	public function findByCredentials ($username, $password)
 	{
-		if($username === 'igorazevedo' && $password === 'luminatest')
+		$user = $this->findByAttributes(array(
+			'username' => $username
+		));
+		
+		if($user !== null)
 		{
-			return new User('default', array(
-				'id' => '1',
-				'username' => 'igorazevedo',
-				'name' => 'Igor Azevedo'
-			));
+			$digest = $this->getComponent('passwordDigest');
+						
+			if($digest->compare($password, $user->password))
+			{
+				// NOTE: For a proper blowfish hashing solution, you might also want 
+				// to check the hash cost here and update it if necessary.
+				
+				return $user;
+			}
 		}
 		
 		return null;
-		
-		// this is totally insecure, hash your passwords properly!
-		// for testing purposes only.
-		/*return $this->findByAttributes(array(
-			'username' => $username,
-			'password' => sha1($password)
-		));*/
 	}
 
 }

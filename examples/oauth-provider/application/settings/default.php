@@ -23,10 +23,20 @@
 // =============================================================================
 
 return array(
-	'components' => array(		
+	'components' => array(
 		'oauthProvider' => array(
 			'class' => '\\system\\web\\authentication\\oauth\\server\\component\\OAuth2Provider',
 			'storageDefaultClass' => 'application\\oauth\\SqlStorage'
+		),
+		
+		'passwordDigest' => array(
+			'class' => '\\system\\security\\cryptography\\PasswordDigest'
+		),
+		
+		'database' => array(
+			'dsn' => 'host=127.0.0.1;dbname=lumina_examples_oauth_provider',
+			'user' => 'root',
+			'password' => 'password'
 		)
 	)
 );

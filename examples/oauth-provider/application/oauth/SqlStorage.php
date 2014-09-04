@@ -38,7 +38,7 @@ use system\web\authentication\oauth\server\role\IClient;
 use system\web\authentication\oauth\server\role\Client;
 
 /**
- * An example Storage class for the OAuth 2.0 Provider.
+ * An example Storage class for the OAuth 2.0 Provider using SQL.
  * 
  * For the sake of simplicity, we'll be building the query statements directly
  * and making use of the default data objects.
@@ -48,6 +48,14 @@ use system\web\authentication\oauth\server\role\Client;
 class SqlStorage extends Element implements IStorage
 {
     
+	/**
+	 * Contains the list of allowed clients.
+	 * 
+	 * This is hardcoded, you might want to store this information in the 
+	 * database instead.
+	 * 
+	 * @type array
+	 */
 	protected static $clients = array(
 		'ID_CLIENT_1' => array(
 			'identifier' => 'ID_CLIENT_1',
@@ -82,6 +90,15 @@ class SqlStorage extends Element implements IStorage
 		return $this->getComponent('database');
 	}
 	
+	/**
+	 * Fetches an access token object, given it's representation as a string.
+	 * 
+	 * @param string $token
+	 *  The access token.
+	 * 
+	 * @return AccessToken|null
+	 *  The access token object, if any.
+	 */
 	public function fetchAccessToken ($token, $context)
 	{
 		$reader = $this->getDatabase()->select('oauth_access_token', array(
@@ -105,6 +122,15 @@ class SqlStorage extends Element implements IStorage
 		return null;
 	}
 
+	/**
+	 * Fetches an authorization code object, given it's representation as a string.
+	 * 
+	 * @param string $code
+	 *  The authorization code.
+	 *
+	 * @return AuthCode|null
+	 *  The authorization code object, if any.
+	 */
 	public function fetchAuthorizationCode ($code, $returnOnlyValid = false)
 	{
 		$reader = $this->getDatabase()->select('oauth_authorization_code', array(
@@ -126,6 +152,15 @@ class SqlStorage extends Element implements IStorage
 		return null;
 	}
 
+	/**
+	 * Fetches a client matching the given client identifier.
+	 * 
+	 * @param string $clientId
+	 *  The client identifier.
+	 * 
+	 * @return Client|null
+	 *  The matching client, if any.
+	 */
 	public function fetchClient ($clientId)
 	{
 		if(isset(self::$clients[$clientId]))
@@ -136,14 +171,37 @@ class SqlStorage extends Element implements IStorage
 		return null;
 	}
 
+	/**
+	 * Fetches a client matching a given set of credentials.
+	 * 
+	 * @param array $credentials
+	 *  An array containing two elements, the first being the client identifier
+	 *  and the second being the client secret.
+	 * 
+	 * @return Client|null
+	 *  The matching client, if any.
+	 */
 	public function fetchClientByCredentials (array $credentials)
 	{
 		$client = $this->fetchClient($credentials[0]);
 		
-		return ($client !== null && $client->getSecret() === $credentials[1]) ? 
+		if($client === null)
+		{
+			return null;
+		}
+		
+		$secret = $client->getSecret();
+		
+		return ($secret !== null && $secret === $credentials[1]) ? 
 			$client : null;
 	}
 
+	/**
+	 * Fetches the currently authenticated user.
+	 * 
+	 * @return User|null
+	 *  The user currently authenticated, if any.
+	 */
 	public function fetchCurrentEndUser ()
 	{
 		$userId = $this->getComponent('session')->read('id_user');
@@ -152,13 +210,29 @@ class SqlStorage extends Element implements IStorage
 		{
 			return $this->fetchResourceOwner($userId);
 		}
+		
+		return null;
 	}
 
+	/**
+	 * Fetches a resource owner (in the case of this example, an User), given
+	 * it's identifier.
+	 * 
+	 * @param string $identifier
+	 * 
+	 * @return User|null
+	 *  The matching user, if any.
+	 */
 	public function fetchResourceOwner ($identifier)
 	{
 		return User::model()->findByAttributes(array('id' => $identifier));
 	}
 
+	/**
+	 * Stores an access token object.
+	 * 
+	 * @param IAccessToken $token
+	 */
 	public function storeAccessToken (IAccessToken $token)
 	{
 		$this->getDatabase()->insert('oauth_access_token', array(
@@ -173,6 +247,11 @@ class SqlStorage extends Element implements IStorage
 		));
 	}
 
+	/**
+	 * Stores an authorization code object.
+	 * 
+	 * @param IAuthCode $code
+	 */
 	public function storeAuthorizationCode (IAuthCode $code)
 	{
 		$this->getDatabase()->insert('oauth_authorization_code', array(
@@ -184,6 +263,17 @@ class SqlStorage extends Element implements IStorage
 		));
 	}
 
+	/**
+	 * Updates the status of an existing access token.
+	 * 
+	 * (See IAccessToken::STATUS_*)
+	 * 
+	 * @param string $tokenStr
+	 *  The token to be updated, as a string.
+	 * 
+	 * @param int $status
+	 *  The new status code.
+	 */
 	public function updateAccessTokenStatus ($tokenStr, $status)
 	{
 		$this->getDatabase()->update
@@ -197,6 +287,20 @@ class SqlStorage extends Element implements IStorage
 		);
 	}
 
+	/**
+	 * Updates the status of an existing authorization code.
+	 * 
+	 * (See IAuthCode::STATUS_*)
+	 * 
+	 * In case the status is being set to "revoked", this method will also revoke
+	 * any access tokens granted with the given authorization code.
+	 * 
+	 * @param string $codeStr
+	 *  The code to be updated, as a string.
+	 * 
+	 * @param int $status
+	 *  The new status code.
+	 */
 	public function updateAuthorizationCodeStatus ($codeStr, $status)
 	{
 		$this->getDatabase()->update

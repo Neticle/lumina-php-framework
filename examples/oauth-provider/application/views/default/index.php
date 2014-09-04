@@ -22,33 +22,10 @@
 //
 // =============================================================================
 
-namespace application\controller;
+$router = $this->getComponent('router');
 
-use \system\web\Controller;
+$logoutUrl = $router->createRouteUrl('/user/logout');
 
-/**
- * The OAuth controller.
- * This controller contains the two actions that act as the endpoints for
- * the provider component.
- * 
- * The names of the controller and actions are the same as the defaults the 
- * component routes to. If you want to have different names, you can configure
- * the routes on the component configuration.
- * 
- * @author Igor Azevedo <igor.azevedo@neticle.pt>
- */
-class Oauth2Controller extends Controller
-{
-
-	public function actionAuthorization()
-	{
-		$this->getComponent('oauthProvider')
-			->handleAuthorizationEndpoint();
-	}
-	
-	public function actionToken()
-	{
-		$this->getComponent('oauthProvider')
-			->handleTokenEndpoint();
-	}
-}
+?>
+<h1>Welcome, <?= $user->username ?></h1>
+<a href="<?= $logoutUrl ?>">Log out</a>

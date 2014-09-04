@@ -30,7 +30,7 @@ use \system\web\Response;
 use application\model\User;
 
 /**
- * Description of UserController
+ * The user controller simply allows the user to log in or log out.
  *
  * @author Igor Azevedo <igor.azevedo@neticle.pt>
  */
@@ -39,13 +39,21 @@ class UserController extends Controller
     
 	public function actionLogin () 
 	{
+		$session = $this->getComponent('session');
+		
+		if($session->read('id_user') !== null)
+		{
+			$this->redirect(array('/'));
+			
+			return;
+		}
+		
 		$error = false;
 		$errorMsg = '';
 		$username = '';
 		
 		if(Request::getMethod() === 'POST')
 		{
-			//var_dump($_SERVER); die;
 			$username = Request::getString('username', $_POST);
 			$password = Request::getString('password', $_POST);
 			$returnRoute = Request::getString('return_route', $_GET, false, null);
@@ -54,7 +62,7 @@ class UserController extends Controller
 			
 			if($user !== null)
 			{
-				$this->getComponent('session')->write('id_user', $user->id);
+				$session->write('id_user', $user->id);
 				
 				if($returnRoute !== null)
 				{
@@ -81,6 +89,18 @@ class UserController extends Controller
 			'errorMsg' => $errorMsg,
 			'username' => $username
 		));
+	}
+	
+	public function actionLogout ()
+	{
+		$session = $this->getComponent('session');
+		
+		if($session->read('id_user') !== null)
+		{
+			$session->clear('id_user');
+		}
+		
+		$this->redirect(array('/'));
 	}
 	
 }
