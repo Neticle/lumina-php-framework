@@ -25,11 +25,13 @@
 namespace system\web\authentication\oauth\server\exception;
 
 use system\core\exception\Exception;
-use system\web\authentication\oauth\server\role\IClient;
 
 /**
- * The OAuthTokenGrantException is intended to be thrown within the token endpoint
- * logic of the OAuth Provider or the Authorization Server.
+ * The OAuthStorageException is intended to be thrown within the storage
+ * implementation in cases where certain methods were not implemented or purpose.
+ * 
+ * For anything else, a regular exception can be thrown and the component will 
+ * handle it as an internal server error.
  * 
  * By making use of this exception class, the provider will be able to properly
  * handle any errors and report back to the client in a matter that conforms
@@ -37,51 +39,14 @@ use system\web\authentication\oauth\server\role\IClient;
  *
  * @author Igor Azevedo <igor.azevedo@neticle.pt>
  */
-class OAuthTokenGrantException extends Exception
+class OAuthStorageException extends Exception
 {
 	
 	/**
 	 * The request is missing a required parameter, includes an invalid parameter
 	 * value, includes a parameter more than once, or is otherwise malformed.
 	 */
-	const ERROR_INVALID_REQUEST = 'invalid_request';
-
-	/**
-	 * Client authentication failed (e.g., unknown client, no client 
-	 * authentication included, or unsupported authentication method).
-	 * The authorization server MAY return an HTTP 401 (Unauthorized) status code 
-	 * to indicate which HTTP authentication schemes are supported.  
-	 * If the client attempted to authenticate via the "Authorization" request 
-	 * header field, the authorization server MUST respond with an HTTP 401 
-	 * (Unauthorized) status code and include the "WWW-Authenticate" response 
-	 * header field matching the authentication scheme used by the client.
-	 */
-	const ERROR_INVALID_CLIENT = 'invalid_client';
-	
-	/**
-	 * The provided authorization grant (e.g., authorization code, resource owner 
-	 * credentials) or refresh token is invalid, expired, revoked, does not match 
-	 * the redirection URI used in the authorization request, or was issued to 
-	 * another client.
-	 */
-	const ERROR_INVALID_GRANT = 'invalid_grant';
-	
-	/**
-	 * The client is not authorized to request an authorization code using this 
-	 * method.
-	 */
-	const ERROR_UNAUTHORIZED_CLIENT = 'unauthorized_client';
-
-	/**
-	 * The authorization grant type is not supported by the authorization server.
-	 */
-	const ERROR_UNSUPPORTED_GRANT_TYPE = 'unsupported_grant_type';
-	
-	/**
-	 * The requested scope is invalid, unknown, malformed, or exceeds the scope 
-	 * granted by the resource owner.
-	 */
-	const ERROR_INVALID_SCOPE = 'invalid_scope';
+	const ERROR_UNIMPLEMENTED_METHOD = 'storage_unimplemented_method';
 	
 	/**
 	 * The code of the raised error.
@@ -110,29 +75,12 @@ class OAuthTokenGrantException extends Exception
 	 * @type string
 	 */
 	private $errorURI;
-	
-	/**
-	 * The requesting client.
-	 * 
-	 * @type IClient;
-	 */
-	private $client;
-	
-	/**
-	 * Constructor.
-	 *
-	 * @param string $message
-	 * 	A human readable message describing the exception.
-	 *
-	 * @param PHPException $previous
-	 * 	The previous exception instance, for chaining.
-	 */
-	public function __construct ($errorCode, $client = null, $errorDescription = null, $errorURI = null, $previous = null)
+		
+	public function __construct ($errorCode, $errorDescription = null, $errorURI = null, $previous = null)
 	{
 		parent::__construct($errorCode, $previous);
 		
 		$this->errorCode = $errorCode;
-		$this->client = $client;
 		$this->errorDescription = $this->filterASCIISafeString($errorDescription);
 		$this->errorURI = $errorURI;
 	}
@@ -147,16 +95,6 @@ class OAuthTokenGrantException extends Exception
 	public function getErrorCode ()
 	{
 		return $this->errorCode;
-	}
-	
-	/**
-	 * Gets the requesting client, if any.
-	 * 
-	 * @return IClient
-	 */
-	public function getClient ()
-	{
-		return $this->client;
 	}
 	
 	/**
