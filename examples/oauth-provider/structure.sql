@@ -43,7 +43,7 @@ CREATE TABLE `oauth_authorization_code` (
 CREATE TABLE `oauth_access_token` (
 
 	`token` VARCHAR(255) NOT NULL,
-	`code` VARCHAR(255) NOT NULL,
+	`code` VARCHAR(255) NULL,
 	`id_user` INT UNSIGNED NOT NULL,
 	`id_client` VARCHAR(64) NOT NULL,
 	`expiration_date` TIMESTAMP NOT NULL,

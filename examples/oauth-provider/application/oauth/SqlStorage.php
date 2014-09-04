@@ -36,6 +36,7 @@ use system\web\authentication\oauth\server\data\IAuthCode;
 use system\web\authentication\oauth\server\data\IStorage;
 use system\web\authentication\oauth\server\role\IClient;
 use system\web\authentication\oauth\server\role\Client;
+use system\web\authentication\oauth\server\exception\OAuthStorageException;
 
 /**
  * An example Storage class for the OAuth 2.0 Provider using SQL.
@@ -110,8 +111,8 @@ class SqlStorage extends Element implements IStorage
 		{
 			return new AccessToken(array(
 				'token' => $result['token'],
-				'owner' => $this->fetchResourceOwner($result['id_user']),
-				'client' => $this->fetchClient($result['id_client']),
+				'owner' => $result['id_user'],
+				'client' => $result['id_client'],
 				'expirationDate' => new DateTime($result['expiration_date']),
 				'contextType' => intval($result['context_type']),
 				'status' => intval($result['status']),
@@ -142,8 +143,8 @@ class SqlStorage extends Element implements IStorage
 		{
 			return new AuthCode(array(
 				'code' => $result['code'],
-				'owner' => $this->fetchResourceOwner($result['id_user']),
-				'client' => $this->fetchClient($result['id_client']),
+				'owner' => $result['id_user'],
+				'client' => $result['id_client'],
 				'expirationDate' => new DateTime($result['expiration_date']),
 				'status' => intval($result['status'])
 			));
@@ -235,11 +236,20 @@ class SqlStorage extends Element implements IStorage
 	 */
 	public function storeAccessToken (IAccessToken $token)
 	{
+		if($token->getContextType() === IAccessToken::CONTEXT_CLIENT_ACCESS_TOKEN)
+		{
+			throw new OAuthStorageException
+			(
+				OAuthStorageException::ERROR_UNIMPLEMENTED_METHOD,
+				'Granting of client access tokens is not allowed'
+			);
+		}
+		
 		$this->getDatabase()->insert('oauth_access_token', array(
 			'token' => $token->getToken(),
 			'code' => $token->getOriginatingCode(),
-			'id_user' => $token->getOwnerId(),
-			'id_client' => $token->getClientId(),
+			'id_user' => $token->getOwner(true),
+			'id_client' => $token->getClient(true),
 			'expiration_date' => $token->getExpirationDate()->format('Y-m-d H:i:s'),
 			'context_type' => $token->getContextType(),
 			'status' => $token->getStatus(),
@@ -256,8 +266,8 @@ class SqlStorage extends Element implements IStorage
 	{
 		$this->getDatabase()->insert('oauth_authorization_code', array(
 			'code' => $code->getCode(),
-			'id_user' => $code->getOwnerId(),
-			'id_client' => $code->getClientId(),
+			'id_user' => $code->getOwner(true),
+			'id_client' => $code->getClient(true),
 			'expiration_date' => $code->getExpirationDate()->format('Y-m-d H:i:s'),
 			'status' => $code->getStatus()
 		));

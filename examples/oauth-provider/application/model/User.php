@@ -46,7 +46,7 @@ class User extends Record implements IResourceOwner
 		return 'user';
 	}
 	
-	public function getIdentifier ()
+	public function getOAuthIdentifier ()
 	{
 		return $this->getAttribute('id');
 	}
