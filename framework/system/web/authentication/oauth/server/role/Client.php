@@ -83,7 +83,7 @@ class Client extends Express implements IClient
 	 * 
 	 * @return string
 	 */
-	public function getIdentifier ()
+	public function getOAuthIdentifier ()
 	{
 		return $this->identifier;
 	}

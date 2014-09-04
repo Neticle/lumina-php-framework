@@ -59,18 +59,10 @@ interface IAuthCode
 	/**
 	 * Gets the resource owner that this code belongs to.
 	 * 
-	 * @return IResourceOwner
+	 * @return IResourceOwner|string
 	 *  The resource owner.
 	 */
-	public function getOwner ();
-	
-	/**
-	 * Gets the ID of the resource owner that this code belongs to.
-	 * 
-	 * @return string
-	 *  The resource owner ID.
-	 */
-	public function getOwnerId ();
+	public function getOwner ($returnId = false);
 	
 	/**
 	 * Gets the client that this code belongs to.
@@ -78,15 +70,7 @@ interface IAuthCode
 	 * @return IClient
 	 *  The client.
 	 */
-	public function getClient ();
-	
-	/**
-	 * Gets the client ID that this code belongs to.
-	 * 
-	 * @return string
-	 *  The client id.
-	 */
-	public function getClientId ();
+	public function getClient ($returnId = false);
 	
 	/**
 	 * Gets the date of expiration of this code.

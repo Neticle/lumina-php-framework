@@ -40,7 +40,7 @@ namespace system\web\authentication\oauth\server\role;
  * @author Igor Azevedo <igor.azevedo@neticle.pt>
  * @since 0.2.0
  */
-interface IClient
+interface IClient extends IEntity
 {
 	
 	/**
@@ -81,24 +81,7 @@ interface IClient
 	 * credentials included in the application can be extracted.
 	 */
 	const PROFILE_NATIVE_APPLICATION = 2;
-	
-	/**
-	 * Gets the client's unique identifier.
-	 * 
-	 * From RFC 6749 - The OAuth 2.0 Authorization Framework:
-	 * 
-	 * CLIENT IDENTIFIER
-	 *  The auhorization server issues the registered client a client 
-	 *  identifier -- a unique string representing the registration information
-	 *  provided by the client. The client identifier is not a secret; it is 
-	 *  exposed to the resource owner and MUST NOT be used alone for client
-	 *  authentication.
-	 * 
-	 * @return string
-	 *  The client's unique identifier.
-	 */
-	public function getIdentifier ();
-	
+		
 	/**
 	 * Gets the client's type.
 	 *

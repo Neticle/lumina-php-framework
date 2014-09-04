@@ -52,14 +52,14 @@ class AuthCode extends Express implements IAuthCode
 	/**
 	 * The Resource Owner
 	 * 
-	 * @type IResourceOwner 
+	 * @type IResourceOwner|string 
 	 */
 	private $owner;
 		
 	/**
 	 * The Client.
 	 * 
-	 * @type IClient 
+	 * @type IClient|string
 	 */
 	private $client;
 		
@@ -83,6 +83,16 @@ class AuthCode extends Express implements IAuthCode
 	}
 	
 	/**
+	 * Gets the storage instance in use by the oauth component.
+	 * 
+	 * @return IStorage
+	 */
+	public function getStorage ()
+	{
+		return $this->getComponent('oauthProvider')->getStorage();
+	}
+	
+	/**
 	 * Gets the code as a string
 	 * 
 	 * @return string
@@ -93,33 +103,45 @@ class AuthCode extends Express implements IAuthCode
 	}
 
 	/**
-	 * Gets the Resource Owner's ID.
+	 * Gets the Resource Owner.
 	 * 
-	 * @return string
+	 * @return IResourceOwner|string
 	 */
-	public function getOwnerId ()
+	public function getOwner ($returnId = false)
 	{
-		return $this->owner->getIdentifier();
-	}
-
-	public function getOwner ()
-	{
-		return $this->owner;
+		$owner = $this->owner;
+		
+		if($returnId === false && !($owner instanceof IResourceOwner))
+		{
+			$owner = $this->getStorage()->fetchResourceOwner($owner);
+		}
+		else if($returnId === true && $owner instanceof IResourceOwner)
+		{
+			$owner = $owner->getOAuthIdentifier();
+		}
+		
+		return $owner;
 	}
 	
 	/**
-	 * Gets the Client's ID.
+	 * Gets the Client.
 	 * 
-	 * @return string
+	 * @return IClient|string
 	 */
-	public function getClientId ()
+	public function getClient ($returnId = false)
 	{
-		return $this->client->getIdentifier();
-	}
-
-	public function getClient ()
-	{
-		return $this->client;
+		$client = $this->client;
+		
+		if($returnId === false && !($client instanceof IClient))
+		{
+			$client = $this->getStorage()->fetchClient($client);
+		}
+		else if($returnId === true && $client instanceof IClient)
+		{
+			$client = $client->getOAuthIdentifier();
+		}
+		
+		return $client;
 	}
 	
 	/**

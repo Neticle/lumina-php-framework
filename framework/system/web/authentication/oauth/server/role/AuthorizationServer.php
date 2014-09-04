@@ -118,7 +118,7 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 
 		$code = new AuthCode(array (
 			'client' => $client,
-			'code' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
+			'code' => $this->generateToken($client->getOAuthIdentifier() . $owner->getOAuthIdentifier()),
 			'expirationDate' => $expiry,
 			'owner' => $owner,
 			'status' => IAuthCode::STATUS_UNUSED
@@ -170,7 +170,7 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 
 		$code = new AccessToken(array (
 			'client' => $client,
-			'token' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
+			'token' => $this->generateToken($client->getOAuthIdentifier() . $owner->getOAuthIdentifier()),
 			'expirationDate' => $expiry,
 			'owner' => $owner,
 			'context' => IAccessToken::CONTEXT_RESOURCE_OWNER_IMPLICIT_ACCESS_TOKEN,
@@ -228,7 +228,7 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 
 		$code = new AccessToken(array (
 			'client' => $client,
-			'token' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
+			'token' => $this->generateToken($client->getOAuthIdentifier() . $owner->getOAuthIdentifier()),
 			'expirationDate' => $expiry,
 			'owner' => $owner,
 			'context' => IAccessToken::CONTEXT_CLIENT_ACCESS_TOKEN,
@@ -293,8 +293,8 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 		
 		$token = new AccessToken(array (
 			'client' => $client,
-			'token' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
-			'refreshToken' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
+			'token' => $this->generateToken($client->getOAuthIdentifier() . $owner->getOAuthIdentifier()),
+			'refreshToken' => $this->generateToken($client->getOAuthIdentifier() . $owner->getOAuthIdentifier()),
 			'expirationDate' => $expiry,
 			'owner' => $owner,
 			'context' => IAccessToken::CONTEXT_RESOURCE_OWNER_ACCESS_TOKEN,
@@ -314,8 +314,8 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 		
 		$token = new AccessToken(array (
 			'client' => $client,
-			'token' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
-			'refreshToken' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
+			'token' => $this->generateToken($client->getOAuthIdentifier() . $owner->getOAuthIdentifier()),
+			'refreshToken' => $this->generateToken($client->getOAuthIdentifier() . $owner->getOAuthIdentifier()),
 			'expirationDate' => $expiry,
 			'owner' => $owner,
 			'context' => IAccessToken::CONTEXT_RESOURCE_OWNER_ACCESS_TOKEN,

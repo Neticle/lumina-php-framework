@@ -28,6 +28,7 @@ use DateTime;
 use system\core\Express;
 use system\web\authentication\oauth\server\role\IClient;
 use system\web\authentication\oauth\server\role\IResourceOwner;
+use system\web\authentication\oauth\server\data\IStorage;
 
 /**
  * A simple implementation of the Access Token (as specified by the IAccessToken
@@ -49,16 +50,23 @@ class AccessToken extends Express implements IAccessToken {
 	private $token;
 	
 	/**
+	 * The code (as a string) used to issue this token.
+	 * 
+	 * @type string
+	 */
+	private $code;
+	
+	/**
 	 * The Resource Owner.
 	 * 
-	 * @type IResourceOwner
+	 * @type IResourceOwner|string
 	 */
 	private $owner;
 		
 	/**
 	 * The Client.
 	 * 
-	 * @type IClient
+	 * @type IClient|string
 	 */
 	private $client;
 		
@@ -103,6 +111,16 @@ class AccessToken extends Express implements IAccessToken {
 	}
 	
 	/**
+	 * Gets the storage instance in use by the oauth component.
+	 * 
+	 * @return IStorage
+	 */
+	public function getStorage ()
+	{
+		return $this->getComponent('oauthProvider')->getStorage();
+	}
+	
+	/**
 	 * Gets the token as a string
 	 * 
 	 * @return string
@@ -113,45 +131,58 @@ class AccessToken extends Express implements IAccessToken {
 	}
 
 	/**
-	 * Gets the Resource Owner.
+	 * Gets the code (as a string) used to issue this token.
 	 * 
-	 * @return IResourceOwner
+	 * @return string|null
+	 *  The code used to issue the token, if any.
 	 */
-	public function getOwner ()
+	public function getCode ()
 	{
-		return $this->owner;
+		return $this->code;
 	}
 	
 	/**
-	 * Gets the Resource Owner's ID.
+	 * Gets the Resource Owner.
 	 * 
-	 * @return string
+	 * @return IResourceOwner|string
 	 */
-	public function getOwnerId ()
+	public function getOwner ($returnId = false)
 	{
-		return $this->owner->getIdentifier();
+		$owner = $this->owner;
+		
+		if($returnId === false && !($owner instanceof IResourceOwner))
+		{
+			$owner = $this->getStorage()->fetchResourceOwner($owner);
+		}
+		else if($returnId === true && $owner instanceof IResourceOwner)
+		{
+			$owner = $owner->getOAuthIdentifier();
+		}
+		
+		return $owner;
 	}
-
+	
 	/**
 	 * Gets the Client.
 	 * 
-	 * @return IClient
+	 * @return IClient|string
 	 */
-	public function getClient ()
+	public function getClient ($returnId = false)
 	{
-		return $this->client;
+		$client = $this->client;
+		
+		if($returnId === false && !($client instanceof IClient))
+		{
+			$client = $this->getStorage()->fetchClient($client);
+		}
+		else if($returnId === true && $client instanceof IClient)
+		{
+			$client = $client->getOAuthIdentifier();
+		}
+		
+		return $client;
 	}
 	
-	/**
-	 * Gets the Client's ID.
-	 * 
-	 * @return string
-	 */
-	public function getClientId ()
-	{
-		return $this->client->getIdentifier();
-	}
-
 	/**
 	 * Gets the expiration date for this token.
 	 * 
@@ -205,23 +236,38 @@ class AccessToken extends Express implements IAccessToken {
 	}
 
 	/**
+	 * Sets the code used to issue this token.
+	 * 
+	 * @param string $code
+	 */
+	public function setCode ($code)
+	{
+		if($code instanceof IAuthCode)
+		{
+			$code = $code->getCode();
+		}
+		
+		$this->code = $code;
+	}
+	
+	/**
 	 * Sets the Resource Owner this token belongs to.
 	 * 
-	 * @param IResourceOwner $owner
+	 * @param IResourceOwner|string $owner
 	 */
 	public function setOwner ($owner)
 	{
-		$this->ownerId = $owner;
+		$this->owner = $owner;
 	}
 
 	/**
 	 * Sets the Client this token belongs to.
 	 * 
-	 * @param IClient $client
+	 * @param IClient|string $client
 	 */
 	public function setClient ($client)
 	{
-		$this->clientId = $client;
+		$this->client = $client;
 	}
 
 	/**

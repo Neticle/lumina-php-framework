@@ -58,16 +58,25 @@ interface IAccessToken
 	 * therefore, no more refreshes shall be allowed using the same refresh token.
 	 */
 	const STATUS_REFRESHED = 2;
+		
+	/**
+	 * Token was issued with an authorization code.
+	 */
+	const CONTEXT_RESOURCE_OWNER_ACCESS_TOKEN = 0;
+	
+	/**
+	 * Token was issued through an implicit grant. (no authorization code)
+	 */
+	const CONTEXT_RESOURCE_OWNER_IMPLICIT_ACCESS_TOKEN = 1;
+	
+	/**
+	 * Token was issued to a client. (no owner)
+	 */
+	const CONTEXT_CLIENT_ACCESS_TOKEN = 2;
 	
 	const TYPE_BEARER = 'bearer';
 	
 	const TYPE_MAC = 'mac';
-	
-	const CONTEXT_RESOURCE_OWNER_ACCESS_TOKEN = 0;
-	
-	const CONTEXT_RESOURCE_OWNER_IMPLICIT_ACCESS_TOKEN = 1;
-	
-	const CONTEXT_CLIENT_ACCESS_TOKEN = 2;
 	
 	/**
 	 * Gets the token as a string.
@@ -77,36 +86,28 @@ interface IAccessToken
 	public function getToken ();
 	
 	/**
+	 * Gets the code used to generate this token.
+	 * 
+	 * @return string|null
+	 *  The code, if any.
+	 */
+	public function getCode ();
+	
+	/**
 	 * Gets the resource owner object that this access token belongs to.
 	 * 
 	 * @return IResourceOwner
 	 *  The resource owner.
 	 */
-	public function getOwner ();
-	
-	/**
-	 * Gets the resource owner that this access token belongs to.
-	 * 
-	 * @return string
-	 *  The resource owner ID.
-	 */
-	public function getOwnerId ();
-	
+	public function getOwner ($returnId = false);
+		
 	/**
 	 * Gets the client object that this access token belongs to.
 	 * 
 	 * @return IClient
 	 *  The client.
 	 */
-	public function getClient ();
-	
-	/**
-	 * Gets the client that this access token belongs to.
-	 * 
-	 * @return string
-	 *  The client ID.
-	 */
-	public function getClientId ();
+	public function getClient ($returnId = false);
 	
 	/**
 	 * Gets the date of expiration of this access token.

@@ -25,19 +25,22 @@
 namespace system\web\authentication\oauth\server\role;
 
 /**
- * Represents a resource owner and must be implemented by any class that is to 
- * be used to get authenticated agaisnt the OAuth2 Provider.
- * 
- * From RFC 6749 - The OAuth 2.0 Authorization Framework:
- * 
- * RESOURCE OWNER
- *  An entity capable of granting access to a protected resource.
- *  When the resource owner is a person, it is referred to an an end-user.
- * 
+ *
  * @author Igor Azevedo <igor.azevedo@neticle.pt>
- * @since 0.2.0
  */
-interface IResourceOwner extends IEntity
+interface IEntity 
 {
+    
+	/**
+	 * Gets the identifier for the entity.
+	 * The identifier must be unique (usually the entities "id" on the database).
+	 * 
+	 * Examples:
+	 *  Identifier for user (id: 1) could be "1".
+	 * 
+	 *  Identifier for user (id: 1) could be "user:1" (if there are more than one type
+	 *  of that particular entity).
+	 */
+	public function getOAuthIdentifier ();
 	
 }
