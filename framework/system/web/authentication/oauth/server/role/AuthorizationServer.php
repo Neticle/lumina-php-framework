@@ -120,7 +120,8 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 			'client' => $client,
 			'code' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
 			'expirationDate' => $expiry,
-			'owner' => $owner
+			'owner' => $owner,
+			'status' => IAuthCode::STATUS_UNUSED
 		));
 
 		return $code;
@@ -172,7 +173,8 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 			'token' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
 			'expirationDate' => $expiry,
 			'owner' => $owner,
-			'context' => IAccessToken::CONTEXT_RESOURCE_OWNER_IMPLICIT_ACCESS_TOKEN
+			'context' => IAccessToken::CONTEXT_RESOURCE_OWNER_IMPLICIT_ACCESS_TOKEN,
+			'status' => IAccessToken::STATUS_OK
 		));
 
 		return $code;
@@ -229,7 +231,8 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 			'token' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
 			'expirationDate' => $expiry,
 			'owner' => $owner,
-			'context' => IAccessToken::CONTEXT_CLIENT_ACCESS_TOKEN
+			'context' => IAccessToken::CONTEXT_CLIENT_ACCESS_TOKEN,
+			'status' => IAccessToken::STATUS_OK
 		));
 
 		return $code;
@@ -294,7 +297,8 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 			'refreshToken' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
 			'expirationDate' => $expiry,
 			'owner' => $owner,
-			'context' => IAccessToken::CONTEXT_RESOURCE_OWNER_ACCESS_TOKEN
+			'context' => IAccessToken::CONTEXT_RESOURCE_OWNER_ACCESS_TOKEN,
+			'status' => IAccessToken::STATUS_OK
 		));
 
 		return $token;
@@ -314,7 +318,8 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 			'refreshToken' => $this->generateToken($client->getIdentifier() . $owner->getIdentifier()),
 			'expirationDate' => $expiry,
 			'owner' => $owner,
-			'context' => IAccessToken::CONTEXT_RESOURCE_OWNER_ACCESS_TOKEN
+			'context' => IAccessToken::CONTEXT_RESOURCE_OWNER_ACCESS_TOKEN,
+			'status' => IAccessToken::STATUS_OK
 		));
 
 		return $token;
