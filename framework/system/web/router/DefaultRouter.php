@@ -71,7 +71,7 @@ class DefaultRouter extends Router
 		
 		if (isset($query[$this->key]))
 		{
-			$route = implode('/', 
+			$route = '/' . implode('/', 
 				preg_split('/(\s*' . preg_quote($this->delimiter, '/'). '\s*)/', 
 					$query[$this->key], -1, PREG_SPLIT_NO_EMPTY)
 			);
@@ -83,7 +83,7 @@ class DefaultRouter extends Router
 			$route = null;
 		}
 		
-		return [ $route, $query ];
+		return array_merge(array($route), $query);
 	}
 	
 	/**
@@ -125,19 +125,26 @@ class DefaultRouter extends Router
 	 */
 	public function getDefaultBaseUrl()
 	{
+		// Make sure all required runtime variables are defined, since it
+		// might not be possible to automatically determine the application
+		// base URL.	
 		if (!isset($_SERVER['HTTP_HOST']))
 		{
-			throw new RuntimeException('Value of "Host" header is not defined.');
+			throw new RuntimeException('Unable to automatically determine application base URL.');
 		}
-	
-		$url = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') ?
+
+		// Server HTTP protocol
+		$url = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') ?
 			'https://' : 'http://';
-			
+
+		// Hostname, as specified by the request 'Host' header.
+		// TODO: study possible vulnerabilities unlocked by trusting this
+		// client side value, specially the following: xss, session hj;
 		$url .= $_SERVER['HTTP_HOST'];
-		
-		$url .= $_SERVER['REQUEST_URI'] ? 
-			(substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)) : '/';
-		
+
+		// Document root
+		$url .= dirname($_SERVER['PHP_SELF']) . '/';
+
 		return $url;
 	}
 
