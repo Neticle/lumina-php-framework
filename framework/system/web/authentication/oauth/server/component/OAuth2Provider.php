@@ -25,17 +25,13 @@
 namespace system\web\authentication\oauth\server\component;
 
 use system\base\Component;
+use system\web\authentication\oauth\server\exception\OAuthAuthorizationException;
+use system\web\authentication\oauth\server\exception\OAuthTokenGrantException;
+use system\web\authentication\oauth\server\flow\AuthorizationFlow;
+use system\web\authentication\oauth\server\flow\TokenFlow;
+use system\web\authentication\oauth\server\role\IClient;
 use system\web\Request;
 use system\web\Response;
-use system\core\exception\RuntimeException;
-use system\web\exception\HttpException;
-
-use system\web\authentication\oauth\server\data\ISession;
-use system\web\authentication\oauth\server\role\IClient;
-use system\web\authentication\oauth\server\role\IResourceOwner;
-use system\web\authentication\oauth\server\flow\AuthorizationFlow;
-use system\web\authentication\oauth\server\exception\OAuthAuthorizationException;
-
 
 /**
  * The OAuth2Provider component implements the OAuth 2.0 Authorization Framework 
@@ -77,8 +73,8 @@ class OAuth2Provider extends Component
 	 * 
 	 * @type array
 	 */
-	private $authenticationEndpoint = ['/oauth2/login'];
-		
+	private $authenticationEndpoint = ['/user/login'];
+	
 	/**
 	 * The authorization server default class.
 	 * 
@@ -129,6 +125,18 @@ class OAuth2Provider extends Component
 		]
 	];
 	
+	private $tokenFlows = [
+		
+		'authorization_code' => [
+			'class' => 'system\\web\\authentication\\oauth\\server\\flow\\AccessTokenByCodeFlow'
+		],
+		
+		'refresh_token' => [
+			'class' => 'system\\web\\authentication\\oauth\\server\\flow\\AccessTokenByRefreshTokenFlow'
+		]
+		
+	];
+	
 	public function setAuthorizationFlows (array $authorizationFlows)
 	{
 		foreach ($authorizationFlows as $responseType => $flow) 
@@ -151,7 +159,46 @@ class OAuth2Provider extends Component
 	{
 		$flow = isset($this->authorizationFlows[$responseType]) ? $this->authorizationFlows[$responseType] : null;
 		
-		if($flow === null || !is_array($flow) || !isset($flow['class']))
+		if($flow === null)
+		{
+			return null;
+		}
+		
+		$class = $flow['class'];
+		
+		$flow = array_merge($flow, array(
+			'provider' => $this,
+			'authorizationServer' => $this->getAuthorizationServer()
+		));
+		
+		unset($flow['class']);
+		
+		return new $class($flow);
+	}
+	
+	public function setTokenFlows (array $tokenFlows)
+	{
+		foreach ($tokenFLows as $grantType => $flow)
+		{
+			if(!is_array($flow) || !isset($flow['class']))
+			{
+				continue;
+			}
+			
+			$this->setTokenFlow($grantType, $flow);
+		}
+	}
+	
+	public function setTokenFlow ($grantType, array $flow)
+	{
+		$this->tokenFlows[$grantType] = $flow;
+	}
+	
+	public function getTokenFlowInstance ($grantType)
+	{
+		$flow = isset($this->tokenFlows[$grantType]) ? $this->tokenFlows[$grantType] : null;
+		
+		if($flow === null)
 		{
 			return null;
 		}
@@ -248,9 +295,13 @@ class OAuth2Provider extends Component
 	/**
 	 * Sets the route to the authentication endpoint action.
 	 * 
-	 * @param array $authenticationEndpoint
+	 * If you set this to null, the provider won't automaticly redirect unauthorized
+	 * end-users to the login prompt. Instead, it will raise an exception that you
+	 * must handle as you please.
+	 * 
+	 * @param mixed $authenticationEndpoint
 	 */
-	public function setAuthenticationEndpoint (array $authenticationEndpoint) 
+	public function setAuthenticationEndpoint ($authenticationEndpoint) 
 	{
 		$this->authenticationEndpoint = $authenticationEndpoint;
 	}
@@ -312,7 +363,17 @@ class OAuth2Provider extends Component
 		
 		return $this->authorizationServer;
 	}
-		
+	
+	/**
+	 * Gets the application's router component.
+	 * 
+	 * @return system\web\router\Router
+	 */
+	public final function getRouter ()
+	{
+		return $this->getComponent('router');
+	}
+	
 	/**
 	 * This method contains all the logic necessary to grant an authorization
 	 * code to an application, given a resource owner.
@@ -456,7 +517,116 @@ class OAuth2Provider extends Component
 		// catch any authorization exceptions
 		catch (OAuthAuthorizationException $e) 
 		{
+			if($e->getErrorCode() === OAuthAuthorizationException::ERROR_UNAUTHENTICATED_ENDUSER)
+			{
+				$route = $this->getAuthenticationEndpoint();
+				
+				if($route === null)
+				{
+					// if we dont have a route to redirect the user to,
+					// re-throw the exception so it can be handled further in the
+					// hierarchy.
+					throw $e; 
+				}
+				
+				$route['return_route'] = base64_encode(json_encode(
+					$this->getRouter()
+						->getRequestRoute()
+				));
+				
+				Response::setLocation($route);
+				
+				return;
+			}
+			
 			$this->handleAuthorizationException($e);
+		}
+		
+		// turn any other exception into a server error authorization exception
+		/*catch (\Exception $e)
+		{
+			$this->handleAuthorizationException
+			(
+				new OAuthAuthorizationException
+				(
+					OAuthAuthorizationException::ERROR_SERVER_ERROR, 
+					null, 
+					AuthorizationFlow::getRequestingClient($this, false),
+					'The server encountered an unexpected condition that prevented it from fulfilling the request. ' . $e->getMessage(), 
+					null, 
+					$e
+				)
+			);
+		}*/
+	}
+	
+	public final function getTokenFlowHandler ()
+	{
+		$grantType = Request::getString('grant_type', $_GET, false, null);
+
+		// response type must always be provided
+		if ($grantType === null)
+		{
+			throw new OAuthTokenGrantException
+			(
+				OAuthTokenGrantException::ERROR_INVALID_REQUEST,
+				TokenFlow::getRequestingClient($this),
+				'Grant type is required. (Pass grant type using the "grant_type" parameter)'
+			);
+		}
+
+		$flowHandler = $this->getTokenFlowInstance($grantType);
+		
+		if($flowHandler === null)
+		{
+			$implemented = implode(', ', array_keys($this->tokenFlows));
+			
+			throw new OAuthAuthorizationException
+			(
+				OAuthTokenGrantException::ERROR_UNSUPPORTED_GRANT_TYPE,
+				AuthorizationFlow::getRequestingClient($this),
+				'Grant type "' . $grantType . '" is unsupported/unknown. Currently implemented grant types: ' . $implemented
+			);
+		}
+		
+		return $flowHandler;
+	}
+	
+	public final function handleTokenGrantException (OAuthTokenGrantException $e) 
+	{
+		$parameters = array
+		(
+			'error' => $e->getErrorCode()
+		);
+
+		if($e->getErrorDescription() !== null)
+		{
+			$parameters['error_description'] = $e->getErrorDescription();
+		}
+
+		if($e->getErrorURI() !== null)
+		{
+			$parameters['error_uri'] = $e->getErrorURI();
+		}
+
+		Response::setStatus(400);
+		Response::setHeader('Content-Type', 'application/json;charset=UTF-8');
+
+		echo json_encode($parameters);
+	}
+	
+	public function handleTokenEndpoint ()
+	{
+		try 
+		{
+			$handler = $this->getTokenFlowHandler();
+			
+			$handler->handle();
+		}
+		
+		catch (OAuthTokenGrantException $e) 
+		{
+			$this->handleTokenGrantException($e);
 		}
 		
 		// turn any other exception into a server error authorization exception

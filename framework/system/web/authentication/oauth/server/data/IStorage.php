@@ -1,5 +1,9 @@
 <?php
 
+use system\core\exception\RuntimeException;
+use system\web\authentication\oauth\server\data\IAccessToken;
+use system\web\authentication\oauth\server\data\IAuthCode;
+
 // =============================================================================
 //
 // Copyright 2013 Neticle

@@ -24,7 +24,7 @@
 
 namespace system\web\authentication\oauth\server\role;
 
-use \system\core\Express;
+use system\core\Express;
 
 /**
  * A simple implementation of the Client (as specified by the IClient interface).
@@ -65,6 +65,13 @@ class Client extends Express implements IClient
 	 * @type string
 	 */
 	private $redirectionEndpointURI;
+	
+	/**
+	 * The client secret key.
+	 * 
+	 * @type string 
+	 */
+	private $secret;
 	
 	public function __construct (array $attributes = null)
 	{
@@ -116,6 +123,17 @@ class Client extends Express implements IClient
 	}
 
 	/**
+	 * Gets the client's secret key.
+	 * 
+	 * @return string
+	 *  The secret key, if any.
+	 */
+	public function getSecret ()
+	{
+		return $this->secret;
+	}
+	
+	/**
 	 * Sets the client's identifier string.
 	 * 
 	 * @param string $identifier
@@ -157,6 +175,16 @@ class Client extends Express implements IClient
 	public function setRedirectionEndpointURI ($redirectionEndpointURI)
 	{
 		$this->redirectionEndpointURI = $redirectionEndpointURI;
+	}
+	
+	/**
+	 * Sets the client's secret key.
+	 * 
+	 * @param string $secret
+	 */
+	public function setSecret ($secret)
+	{
+		$this->secret = $secret;
 	}
 
 }

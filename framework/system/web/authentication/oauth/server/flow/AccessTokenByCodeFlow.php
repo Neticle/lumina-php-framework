@@ -24,11 +24,13 @@
 
 namespace system\web\authentication\oauth\server\flow;
 
-use system\web\Request;
-use system\web\authentication\oauth\server\role\IClient;
-use system\web\authentication\oauth\server\data\IAuthCode;
+use DateTime;
 use system\web\authentication\oauth\server\data\IAccessToken;
+use system\web\authentication\oauth\server\data\IAuthCode;
 use system\web\authentication\oauth\server\exception\OAuthTokenGrantException;
+use system\web\authentication\oauth\server\role\IClient;
+use system\web\Request;
+use system\web\Response;
 
 /**
  * Handles the flow for an exchange of an authorization code for an access 
@@ -190,7 +192,7 @@ class AccessTokenByCodeFlow extends TokenFlow
 	
 	protected function buildResponseObject (IAccessToken $token)
 	{
-		$now = new \DateTime('now');
+		$now = new DateTime('now');
 
 		return array
 		(
@@ -200,7 +202,7 @@ class AccessTokenByCodeFlow extends TokenFlow
 			'refresh_token' => $token->getRefreshToken(),
 			
 			// this isn't standard on the specification, just provided as an helper
-			'expiration_date' => $token->getExpirationDate()->format(\DateTime::W3C)
+			'expiration_date' => $token->getExpirationDate()->format(DateTime::W3C)
 		);
 	}
 	

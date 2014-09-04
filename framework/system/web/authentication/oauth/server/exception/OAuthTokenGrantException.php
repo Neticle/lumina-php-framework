@@ -1,5 +1,7 @@
 <?php
 
+use system\web\authentication\oauth\server\role\IClient;
+
 // =============================================================================
 //
 // Copyright 2013 Neticle
@@ -23,8 +25,6 @@
 // =============================================================================
 
 namespace system\web\authentication\oauth\server\exception;
-
-use \system\core\exception\Exception;
 
 /**
  * The OAuthTokenGrantException is intended to be thrown within the token endpoint

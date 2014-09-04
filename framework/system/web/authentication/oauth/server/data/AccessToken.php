@@ -24,7 +24,10 @@
 
 namespace system\web\authentication\oauth\server\data;
 
-use \system\core\Express;
+use DateTime;
+use system\core\Express;
+use system\web\authentication\oauth\server\role\IClient;
+use system\web\authentication\oauth\server\role\IResourceOwner;
 
 /**
  * A simple implementation of the Access Token (as specified by the IAccessToken
@@ -72,6 +75,27 @@ class AccessToken extends Express implements IAccessToken {
 	 * @type int 
 	 */
 	private $context;
+	
+	/**
+	 * The token's status.
+	 * 
+	 * @type int 
+	 */
+	private $status;
+	
+	/**
+	 * The token's type.
+	 * 
+	 * @type string
+	 */
+	private $type;
+	
+	/**
+	 * The refresh token.
+	 * 
+	 * @type string
+	 */
+	private $refreshToken;
 	
 	public function __construct(array $attributes = null)
 	{
@@ -131,7 +155,7 @@ class AccessToken extends Express implements IAccessToken {
 	/**
 	 * Gets the expiration date for this token.
 	 * 
-	 * @return \DateTime
+	 * @return DateTime
 	 */
 	public function getExpirationDate ()
 	{
@@ -148,6 +172,26 @@ class AccessToken extends Express implements IAccessToken {
 	public function getContextType ()
 	{
 		return $this->context;
+	}
+	
+	/**
+	 * Gets the token type.
+	 * 
+	 * @return string
+	 */
+	public function getType ()
+	{
+		return IAccessToken::TYPE_BEARER;
+	}
+
+	public function getRefreshToken ()
+	{
+		return $this->refreshToken;
+	}
+
+	public function getStatus ()
+	{
+		return $this->status;
 	}
 	
 	/**
@@ -183,9 +227,9 @@ class AccessToken extends Express implements IAccessToken {
 	/**
 	 * Sets the expiration date for this token.
 	 * 
-	 * @param \DateTime $expirationDate
+	 * @param DateTime $expirationDate
 	 */
-	public function setExpirationDate (\DateTime $expirationDate)
+	public function setExpirationDate (DateTime $expirationDate)
 	{
 		$this->expirationDate = $expirationDate;
 	}
@@ -201,6 +245,21 @@ class AccessToken extends Express implements IAccessToken {
 		$this->context = $context;
 	}
 	
+	public function setType ($type)
+	{
+		$this->type = $type;
+	}
+
+	public function setRefreshToken ($refreshToken)
+	{
+		$this->refreshToken = $refreshToken;
+	}
+
+	public function setStatus ($status)
+	{
+		$this->status = $status;
+	}
+	
 	/**
 	 * Checks whether or not this token is still valid.
 	 * 
@@ -211,17 +270,7 @@ class AccessToken extends Express implements IAccessToken {
 	{
 		$expiration = $this->getExpirationDate();
 
-		return $expiration < new \DateTime('now');
-	}
-
-	/**
-	 * Gets the token type.
-	 * 
-	 * @return string
-	 */
-	public function getType ()
-	{
-		return IAccessToken::TYPE_BEARER;
+		return $expiration < new DateTime('now');
 	}
 
 }

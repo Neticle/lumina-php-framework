@@ -24,7 +24,8 @@
 
 namespace system\web\authentication\oauth\server\flow;
 
-use system\web\Request;
+use system\web\authentication\oauth\server\exception\OAuthAuthorizationException;
+use system\web\authentication\oauth\server\flow\AuthorizationFlow;
 use system\web\Response;
 
 /**
@@ -54,7 +55,7 @@ class ClientCredentialsFlow extends AuthorizationFlow
 	
 	protected function buildResponseObject ($token)
 	{
-		$now = new \DateTime('now');
+		$now = new DateTime('now');
 
 		return array
 		(
@@ -64,7 +65,7 @@ class ClientCredentialsFlow extends AuthorizationFlow
 			'refresh_token' => $token->getRefreshToken(),
 			
 			// this isn't standard on the specification, just provided as an helper
-			'expiration_date' => $token->getExpirationDate()->format(\DateTime::W3C)
+			'expiration_date' => $token->getExpirationDate()->format(DateTime::W3C)
 		);
 	}
 	

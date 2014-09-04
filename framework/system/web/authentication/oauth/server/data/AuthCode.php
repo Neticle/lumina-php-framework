@@ -24,9 +24,10 @@
 
 namespace system\web\authentication\oauth\server\data;
 
-use \system\core\Express;
-use \system\web\authentication\oauth\server\role\IClient;
-use \system\web\authentication\oauth\server\role\IResourceOwner;
+use DateTime;
+use system\core\Express;
+use system\web\authentication\oauth\server\role\IClient;
+use system\web\authentication\oauth\server\role\IResourceOwner;
 
 /**
  * A simple implementation of the Authorization Code (as specified by the IAuthCode
@@ -54,34 +55,27 @@ class AuthCode extends Express implements IAuthCode
 	 * @type IResourceOwner 
 	 */
 	private $owner;
-	
-	/**
-	 * The Resource Owner's ID.
-	 * 
-	 * @type string
-	 */
-	private $ownerId;
-	
+		
 	/**
 	 * The Client.
 	 * 
 	 * @type IClient 
 	 */
 	private $client;
-	
-	/**
-	 * The Client's ID.
-	 * 
-	 * @type string
-	 */
-	private $clientId;
-	
+		
 	/**
 	 * The expiration date for this code.
 	 * 
 	 * @type \DateTime
 	 */
 	private $expirationDate;
+
+	/**
+	 * The status code.
+	 * 
+	 * @type int
+	 */
+	private $status;
 	
 	public function __construct(array $attributes = null)
 	{
@@ -131,13 +125,18 @@ class AuthCode extends Express implements IAuthCode
 	/**
 	 * Gets the expiration date for this code.
 	 * 
-	 * @return \DateTime
+	 * @return DateTime
 	 */
 	public function getExpirationDate ()
 	{
 		return $this->expirationDate;
 	}
 
+	public function getStatus ()
+	{
+		return $this->status;
+	}
+	
 	/**
 	 * Sets the code string.
 	 * 
@@ -162,13 +161,18 @@ class AuthCode extends Express implements IAuthCode
 	/**
 	 * Sets the expiration date for this code.
 	 * 
-	 * @param \DateTime $expirationDate
+	 * @param DateTime $expirationDate
 	 */
-	public function setExpirationDate (\DateTime $expirationDate)
+	public function setExpirationDate (DateTime $expirationDate)
 	{
 		$this->expirationDate = $expirationDate;
 	}
 
+	public function setStatus ($status)
+	{
+		$this->status = $status;
+	}
+	
 	/**
 	 * Checks whether or not this code is still valid.
 	 * 
@@ -179,7 +183,7 @@ class AuthCode extends Express implements IAuthCode
 	{
 		$expiration = $this->getExpirationDate();
 
-		return $expiration < new \DateTime('now');
+		return $expiration < new DateTime('now');
 	}
 
 }

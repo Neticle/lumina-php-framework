@@ -24,7 +24,8 @@
 
 namespace system\web\authentication\oauth\server\exception;
 
-use \system\core\exception\Exception;
+use system\core\exception\Exception;
+use system\web\authentication\oauth\server\role\IClient;
 
 /**
  * The OAuthAuthorizationException is intended to be thrown within the authorization

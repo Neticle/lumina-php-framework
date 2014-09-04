@@ -25,8 +25,9 @@
 namespace system\web\authentication\oauth\server\flow;
 
 use system\core\Express;
-use system\web\Request;
+use system\web\authentication\oauth\server\component\OAuth2Provider;
 use system\web\authentication\oauth\server\role\IAuthorizationServer;
+use system\web\Request;
 
 /**
  * Description of Flow

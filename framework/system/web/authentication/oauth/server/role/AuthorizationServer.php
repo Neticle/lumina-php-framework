@@ -24,14 +24,16 @@
 
 namespace system\web\authentication\oauth\server\role;
 
-use \system\core\Express;
-use \system\web\authentication\oauth\server\data\IAuthCode;
-use \system\web\authentication\oauth\server\data\AuthCode;
-use \system\web\authentication\oauth\server\data\IAccessToken;
-use \system\web\authentication\oauth\server\data\AccessToken;
-use \system\web\authentication\oauth\server\data\IStorage;
-use \system\web\authentication\oauth\server\exception\OAuthAuthorizationException;
-use \system\web\authentication\oauth\server\exception\OAuthTokenGrantException;
+use DateTime;
+use system\core\Express;
+use system\web\authentication\oauth\server\data\AccessToken;
+use system\web\authentication\oauth\server\data\AuthCode;
+use system\web\authentication\oauth\server\data\IAccessToken;
+use system\web\authentication\oauth\server\data\IAuthCode;
+use system\web\authentication\oauth\server\data\IStorage;
+use system\web\authentication\oauth\server\exception\OAuthAuthorizationException;
+use system\web\authentication\oauth\server\exception\OAuthTokenGrantException;
+
 /**
  * A simple implementation of the Authorization Server (as specified by the 
  * IAuthorizationServer interface).
@@ -111,7 +113,7 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 	 */
 	protected function buildAuthorizationCode (IResourceOwner $owner, IClient $client)
 	{
-		$expiry = new \DateTime('now');
+		$expiry = new DateTime('now');
 		$expiry->modify('+5 minute');
 
 		$code = new AuthCode(array (
@@ -162,7 +164,7 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 	 */
 	protected function buildImplicitAccessToken (IResourceOwner $owner, IClient $client)
 	{
-		$expiry = new \DateTime('now');
+		$expiry = new DateTime('now');
 		$expiry->modify('+1 hour');
 
 		$code = new AccessToken(array (
@@ -219,7 +221,7 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 
 	protected function buildClientAccessToken (IResourceOwner $owner, IClient $client)
 	{
-		$expiry = new \DateTime('now');
+		$expiry = new DateTime('now');
 		$expiry->modify('+1 hour');
 
 		$code = new AccessToken(array (
@@ -280,7 +282,7 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 
 	protected function buildAccessToken (IAuthCode $code)
 	{
-		$expiry = new \DateTime('now');
+		$expiry = new DateTime('now');
 		$expiry->modify('+1 hour');
 
 		$client = $code->getClient();
@@ -300,7 +302,7 @@ class AuthorizationServer extends Express implements IAuthorizationServer
 	
 	protected function buildRefreshedAccessToken (IAccessToken $original)
 	{
-		$expiry = new \DateTime('now');
+		$expiry = new DateTime('now');
 		$expiry->modify('+1 hour');
 
 		$client = $original->getClient();

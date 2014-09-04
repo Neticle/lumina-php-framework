@@ -25,6 +25,7 @@
 namespace system\web\authentication\oauth\server\flow;
 
 use system\web\Request;
+use system\web\Response;
 
 /**
  * Description of ImplicitTokenFlow

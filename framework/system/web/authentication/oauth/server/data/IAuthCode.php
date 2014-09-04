@@ -105,16 +105,7 @@ interface IAuthCode
 	 *  The status.
 	 */
 	public function getStatus ();
-	
-	/**
-	 * Sets the code status.
-	 * 
-	 * (See IAuthCode::STATUS_*)
-	 * 
-	 * @param int $status
-	 */
-	public function setStatus ($status);
-	
+		
 	/**
 	 * Checks whether or not this code is still valid.
 	 * Must verify the expiration date, but can also perform any additional checks

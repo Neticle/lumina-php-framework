@@ -24,9 +24,9 @@
 
 namespace system\web\authentication\oauth\server\flow;
 
+use system\web\authentication\oauth\server\exception\OAuthAuthorizationException;
 use system\web\Request;
 use system\web\Response;
-use system\web\authentication\oauth\server\exception\OAuthAuthorizationException;
 
 /**
  * Description of AuthorizationCodeFlow

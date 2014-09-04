@@ -22,47 +22,9 @@
 //
 // =============================================================================
 
-namespace system\web\authentication\oauth\server\flow;
+define('L_APPLICATION_ROOT', dirname(__FILE__));
+require '../../framework/bootstrap.php';
 
-use system\web\authentication\oauth\server\component\OAuth2Provider;
-use system\web\Request;
+$app = \system\core\Lumina::loadWebApplication('~settings.default');
+$app->dispatchRequest();
 
-/**
- * Description of TokenFlow
- *
- * @author Igor Azevedo <igor.azevedo@neticle.pt>
- */
-abstract class TokenFlow extends Flow
-{
-    
-	public static function getRequestingClient (OAuth2Provider $provider)
-	{
-		$clientId = Request::getString('client_id', $_GET, false, null);
-
-		if ($clientId === null)
-		{
-			return null;
-		}
-
-		return $provider->getStorage()->fetchClient($clientId);
-	}
-	
-	protected function onBeforeValidate () {
-		return true;
-	}
-	
-	protected function onBeforeGrant () {
-		return true;
-	}
-	
-	public abstract function prepare ();
-	
-	public abstract function validate ();
-	
-	public abstract function grant ();
-	
-	public final function handle () {
-		return ($this->prepare() && $this->validate() && $this->grant());
-	}
-	
-}

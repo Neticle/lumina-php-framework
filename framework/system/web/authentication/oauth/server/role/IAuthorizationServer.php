@@ -24,6 +24,9 @@
 
 namespace system\web\authentication\oauth\server\role;
 
+use system\web\authentication\oauth\server\data\IAccessToken;
+use system\web\authentication\oauth\server\data\IAuthCode;
+
 /**
  * Represents an entity that is capable of authenticating a resource owner and 
  * issuing access tokens with the authorization of said resource owner.

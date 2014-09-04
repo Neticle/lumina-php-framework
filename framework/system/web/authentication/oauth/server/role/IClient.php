@@ -127,4 +127,12 @@ interface IClient
 	 */
 	public function getRedirectionEndpointURI ();
 	
+	/**
+	 * Get's the client's secret key.
+	 * 
+	 * @return string
+	 *  The secret key, if any.
+	 */
+	public function getSecret ();
+	
 }

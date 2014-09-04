@@ -22,47 +22,22 @@
 //
 // =============================================================================
 
-namespace system\web\authentication\oauth\server\flow;
+namespace application\controller;
 
-use system\web\authentication\oauth\server\component\OAuth2Provider;
-use system\web\Request;
+use \system\web\Controller;
 
-/**
- * Description of TokenFlow
- *
- * @author Igor Azevedo <igor.azevedo@neticle.pt>
- */
-abstract class TokenFlow extends Flow
+class Oauth2Controller extends Controller
 {
-    
-	public static function getRequestingClient (OAuth2Provider $provider)
+
+	public function actionAuthorization()
 	{
-		$clientId = Request::getString('client_id', $_GET, false, null);
-
-		if ($clientId === null)
-		{
-			return null;
-		}
-
-		return $provider->getStorage()->fetchClient($clientId);
+		$this->getComponent('oauthProvider')
+			->handleAuthorizationEndpoint();
 	}
 	
-	protected function onBeforeValidate () {
-		return true;
+	public function actionToken()
+	{
+		$this->getComponent('oauthProvider')
+			->handleTokenEndpoint();
 	}
-	
-	protected function onBeforeGrant () {
-		return true;
-	}
-	
-	public abstract function prepare ();
-	
-	public abstract function validate ();
-	
-	public abstract function grant ();
-	
-	public final function handle () {
-		return ($this->prepare() && $this->validate() && $this->grant());
-	}
-	
 }
