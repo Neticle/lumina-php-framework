@@ -50,7 +50,7 @@ class PasswordDigest extends Component
 	 *
 	 * @type string
 	 */
-	private $options = array
+	private $options = 
 	[
 		'cost' => 10
 	];

@@ -145,8 +145,8 @@ class Application extends \system\base\Application
 	public function dispatchRequest()
 	{
 		$route = $this->getComponent('router')->getRequestRoute();
-		
-		if (!$this->dispatch($route[0], $route[1]))
+				
+		if (!$this->dispatch($route[0], array_slice($route, 1)))
 		{
 			throw new HttpException(404, 'Document Not Found');
 		}

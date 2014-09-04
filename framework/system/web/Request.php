@@ -455,5 +455,22 @@ class Request
 		return strtoupper($_SERVER['REQUEST_METHOD']);
 	}
 
+	public static function getHeaders()
+	{
+		// TODO: Find a suitable and portable solution.
+		// apache_request_headers() - only works with apache or FastCGI (php > 5.4)
+		// http_get_request_headers() - requires a pecl extension to be installed (pecl_http)
+		// getallheaders() - is apparently an alias to apache_request_headers
+		// ...
+		
+		return apache_request_headers();
+	}
+	
+	public static function getHeader($key)
+	{
+		return self::get($key, $result, null, self::getHeaders(), false) ? 
+			$result : null;
+	}
+	
 }
 
