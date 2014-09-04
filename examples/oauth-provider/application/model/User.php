@@ -66,7 +66,8 @@ class User extends Record implements IResourceOwner
 	public function findByCredentials ($username, $password)
 	{
 		$user = $this->findByAttributes(array(
-			'username' => $username
+			'username' => $username,
+			'active' => 1
 		));
 		
 		if($user !== null)
