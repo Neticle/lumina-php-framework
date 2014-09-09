@@ -83,6 +83,14 @@ class Application extends Module
 					'cache' => 
 					[
 						'class' => 'system\\cache\\DefaultCache'
+					],
+					
+					// Implements an HTTP client capable of sending requests and 
+					// parsing the responses.
+					'http' => 
+					[
+						'class' => 'system\\http\\HTTPComponent',
+						'wrapper' => 'curl'
 					]
 				
 				]
