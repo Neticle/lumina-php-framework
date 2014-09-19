@@ -46,4 +46,25 @@ class Response extends Message implements IResponse
 		$this->code = intval($code);
 	}
 	
+	public function getContentType ($raw = false)
+	{
+		$contentType = $this->getHeader('Content-Type');
+		
+		if($raw || $contentType === null)
+		{
+			return $contentType;
+		}
+		
+		$contentType = explode(';', $contentType);
+		
+		return trim($contentType[0]);
+	}
+	
+	public function compareContentType ($comparison)
+	{
+		$contentType = $this->getContentType();
+		
+		return $contentType === null ? false : (strtolower($contentType) === strtolower($comparison)); 
+	}
+	
 }
