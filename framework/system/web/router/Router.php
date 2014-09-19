@@ -105,6 +105,12 @@ abstract class Router extends Component
 	 */
 	public final function createUrl($route = null, array $parameters = null)
 	{
+		if(is_array($route))
+		{
+			$parameters = array_slice($route, 1);
+			$route = $route[0];
+		}
+		
 		return $this->createRouteUrl
 		(
 			$this->getApplication()->getContext()->getResolvedContextRoute($route),
@@ -127,6 +133,12 @@ abstract class Router extends Component
 	 */
 	public final function createAbsoluteUrl($route = null, array $parameters = null)
 	{
+		if(is_array($route))
+		{
+			$parameters = array_slice($route, 1);
+			$route = $route[0];
+		}
+		
 		return $this->createAbsoluteRouteUrl
 		(
 			$this->getApplication()->getContext()->getResolvedContextRoute($route),
@@ -167,6 +179,12 @@ abstract class Router extends Component
 	 */
 	public function createAbsoluteRouteUrl($route = null, array $parameters = null)
 	{
+		if(is_array($route))
+		{
+			$parameters = array_slice($route, 1);
+			$route = $route[0];
+		}
+	
 		return $this->getBaseUrl() . $this->createRouteUrl($route, $parameters);
 	}
 
