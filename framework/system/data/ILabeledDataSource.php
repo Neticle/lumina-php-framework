@@ -32,8 +32,23 @@ namespace system\data;
 interface ILabeledDataSource extends IDataSource
 {
 
+	/**
+	 * Gets the label for a given attribute.
+	 *
+	 * @param string $attribute
+	 *  The name of the attribute to get the label for
+	 *
+	 * @return string|null
+	 *  The attribute's label, if any.
+	 */
 	public function getAttributeLabel ($attribute);
 
+	/**
+	 * Gets the list of labels for the attributes.
+	 *
+	 * @return array
+	 *  The list of labels, indexed by attribute's name
+	 */
 	public function getAttributeLabels ();
 
 }

@@ -32,10 +32,23 @@ namespace system\data;
 interface IDataSink
 {
 
+	/**
+	 * Defines the value of a given attribute.
+	 *
+	 * @param string $attribute
+	 *  The name of the attribute to defined the value for
+	 *
+	 * @param mixed $value
+	 *  The new value to be assigned
+	 */
 	public function setAttribute ($attribute, $value);
 	
+	/**
+	 * Defines the values of a list of attributes.
+	 *
+	 * @param array $attributes
+	 *  An associative array containing all values to be defined, indexed by attribute's name
+	 */
 	public function setAttributes (array $attributes);
-
-	public function getAttributeNames ();
 
 }

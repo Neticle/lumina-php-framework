@@ -32,10 +32,31 @@ namespace system\data;
 interface IDataSource
 {
 
+	/**
+	 * Returns the value of an attribute.
+	 *
+	 * @param string $attribute
+	 *  The name of the attribute to get the value of
+	 *
+	 * @return mixed
+	 *  The attribute's value
+	 */
 	public function getAttribute ($attribute);
 	
+	/**
+	 * Gets all attributes and respective values, in an associative array indexed by attribute name.
+	 *
+	 * @return array
+	 *  The attributes and values, indexed by name
+	 */
 	public function getAttributes ();
 
+	/**
+	 * Gets the names of all attributes.
+	 *
+	 * @return array
+	 *  The attribute names
+	 */
 	public function getAttributeNames ();
 
 }
