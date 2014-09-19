@@ -35,7 +35,7 @@ use \system\data\validation\Rule;
  * @author Lumina Framework <lumina@incubator.neticle.com>
  * @since 0.2.0
  */
-abstract class Model extends Element
+abstract class Model extends Element implements ILabeledDataSource, IDataSink
 {
 	/**
 	 * Cached model instances, indexed by class name.
