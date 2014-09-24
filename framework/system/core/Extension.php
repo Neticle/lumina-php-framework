@@ -267,7 +267,7 @@ abstract class Extension extends Element
 		// Check the parent extensions
 		else if ($recursive && isset($this->parent))
 		{
-			$instance = $this->parent->getComponent($name, true);
+			$instance = $this->parent->getComponent($name, $initialize);
 			$this->componentInstances[$name] = $instance;
 		}
 		else
