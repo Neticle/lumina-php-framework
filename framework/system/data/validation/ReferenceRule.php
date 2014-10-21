@@ -27,6 +27,7 @@ namespace system\data\validation;
 use \system\data\IValidatableDataContainer;
 use \system\data\validation\Rule;
 use \system\sql\Criteria;
+use \system\core\exception\RuntimeException;
 
 /**
  * Validates an attribute by making sure it's value references an
