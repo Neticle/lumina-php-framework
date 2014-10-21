@@ -24,7 +24,7 @@
 
 namespace system\data\validation;
 
-use \system\data\Model;
+use \system\data\IValidatableDataContainer;
 use \system\data\validation\NumericRule;
 
 /**
@@ -115,7 +115,7 @@ class RangeRule extends NumericRule {
 	 * @return bool
 	 *	Returns TRUE on success, FALSE otherwise.
 	 */
-	public function validateAttributeValue(Model $model, $attribute, $value)
+	public function validateAttributeValue(IValidatableDataContainer $model, $attribute, $value)
 	{
 		if (parent::validateAttributeValue($model, $attribute, $value))
 		{

@@ -24,7 +24,7 @@
 
 namespace system\data\validation;
 
-use \system\data\Model;
+use \system\data\IValidatableDataContainer;
 use \system\data\validation\Rule;
 
 /**
@@ -98,7 +98,7 @@ class EmailRule extends Rule {
 	 * @return bool
 	 *	Returns TRUE on success, FALSE otherwise.
 	 */
-	public function validateAttributeValue(Model $model, $attribute, $value) 
+	public function validateAttributeValue(IValidatableDataContainer $model, $attribute, $value) 
 	{	
 		// Get the email pattern alias or regex to be used
 		$pattern = $this->pattern;

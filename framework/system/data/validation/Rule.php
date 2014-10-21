@@ -25,7 +25,7 @@
 namespace system\data\validation;
 
 use \system\core\Element;
-use \system\data\Model;
+use \system\data\IValidatableDataContainer;
 
 /**
  * A Rule is used to validate values previously bound to a model instance in
@@ -347,7 +347,7 @@ abstract class Rule extends Element
 	 * @return bool
 	 *	Returns TRUE if the attribute value is valid, FALSE otherwise.
 	 */
-	public function validateAttributeValue(Model $model, $attribute, $value)
+	public function validateAttributeValue(IValidatableDataContainer $model, $attribute, $value)
 	{
 		return true;
 	}
@@ -367,7 +367,7 @@ abstract class Rule extends Element
 	 * @return bool
 	 *	Returns TRUE on success, FALSE on failure.
 	 */
-	public function validate(Model $model, array $attributes = null)
+	public function validate(IValidatableDataContainer $model, array $attributes = null)
 	{
 		$context = $model->getContext();
 		
@@ -423,7 +423,7 @@ abstract class Rule extends Element
 	 *	An associative array containing additional parameters to be used
 	 *	by the error message.
 	 */
-	protected final function reportEx(Model $model, $attribute, $message, array $parameters = null)
+	protected final function reportEx(IValidatableDataContainer $model, $attribute, $message, array $parameters = null)
 	{
 		$search = array('{attribute}', '{attribute-name}');
 		$replace = array($model->getAttributeLabel($attribute), $attribute);
@@ -454,7 +454,7 @@ abstract class Rule extends Element
 	 *	An associative array containing additional parameters to be used
 	 *	by the error message.
 	 */
-	protected final function report(Model $model, $attribute, array $parameters = null)
+	protected final function report(IValidatableDataContainer $model, $attribute, array $parameters = null)
 	{
 		$this->reportEx($model, $attribute, $this->message, $parameters);
 	}

@@ -24,7 +24,7 @@
 
 namespace system\data\validation;
 
-use \system\data\Model;
+use \system\data\IValidatableDataContainer;
 use \system\data\validation\Rule;
 use \system\sql\Criteria;
 
@@ -115,7 +115,7 @@ class ReferenceRule extends Rule {
 	 * @return bool
 	 *	Returns TRUE on success, FALSE otherwise.
 	 */
-	public function validateAttributeValue(Model $model, $attribute, $value)
+	public function validateAttributeValue(IValidatableDataContainer $model, $attribute, $value)
 	{
 		if (!$this->column || !$this->table)
 		{

@@ -24,7 +24,7 @@
 
 namespace system\data\validation;
 
-use \system\data\Model;
+use \system\data\IValidatableDataContainer;
 use \system\data\validation\Rule;
 
 /**
@@ -93,7 +93,7 @@ class EnumRule extends Rule {
 	 * @return bool
 	 *	Returns TRUE on success, FALSE otherwise.
 	 */
-	public function validateAttributeValue(Model $model, $attribute, $value) 
+	public function validateAttributeValue(IValidatableDataContainer $model, $attribute, $value) 
 	{		
 		if (!in_array($value, $this->options)) 
 		{

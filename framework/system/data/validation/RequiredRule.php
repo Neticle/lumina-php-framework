@@ -24,7 +24,7 @@
 
 namespace system\data\validation;
 
-use \system\data\Model;
+use \system\data\IValidatableDataContainer;
 use \system\data\validation\Rule;
 
 /**

@@ -24,7 +24,7 @@
 
 namespace system\data\validation;
 
-use \system\data\Model;
+use \system\data\IValidatableDataContainer;
 use \system\data\validation\Rule;
 
 /**
@@ -59,7 +59,7 @@ class UnsafeRule extends Rule
 	 * @return bool
 	 *	Returns TRUE on success, FALSE on failure.
 	 */
-	public function validate(Model $model, array $attributes = null)
+	public function validate(IValidatableDataContainer $model, array $attributes = null)
 	{
 		return true;
 	}

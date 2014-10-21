@@ -22,38 +22,33 @@
 //
 // =============================================================================
 
-namespace system\data\validation;
-
-use \system\data\Model;
-use \system\data\validation\Rule;
+namespace system\data;
 
 /**
- * Marks a model attribute as safe for massive assignment.
+ * Extends the IValidatableDataContainer interface to provide read, write and search functionality to
+ * a persistent storage mechanism.
  *
- * @author Lumina Framework <lumina@incubator.neticle.com>
- * @package system.data.validation
- * @since 0.2.0
+ * @author Igor Azevedo <igor.azevedo@neticle.pt>
  */
-class SafeRule extends Rule 
+interface ICollectableDataContainer extends IValidatableDataContainer
 {
-	/**
-	 * Runs this validation rule against the given model.
-	 *
-	 * @param Model $model
-	 *	The model being validated.
-	 *
-	 * @param string[] $attributes
-	 *	The names of the attributes to validate.
-	 *
-	 *	Please note that this rule will only validate the attribute it applies
-	 *	to, ignoring any extra arguments given in this array.
-	 *
-	 * @return bool
-	 *	Returns TRUE on success, FALSE on failure.
-	 */
-	public function validate(IValidatableDataContainer $model, array $attributes = null)
-	{
-		return true;
-	}
-}
 
+	public function isNewRecord();
+	
+	public function find($criteria = null);
+	
+	public function findAll($criteria = null);
+	
+	public function findByAttributes(array $attributes);
+	
+	public function findAllByAttributes(array $attributes);
+	
+	public function exists($criteria = null);
+	
+	public function save($validate = true);
+	
+	public function delete();
+	
+	public function deleteAll($criteria = null);
+
+}

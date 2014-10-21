@@ -26,6 +26,7 @@ namespace system\sql\data;
 
 use \system\core\exception\RuntimeException;
 use \system\data\Model;
+use \system\data\ICollectableDataContainer;
 use \system\sql\Criteria;
 use \system\sql\Reader;
 
@@ -37,7 +38,7 @@ use \system\sql\Reader;
  * @author Lumina Framework <lumina@incubator.neticle.com>
  * @since 0.2.0
  */
-abstract class Record extends Model
+abstract class Record extends Model implements ICollectableDataContainer
 {
 	/**
 	 * The schema of the table this record is linked to.
