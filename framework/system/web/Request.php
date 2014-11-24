@@ -472,5 +472,16 @@ class Request
 			$result : null;
 	}
 	
+	/**
+	 * Returns the request's POST body raw contents, if any.
+	 *
+	 * @return string
+	 *  The request body contents.
+	 */
+	public static function getBody()
+	{
+		return file_get_contents('php://input');
+	}
+	
 }
 
