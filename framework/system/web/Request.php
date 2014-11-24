@@ -455,6 +455,12 @@ class Request
 		return strtoupper($_SERVER['REQUEST_METHOD']);
 	}
 
+	/**
+	 * Gets the list of request headers received.
+	 *
+	 * @return array
+	 *  An associative array paired by the header names and respective values.
+	 */
 	public static function getHeaders()
 	{
 		// TODO: Find a suitable and portable solution.
@@ -466,6 +472,15 @@ class Request
 		return apache_request_headers();
 	}
 	
+	/**
+	 * Gets the value of a given request header.
+	 *
+	 * @param string $key
+	 *  The name of the header to be fetched.
+	 *
+	 * @return string|null
+	 *  The header's value if present, null otherwise.
+	 */
 	public static function getHeader($key)
 	{
 		return self::get($key, $result, null, self::getHeaders(), false) ? 
