@@ -250,7 +250,7 @@ abstract class Extension extends Element
 	 *	Returns the component instance.
 	 */
 	public function getComponent($name, $initialize = true, $recursive = true)
-	{
+	{	
 		// Get a cached instance
 		if (isset($this->componentInstances[$name]))
 		{
@@ -261,6 +261,14 @@ abstract class Extension extends Element
 		else if (isset($this->components[$name]))
 		{
 			$component = $this->components[$name];
+			
+			// A component alias may be specified and thus, the real component
+			// has to be returned instead.
+			if (is_string($component))
+			{
+				return $this->getComponent($component);
+			}
+			
 			$instance = $this->loadComponentFromArray($name, $component);
 		}
 		
