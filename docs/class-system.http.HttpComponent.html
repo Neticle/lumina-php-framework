@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>Class system\http\HTTPComponent</title>
+	<title>Class system\http\HttpComponent</title>
 
 	<link rel="stylesheet" href="resources/style.css?331665766">
 
@@ -381,7 +381,7 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
-				<li class="active"><a href="class-system.http.HTTPComponent.html">HTTPComponent</a></li>
+				<li class="active"><a href="class-system.http.HttpComponent.html">HttpComponent</a></li>
 				<li><a href="class-system.http.Message.html">Message</a></li>
 				<li><a href="class-system.http.Request.html">Request</a></li>
 				<li><a href="class-system.http.Response.html">Response</a></li>
@@ -433,7 +433,7 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class HTTPComponent</h1>
+	<h1>Class HttpComponent</h1>
 
 
 	<div class="description">
@@ -478,7 +478,7 @@
 		</dd>
 		<dd style="padding-left:150px">
 			<img src="resources/inherit.png" alt="Extended by">
-<b><span>system\http\HTTPComponent</span></b>			
+<b><span>system\http\HttpComponent</span></b>			
 			
 			
 		</dd>
@@ -500,7 +500,7 @@
 				<b>Author:</b>
 				Igor Azevedo <a href="&#109;a&#x69;&#108;&#x74;&#111;&#x3a;&#105;&#x67;&#111;&#x72;&#46;a&#x7a;&#101;&#x76;&#101;&#x64;&#111;&#x40;&#110;&#x65;&#116;&#x69;&#99;l&#x65;&#46;&#x70;&#116;">&#105;&#x67;&#111;&#x72;&#46;a&#x7a;&#101;&#x76;&#101;&#x64;&#111;&#x40;&#110;&#x65;&#116;&#x69;&#99;l&#x65;&#46;&#x70;&#116;</a>
 <br>
-		<b>Located at</b> <a href="source-class-system.http.HTTPComponent.html#30-170" title="Go to source code">system/http/HTTPComponent.php</a><br>
+		<b>Located at</b> <a href="source-class-system.http.HttpComponent.html#30-160" title="Go to source code">system/http/HttpComponent.php</a><br>
 	</div>
 
 
@@ -519,7 +519,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getWrapper">#</a>
-		<code><a href="source-class-system.http.HTTPComponent.html#56-64" title="Go to source code">getWrapper</a>( )</code>
+		<code><a href="source-class-system.http.HttpComponent.html#56-64" title="Go to source code">getWrapper</a>( )</code>
 
 		<div class="description short">
 			<p>Gets the wrapper configuration.</p>
@@ -555,7 +555,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setWrapper">#</a>
-		<code><a href="source-class-system.http.HTTPComponent.html#66-91" title="Go to source code">setWrapper</a>( <span>string|array <var>$wrapper</var></span> )</code>
+		<code><a href="source-class-system.http.HttpComponent.html#66-91" title="Go to source code">setWrapper</a>( <span>string|array <var>$wrapper</var></span> )</code>
 
 		<div class="description short">
 			<p>Sets the wrapper to be used.</p>
@@ -599,7 +599,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_createRequest">#</a>
-		<code><a href="source-class-system.http.HTTPComponent.html#103-117" title="Go to source code">createRequest</a>( <span>array <var>$configuration</var></span> )</code>
+		<code><a href="source-class-system.http.HttpComponent.html#103-117" title="Go to source code">createRequest</a>( <span>array <var>$configuration</var></span> )</code>
 
 		<div class="description short">
 			<p>Creates a new HTTP Request object.</p>
@@ -642,15 +642,15 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_get">#</a>
-		<code><a href="source-class-system.http.HTTPComponent.html#119-140" title="Go to source code">get</a>( <span>string|array|<code><a href="class-system.http.URI.html">system\http\URI</a></code> <var>$URI</var></span>, <span>boolean <var>$send</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><a href="source-class-system.http.HttpComponent.html#119-135" title="Go to source code">get</a>( <span>string|array|<code><a href="class-system.http.URI.html">system\http\URI</a></code> <var>$URI</var></span> )</code>
 
 		<div class="description short">
-			<p>Creates and optionally sends a new GET request.</p>
+			<p>Creates a new GET request.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Creates and optionally sends a new GET request.</p>
+			<p>Creates a new GET request.</p>
 
 
 
@@ -660,15 +660,11 @@
 					<dd>&lt;p&gt;The URI for the request, either as a string, a configuration array or
  the object itself.&lt;/p&gt;
 </dd>
-					<dt><var>$send</var></dt>
-					<dd>If set to true, the request will be automaticly sent.
-</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code><code><a href="class-system.http.Request.html">system\http\Request</a></code>|<code><a href="class-system.http.Response.html">system\http\Response</a></code></code><br><p>Returns the newly created request object if the $send flag is set to false,
- or the Response object if the $send flag is set to true.</p>
+					<code><code><a href="class-system.http.Request.html">system\http\Request</a></code>|<code><a href="class-system.http.Response.html">system\http\Response</a></code></code><br>Returns the newly created request object, configured with the given URI.
 
 				</div>
 
@@ -690,15 +686,15 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_post">#</a>
-		<code><a href="source-class-system.http.HTTPComponent.html#142-168" title="Go to source code">post</a>( <span>string|array|<code><a href="class-system.http.URI.html">system\http\URI</a></code> <var>$URI</var></span>, <span>string <var>$body</var></span>, <span>boolean <var>$send</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><a href="source-class-system.http.HttpComponent.html#137-158" title="Go to source code">post</a>( <span>string|array|<code><a href="class-system.http.URI.html">system\http\URI</a></code> <var>$URI</var></span>, <span>string <var>$body</var></span> )</code>
 
 		<div class="description short">
-			<p>Creates and optionally sends a new POST request.</p>
+			<p>Creates a new POST request.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Creates and optionally sends a new POST request.</p>
+			<p>Creates a new POST request.</p>
 
 
 
@@ -711,15 +707,11 @@
 					<dt><var>$body</var></dt>
 					<dd>The body contents for the request.
 </dd>
-					<dt><var>$send</var></dt>
-					<dd>If set to true, the request will be automaticly sent.
-</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code><code><a href="class-system.http.Request.html">system\http\Request</a></code>|<code><a href="class-system.http.Response.html">system\http\Response</a></code></code><br><p>Returns the newly created request object if the $send flag is set to false,
- or the Response object if the $send flag is set to true.</p>
+					<code><code><a href="class-system.http.Request.html">system\http\Request</a></code>|<code><a href="class-system.http.Response.html">system\http\Response</a></code></code><br>Returns the newly created request object, configured with the given URI and body contents.
 
 				</div>
 
@@ -815,6 +807,6 @@
 </div>
 </div>
 <script src="resources/combined.js?721046668"></script>
-<script src="elementlist.js?3930071561"></script>
+<script src="elementlist.js?867016506"></script>
 </body>
 </html>

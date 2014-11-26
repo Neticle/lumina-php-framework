@@ -89,7 +89,7 @@ class Application extends Module
 					// parsing the responses.
 					'http' => 
 					[
-						'class' => 'system\\http\\HTTPComponent',
+						'class' => 'system\\http\\HttpComponent',
 						'wrapper' => 'curl'
 					]
 				

@@ -32,7 +32,7 @@ use system\core\exception\RuntimeException;
  * 
  * @author Igor Azevedo <igor.azevedo@neticle.pt>
  */
-class HTTPComponent extends Component
+class HttpComponent extends Component
 {
 	
 	/**
@@ -117,30 +117,25 @@ class HTTPComponent extends Component
 	}
 	
 	/**
-	 * Creates and optionally sends a new GET request.
+	 * Creates a new GET request.
 	 * 
 	 * @param string|array|URI $URI
 	 *  The URI for the request, either as a string, a configuration array or
 	 *  the object itself.
 	 * 
-	 * @param bool $send
-	 *  If set to true, the request will be automaticly sent.
-	 * 
 	 * @return \system\http\Request|\system\http\Response
-	 *  Returns the newly created request object if the $send flag is set to false,
-	 *  or the Response object if the $send flag is set to true.
+	 *  Returns the newly created request object, configured with the given URI.
 	 */
-	public function get ($URI, $send = true)
+	public function get ($URI)
 	{
-		$request = $this->createRequest([
+		return $this->createRequest
+		([
 			'URI' => $URI
 		]);
-		
-		return $send ? $request->send() : $request;
 	}
 	
 	/**
-	 * Creates and optionally sends a new POST request.
+	 * Creates a new POST request.
 	 * 
 	 * @param string|array|URI $URI
 	 *  The URI for the request, either as a string, a configuration array or
@@ -149,22 +144,17 @@ class HTTPComponent extends Component
 	 * @param string $body
 	 *  The body contents for the request.
 	 * 
-	 * @param bool $send
-	 *  If set to true, the request will be automaticly sent.
-	 * 
 	 * @return \system\http\Request|\system\http\Response
-	 *  Returns the newly created request object if the $send flag is set to false,
-	 *  or the Response object if the $send flag is set to true.
+	 *  Returns the newly created request object, configured with the given URI and body contents.
 	 */
-	public function post ($URI, $body, $send = true)
+	public function post ($URI, $body)
 	{
-		$request = $this->createRequest([
+		return $this->createRequest
+		([
 			'URI' => $URI,
 			'method' => 'POST',
 			'body' => $body
 		]);
-		
-		return $send ? $request->send() : $request;
 	}
 
 }
