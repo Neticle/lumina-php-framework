@@ -32,7 +32,7 @@ use system\core\exception\RuntimeException;
  * 
  * @author Igor Azevedo <igor.azevedo@neticle.pt>
  */
-class HTTPComponent extends Component
+class HttpComponent extends Component
 {
 	
 	/**
