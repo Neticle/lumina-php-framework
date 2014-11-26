@@ -289,7 +289,7 @@ class Module extends Context
 			// the class namespace.
 			else if (isset($class))
 			{
-				$namespace = $this->getClassNamespace($class);
+				$namespace = Lumina::getClassNamespace($class);
 			}
 		}
 		
