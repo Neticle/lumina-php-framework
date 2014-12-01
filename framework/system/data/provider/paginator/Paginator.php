@@ -74,7 +74,11 @@ abstract class Paginator extends Element
 	{
 		parent::__construct(null);
 		$this->provider = $provider;
-		$this->configure($configuration);
+		
+		if (isset($configuration))
+		{
+			$this->configure($configuration);
+		}
 	}
 	
 	/**
