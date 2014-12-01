@@ -141,7 +141,7 @@ class PaginatorWidget extends Widget
 		$router = $this->getComponent('router');
 		$route = $router->getRequestRoute();
 		
-		$parameters = $route[1];
+		$parameters = array_slice($route, 1);
 		$parameters[$this->key] = $page;
 		
 		return $router->createAbsoluteUrl($route[0], $parameters);
