@@ -26,6 +26,7 @@ namespace system\data\validation;
 
 use \system\data\Model;
 use \system\data\validation\Rule;
+use \system\data\IValidatableDataContainer;
 
 /**
  * Marks a model attribute as safe for massive assignment.
