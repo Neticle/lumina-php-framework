@@ -24,6 +24,7 @@
 
 namespace system\base;
 
+use \system\core\Lumina;
 use \system\base\Module;
 use \system\core\Context;
 use \system\core\View;
