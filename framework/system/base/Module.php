@@ -540,9 +540,14 @@ class Module extends Context
 		
 		$application = $this->getApplication();
 		$application->setContext($this);
-		
+
 		do
 		{
+			if(!$module->onBeforeDispatch($route, $parameters))
+			{
+				break;
+			}
+		
 			$token = (--$length < 0) ?
 				$this->defaultController : array_shift($tokens);
 			
