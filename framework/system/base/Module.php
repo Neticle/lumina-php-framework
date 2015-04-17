@@ -549,7 +549,7 @@ class Module extends Context
 			}
 		
 			$token = (--$length < 0) ?
-				$this->defaultController : array_shift($tokens);
+				$module->defaultController : array_shift($tokens);
 			
 			// The token needs to be normalized before it's passed to a 
 			// controller or module as it's name.
